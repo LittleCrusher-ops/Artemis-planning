@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Artemis Planning v5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#f5f4f0;--card:#fff;--bg2:#eeede9;--bg3:#e5e4df;
+  --border:#dddcd7;--border2:#c8c7c1;
+  --text:#1a1917;--text2:#5c5b55;--text3:#9c9b95;
+  --or:#d4510c;--or-lt:#fff3ec;--or-bd:#fad0b4;
+  --gr:#1a7a3c;--gr-lt:#edfaf3;--gr-bd:#a3e0bc;
+  --re:#c0392b;--re-lt:#fdf2f1;--re-bd:#f5b5af;
+  --yl:#9a6f00;--yl-lt:#fdf8ec;--yl-bd:#f0d98a;
+  --pu:#5b3fa6;--pu-lt:#f2f0fb;--pu-bd:#c4b8f0;
+  --we:#ede9fe;--hol:#fffbeb;
+  --mono:'JetBrains Mono',monospace;
+  --sans:'Inter',system-ui,sans-serif;
+  --r:8px;--sh:0 1px 3px rgba(0,0,0,.07);--sh-lg:0 20px 48px rgba(0,0,0,.16);
+}
+/* Couleurs postes */
+.sc-M,.sc-MS{background:#fff8e6;border-color:#f5c842;color:#7a5800;}
+.sc-JM,.sc-JS,.sc-JD{background:#e8f5e9;border-color:#66bb6a;color:#1b5e20;}
+.sc-S1,.sc-S2,.sc-S2S,.sc-SD,.sc-R{background:#fce4ec;border-color:#e91e63;color:#7a0033;}
+.sc-N,.sc-NVS,.sc-ND{background:#1a237e;border-color:#3949ab;color:#e8eaf6;}
+.sc-custom{background:#f3e5f5;border-color:#9c27b0;color:#4a148c;}
+.sc-conge{background:#edfaf3;border-color:#a3e0bc;color:#1a7a3c;}
+.sc-maladie{background:#fdf2f1;border-color:#f5b5af;color:#c0392b;}
+.sc-indispo{background:#fdf8ec;border-color:#f0d98a;color:#9a6f00;}
+
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;font-size:13px;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+button{cursor:pointer;font-family:var(--sans);}
+button:active{transform:scale(.97);}
+input,select{font-family:var(--sans);}
+input[type=number]{-moz-appearance:textfield;}
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
+
+/* Layout */
+#shell{display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+#topbar{flex-shrink:0;padding:0 20px;height:54px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);background:var(--card);box-shadow:var(--sh);}
+#main{flex:1;display:flex;overflow:hidden;}
+#grid-area{flex:1;overflow:auto;padding:14px 16px;}
+#side-panel{width:300px;flex-shrink:0;border-left:1px solid var(--border);background:var(--card);overflow-y:auto;transition:width .2s;}
+#side-panel.hidden{width:0;overflow:hidden;border:none;}
+
+/* Topbar */
+.logo{width:32px;height:32px;border-radius:8px;background:var(--or);color:#fff;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.app-title{font-size:14px;font-weight:700;letter-spacing:.3px;}
+.app-title span{color:var(--or);}
+.app-sub{font-size:9px;color:var(--text3);font-family:var(--mono);}
+.nav-month{display:flex;align-items:center;gap:8px;margin-left:auto;}
+.nav-btn{width:28px;height:28px;border-radius:6px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);font-size:15px;display:flex;align-items:center;justify-content:center;}
+.nav-btn:hover{background:var(--bg3);}
+.month-lbl{font-size:12px;font-weight:700;min-width:160px;text-align:center;}
+.tb-actions{display:flex;gap:5px;margin-left:12px;}
+.tb-btn{height:28px;padding:0 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:11px;font-weight:600;display:flex;align-items:center;gap:4px;white-space:nowrap;}
+.tb-btn:hover{background:var(--bg3);}
+.tb-btn.danger{background:var(--re-lt);border-color:var(--re-bd);color:var(--re);}
+.save-badge{display:flex;align-items:center;gap:4px;font-size:10px;font-family:var(--mono);color:var(--text3);padding:0 8px;height:28px;border-radius:6px;border:1px solid transparent;}
+.save-badge.saved{color:var(--gr);border-color:var(--gr-bd);background:var(--gr-lt);}
+.save-dot{width:5px;height:5px;border-radius:50%;background:var(--border2);}
+.save-badge.saved .save-dot{background:var(--gr);}
+
+/* Grid */
+.grid-wrap{border-radius:var(--r);border:1px solid var(--border);overflow:auto;box-shadow:var(--sh);}
+#planning-grid{border-collapse:collapse;background:var(--card);white-space:nowrap;}
+#planning-grid th,#planning-grid td{border:1px solid var(--border);}
+.th-agent{padding:7px 10px;background:var(--bg2);font-size:9px;font-family:var(--mono);color:var(--text3);letter-spacing:.1em;position:sticky;left:0;z-index:4;min-width:155px;border-right:2px solid var(--border2);}
+.th-day{padding:3px 2px 2px;text-align:center;min-width:46px;width:46px;font-family:var(--mono);position:sticky;top:0;z-index:2;}
+.th-day.normal{background:var(--bg2);}
+.th-day.we{background:var(--we);}
+.th-day.hol{background:var(--hol);}
+.th-day.today{background:var(--or-lt);}
+.th-day.active-col{box-shadow:inset 0 0 0 2px var(--or);}
+.th-total{padding:7px 5px;background:var(--bg2);text-align:center;font-size:9px;font-family:var(--mono);color:var(--text3);position:sticky;right:0;z-index:3;border-left:2px solid var(--border2);}
+.th-day .dow{font-size:8px;font-weight:600;color:var(--text3);}
+.th-day.we .dow{color:var(--pu);}
+.th-day .dnum{font-size:11px;font-weight:700;}
+.th-day.we .dnum{color:var(--pu);}
+.th-day.hol .dnum{color:var(--yl);}
+.th-day.today .dnum{color:var(--or);}
+.slot-dots{display:flex;gap:2px;justify-content:center;margin-top:2px;}
+.sdot{width:4px;height:4px;border-radius:50%;}
+
+/* Agent row */
+.td-agent{padding:5px 10px;background:var(--card);position:sticky;left:0;z-index:1;cursor:pointer;border-right:2px solid var(--border2);}
+.td-agent:hover{background:var(--bg2);}
+.agent-name{font-size:11px;font-weight:600;max-width:140px;overflow:hidden;text-overflow:ellipsis;}
+.agent-meta{font-size:9px;color:var(--text3);font-family:var(--mono);margin-top:1px;}
+.agent-we{font-size:9px;font-family:var(--mono);margin-top:1px;}
+
+/* Day cells */
+.td-day{height:52px;width:46px;cursor:pointer;position:relative;vertical-align:middle;}
+.td-day:hover{filter:brightness(.96);}
+.td-day.we{background:var(--we);}
+.td-day.hol{background:var(--hol);}
+.td-day.today{background:var(--or-lt);}
+.td-day.active-col{box-shadow:inset 0 0 0 2px var(--or);}
+.cell-in{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2px;}
+.shift-box{border:1.5px solid;border-radius:5px;padding:2px 3px;text-align:center;width:42px;}
+.shift-code{font-size:10px;font-family:var(--mono);font-weight:700;line-height:1.2;}
+.shift-times{font-size:8px;font-family:var(--mono);line-height:1.3;opacity:.85;}
+.status-box{border-radius:5px;padding:3px 4px;text-align:center;width:42px;border:1.5px solid;}
+.status-lbl{font-size:8px;font-family:var(--mono);font-weight:700;}
+.vio-dot{position:absolute;bottom:2px;right:2px;width:6px;height:6px;border-radius:50%;border:1px solid rgba(255,255,255,.6);}
+.td-total{padding:3px 7px;text-align:center;background:var(--bg2);position:sticky;right:0;z-index:1;border-left:2px solid var(--border2);vertical-align:middle;}
+.total-h{font-family:var(--mono);font-size:12px;font-weight:700;}
+.total-d{font-size:9px;color:var(--text3);}
+
+/* Weekly */
+.section-title{font-size:11px;font-weight:700;color:var(--or);letter-spacing:.5px;margin-bottom:6px;margin-top:14px;}
+.weekly-wrap{border-radius:var(--r);border:1px solid var(--border);overflow:auto;box-shadow:var(--sh);}
+#weekly-table{border-collapse:collapse;width:100%;background:var(--card);}
+#weekly-table th{padding:6px 8px;background:var(--bg2);font-size:10px;font-weight:700;border:1px solid var(--border);}
+#weekly-table td{padding:4px 6px;text-align:center;border:1px solid var(--border);font-family:var(--mono);font-size:11px;}
+.rules-bar{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;padding:7px 10px;background:var(--card);border-radius:8px;border:1px solid var(--border);align-items:center;}
+.chip{font-size:9px;padding:2px 6px;border-radius:4px;background:var(--bg2);color:var(--text2);font-family:var(--mono);border:1px solid var(--border);}
+.add-agent-btn{margin-top:8px;padding:6px 14px;border-radius:8px;background:var(--card);border:1px dashed var(--border2);color:var(--text3);font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px;}
+.add-agent-btn:hover{border-color:var(--or);color:var(--or);}
+.footer{text-align:center;font-size:9px;color:var(--text3);margin-top:10px;font-family:var(--mono);}
+
+/* ═══════════════════════════════
+   PANNEAU LATÉRAL — ASSISTANT
+   ═══════════════════════════════ */
+#side-panel{padding:0;}
+.sp-header{padding:14px 16px 10px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--card);z-index:2;}
+.sp-title{font-size:13px;font-weight:700;margin-bottom:2px;}
+.sp-sub{font-size:10px;color:var(--text2);}
+.sp-day-status{padding:10px 16px;border-bottom:1px solid var(--border);}
+.sp-day-title{font-size:11px;font-weight:600;margin-bottom:8px;color:var(--or);}
+.sp-slot{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px dashed var(--border);}
+.sp-slot:last-child{border:none;}
+.sp-slot-code{width:36px;text-align:center;font-family:var(--mono);font-size:10px;font-weight:700;padding:2px 4px;border-radius:4px;}
+.sp-slot-who{font-size:11px;flex:1;}
+.sp-slot-who.empty{color:var(--re);font-style:italic;}
+.sp-slot-who.filled{color:var(--gr);}
+.sp-agent-section{padding:10px 16px;}
+.sp-agent-title{font-size:11px;font-weight:600;margin-bottom:8px;}
+.sp-suggestion{background:var(--or-lt);border:1px solid var(--or-bd);border-radius:8px;padding:10px;margin-bottom:8px;}
+.sp-sug-label{font-size:9px;font-weight:700;color:var(--or);letter-spacing:.08em;margin-bottom:6px;}
+.sp-sug-code{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.sp-sug-reason{font-size:10px;color:var(--text2);line-height:1.5;}
+.sp-apply-btn{width:100%;padding:8px;border-radius:7px;background:var(--or);color:#fff;border:none;font-weight:700;font-size:12px;margin-top:6px;}
+.sp-apply-btn:hover{background:#bf470a;}
+.sp-options{display:flex;flex-direction:column;gap:4px;}
+.sp-option{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:7px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;transition:all .1s;}
+.sp-option:hover{border-color:var(--or-bd);background:var(--or-lt);}
+.sp-option.disabled{opacity:.45;cursor:not-allowed;}
+.sp-option.disabled:hover{border-color:var(--border);background:var(--bg2);}
+.sp-opt-code{font-family:var(--mono);font-size:11px;font-weight:700;width:38px;}
+.sp-opt-info{flex:1;}
+.sp-opt-time{font-size:10px;font-family:var(--mono);color:var(--text2);}
+.sp-opt-reason{font-size:9px;color:var(--re);margin-top:1px;}
+.sp-alerts{padding:8px 16px;display:flex;flex-direction:column;gap:5px;}
+.alert-chip{padding:6px 10px;border-radius:7px;font-size:10px;font-family:var(--mono);line-height:1.5;border:1px solid;}
+.alert-chip.red{background:var(--re-lt);border-color:var(--re-bd);color:var(--re);}
+.alert-chip.yellow{background:var(--yl-lt);border-color:var(--yl-bd);color:var(--yl);}
+.alert-chip.green{background:var(--gr-lt);border-color:var(--gr-bd);color:var(--gr);}
+.sp-abs-section{padding:10px 16px;border-top:1px solid var(--border);}
+.sp-abs-title{font-size:11px;font-weight:600;margin-bottom:8px;}
+.abs-btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-bottom:8px;}
+.abs-btn{padding:7px 4px;border-radius:7px;font-size:10px;font-weight:700;border:1.5px solid;cursor:pointer;text-align:center;}
+.abs-date-row{display:flex;gap:6px;align-items:flex-end;}
+.abs-date-row .form-group{flex:1;}
+.form-label{font-size:8px;letter-spacing:.1em;color:var(--text3);font-family:var(--mono);margin-bottom:3px;display:block;}
+.form-input{padding:6px 8px;background:var(--card);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-size:11px;font-family:var(--mono);outline:none;width:100%;}
+.form-input:focus{border-color:var(--or);}
+.sp-del-btn{width:100%;padding:7px;border-radius:7px;background:var(--re-lt);color:var(--re);border:1px solid var(--re-bd);font-weight:600;font-size:11px;margin-top:6px;}
+.sp-no-sel{padding:20px 16px;text-align:center;color:var(--text3);font-size:11px;line-height:1.7;}
+
+/* Overlay modals */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:500;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(2px);}
+.modal{background:var(--card);border-radius:14px;padding:20px;max-height:92vh;overflow-y:auto;box-shadow:var(--sh-lg);border:1px solid var(--border);}
+.modal-sm{width:420px;}
+.modal-lg{width:660px;}
+.modal-xl{width:820px;}
+.modal-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+.modal-title{font-size:15px;font-weight:700;}
+.modal-sub{font-size:11px;color:var(--text2);margin-top:2px;}
+.modal-close{background:none;border:none;font-size:20px;color:var(--text3);width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:4px;}
+.modal-close:hover{background:var(--bg2);}
+.section-lbl{font-size:9px;letter-spacing:.12em;color:var(--text3);font-family:var(--mono);font-weight:600;margin-bottom:5px;margin-top:10px;}
+.section-lbl:first-child{margin-top:0;}
+.btn-row{display:flex;gap:8px;margin-top:8px;}
+.btn-pri{flex:1;padding:9px;border-radius:8px;font-weight:700;font-size:13px;border:none;background:var(--or);color:#fff;}
+.btn-pri:hover{background:#bf470a;}
+.btn-sec{flex:1;padding:9px;border-radius:8px;background:var(--bg2);color:var(--text2);border:1px solid var(--border2);font-weight:600;font-size:13px;}
+.btn-danger{flex:1;padding:9px;border-radius:8px;background:var(--re-lt);color:var(--re);border:1px solid var(--re-bd);font-weight:600;font-size:13px;}
+.badge-btns{display:flex;gap:6px;margin-bottom:10px;}
+.badge-btn{flex:1;padding:6px 4px;border-radius:6px;font-weight:700;font-size:11px;font-family:var(--mono);background:var(--bg2);border:1.5px solid var(--border);}
+/* Profile tags */
+.profile-shift-tag{font-size:9px;font-family:var(--mono);padding:3px 7px;border-radius:4px;border:1px solid;cursor:pointer;transition:all .1s;user-select:none;display:inline-block;margin:2px;}
+/* Shifts editor */
+.se-row{display:grid;grid-template-columns:64px 1fr 1fr 56px 28px;gap:5px;padding:5px 7px;border:1px solid var(--border);border-radius:7px;margin-bottom:4px;align-items:center;}
+.se-input{padding:4px 6px;border:1px solid var(--border2);border-radius:5px;font-family:var(--mono);font-size:11px;width:100%;background:var(--card);outline:none;color:var(--text);}
+.se-input:focus{border-color:var(--or);}
+.se-code{font-weight:700;color:var(--or);text-align:center;font-size:12px;}
+.se-del{width:26px;height:26px;border-radius:5px;border:1px solid var(--re-bd);background:var(--re-lt);color:var(--re);font-size:13px;display:flex;align-items:center;justify-content:center;}
+.se-add{width:100%;padding:7px;border-radius:7px;border:1px dashed var(--border2);background:var(--card);color:var(--text3);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:5px;margin:7px 0;}
+.se-add:hover{border-color:var(--or);color:var(--or);}
+</style>
+</head>
+<body>
+<div id="shell">
+<!-- TOPBAR -->
+<div id="topbar">
+  <div class="logo">A</div>
+  <div>
+    <div class="app-title">ARTEMIS <span>PLANNING</span></div>
+    <div class="app-sub" id="app-sub">Pôle Marine Dunkerque</div>
+  </div>
+  <div class="nav-month">
+    <button class="nav-btn" onclick="prevMonth()">‹</button>
+    <span class="month-lbl" id="month-lbl"></span>
+    <button class="nav-btn" onclick="nextMonth()">›</button>
+  </div>
+  <div class="tb-actions">
+    <div class="save-badge" id="save-badge"><div class="save-dot"></div><span id="save-txt">—</span></div>
+    <button class="tb-btn" style="background:#edfaf3;border-color:#a3e0bc;color:#1a7a3c;font-weight:700;" onclick="loadFromStorage()">🔄 Sync</button>
+    <button class="tb-btn" onclick="openShiftsMgr()">⚙ Créneaux</button>
+    <button class="tb-btn" style="background:var(--pu-lt);border-color:var(--pu-bd);color:var(--pu);font-weight:700;" onclick="openAbsModal()">📋 Absences</button>
+    <button class="tb-btn" onclick="openProfiles()">👤 Profils</button>
+    <button class="tb-btn" onclick="saveJSON()">💾 Export</button>
+    <button class="tb-btn" onclick="document.getElementById('file-in').click()">📂 Charger</button>
+    <input type="file" id="file-in" accept=".json" style="display:none" onchange="loadJSON(event)"/>
+    <button class="tb-btn" onclick="exportPDF()">🖨 PDF</button>
+    <button class="tb-btn danger" onclick="clearWork()">🗑 Effacer</button>
+  </div>
+</div>
+
+<!-- MAIN : grille + panneau -->
+<div id="content" style="flex:1;overflow:auto;padding:14px 16px;">
+    <div class="grid-wrap"><table id="planning-grid"></table></div>
+    <button class="add-agent-btn" onclick="addEmployee()"><span style="color:var(--or);font-size:14px;">+</span> Ajouter un agent</button>
+    <div class="section-title">SYNTHÈSE HEBDOMADAIRE</div>
+    <div class="weekly-wrap"><table id="weekly-table"></table></div>
+    <div class="rules-bar">
+      <span style="font-size:9px;color:var(--text3);font-family:var(--mono);margin-right:4px;">RÈGLES :</span>
+      <span class="chip">⏱ 11h repos min</span>
+      <span class="chip">📅 1-2 WE repos/mois</span>
+      <span class="chip">📆 Max 6j physiques</span>
+      <span class="chip">⚖️ Max 48h/semaine</span>
+      <span class="chip">🌙 Overnight = J+1 physique</span>
+    </div>
+    <p class="footer" id="footer-txt"></p>
+  </div>
+
+</div>
+
+<!-- EMPLOYEE MODAL -->
+<div id="emp-modal" class="overlay" style="display:none" onclick="if(event.target===this)closeEmpModal()">
+  <div class="modal modal-sm" onclick="event.stopPropagation()">
+    <div class="modal-head" style="margin-bottom:12px;">
+      <div class="modal-title">Modifier l'agent</div>
+      <button class="modal-close" onclick="closeEmpModal()">×</button>
+    </div>
+    <div class="section-lbl">NOM COMPLET</div>
+    <input id="em-name" class="form-input" placeholder="Prénom NOM" style="margin-bottom:10px;" onkeydown="if(event.key==='Enter')saveEmployee()"/>
+    <div class="section-lbl">QUALIFICATION</div>
+    <div class="badge-btns" id="em-badges"></div>
+    <div class="section-lbl">RÔLE</div>
+    <select id="em-role" class="form-input" style="margin-bottom:12px;">
+      <option>Chef d'équipe</option><option>Agent</option><option>Agent polyvalent</option>
+    </select>
+    <div class="btn-row">
+      <button class="btn-sec" onclick="closeEmpModal()">Annuler</button>
+      <button class="btn-danger" onclick="deleteEmployee()">Supprimer</button>
+      <button class="btn-pri" onclick="saveEmployee()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILES MODAL -->
+<div id="profiles-modal" class="overlay" style="display:none" onclick="if(event.target===this)closeProfiles()">
+  <div class="modal modal-xl" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <div><div class="modal-title">👤 Profils agents — Créneaux habituels</div>
+      <div class="modal-sub">Cochez les créneaux habituels de chaque agent. Utilisés par l'assistant pour les suggestions.</div></div>
+      <button class="modal-close" onclick="closeProfiles()">×</button>
+    </div>
+    <div id="profiles-list"></div>
+    <div class="btn-row">
+      <button class="btn-sec" onclick="closeProfiles()">Fermer</button>
+      <button class="btn-pri" onclick="saveProfiles()">✓ Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- SHIFTS MGR MODAL -->
+<div id="shifts-modal" class="overlay" style="display:none" onclick="if(event.target===this)closeShiftsMgr()">
+  <div class="modal modal-lg" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <div><div class="modal-title">⚙ Gérer les créneaux</div>
+      <div class="modal-sub">Modifiez codes et horaires. Durée calculée automatiquement.</div></div>
+      <button class="modal-close" onclick="closeShiftsMgr()">×</button>
+    </div>
+    <div style="font-size:9px;color:var(--yl);font-family:var(--mono);padding:6px 10px;background:var(--yl-lt);border:1px solid var(--yl-bd);border-radius:6px;margin-bottom:10px;">⚠ Modifier le code ne met pas à jour les cases déjà saisies.</div>
+    <div style="display:grid;grid-template-columns:64px 1fr 1fr 56px 28px;gap:5px;padding:3px 7px;background:var(--bg3);border-radius:5px;margin-bottom:4px;">
+      <span style="font-size:8px;letter-spacing:.1em;color:var(--text3);font-family:var(--mono);">CODE</span>
+      <span style="font-size:8px;letter-spacing:.1em;color:var(--text3);font-family:var(--mono);">DÉBUT</span>
+      <span style="font-size:8px;letter-spacing:.1em;color:var(--text3);font-family:var(--mono);">FIN</span>
+      <span style="font-size:8px;letter-spacing:.1em;color:var(--text3);font-family:var(--mono);text-align:center;">DURÉE</span>
+      <span></span>
+    </div>
+    <div id="se-list"></div>
+    <button class="se-add" onclick="seAddRow()"><span style="color:var(--or);font-size:15px;">+</span> Ajouter un créneau</button>
+    <div class="btn-row">
+      <button class="btn-sec" onclick="closeShiftsMgr()">Annuler</button>
+      <button class="btn-pri" onclick="seApply()">✓ Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════
+// CONSTANTS
+// ════════════════════════════════════════════════════════
+const MONTH_NAMES=["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+const DAY_SHORT=["D","L","M","M","J","V","S"];
+const DAY_FULL=["Dimanche","Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi"];
+const BADGE_COL={SSIAP2:"#d4510c",SSIAP1:"#5b6b7c","SSIAP1/2":"#5b3fa6"};
+const SHIFT_TYPES={M:"matin",MS:"matin",JM:"jour",JS:"jour",JD:"jour",S1:"soir",S2:"soir",S2S:"soir",SD:"soir",R:"soir",N:"nuit",NVS:"nuit",ND:"nuit"};
+
+const STATUS_SHIFTS=[
+  {code:"conge",  label:"Congé payé",  col:"#1a7a3c",bg:"#edfaf3",bd:"#a3e0bc"},
+  {code:"maladie",label:"Maladie",     col:"#c0392b",bg:"#fdf2f1",bd:"#f5b5af"},
+  {code:"indispo",label:"Indisponible",col:"#9a6f00",bg:"#fdf8ec",bd:"#f0d98a"},
+];
+
+// Postes requis par jour avec rôle
+const DAY_REQ={
+  // code = poste principal, alt = codes acceptés en remplacement (ex: R remplace S1)
+  0:[{code:"M",  role:"CE"},{code:"S2", role:"CE"},{code:"SD",role:"AG"},{code:"JD",role:"AG"},{code:"ND",role:"AG"}],
+  1:[{code:"M",  role:"CE"},{code:"S2", role:"CE"},{code:"S1",role:"AG",alt:["R"]},{code:"N", role:"AG"}],
+  2:[{code:"M",  role:"CE"},{code:"S2", role:"CE"},{code:"S1",role:"AG",alt:["R"]},{code:"N", role:"AG"}],
+  3:[{code:"M",  role:"CE"},{code:"S2", role:"CE"},{code:"JM",role:"AG"},{code:"N", role:"AG"}],
+  4:[{code:"M",  role:"CE"},{code:"S2", role:"CE"},{code:"S1",role:"AG",alt:["R"]},{code:"N", role:"AG"}],
+  5:[{code:"M",  role:"CE"},{code:"S2", role:"CE"},{code:"S1",role:"AG",alt:["R"]},{code:"NVS",role:"AG"}],
+  6:[{code:"MS", role:"CE"},{code:"S2", role:"CE"},{code:"JS",role:"AG"},{code:"NVS",role:"AG"}],
+};
+const HOL_REQ=[{code:"M",role:"CE"},{code:"S2",role:"CE"},{code:"SD",role:"AG"},{code:"JD",role:"AG"},{code:"ND",role:"AG"}];
+
+// ════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════
+let WORK_SHIFTS=[
+  {code:"M",  start:"06:00",end:"16:00"},
+  {code:"JM", start:"14:00",end:"00:00"},
+  {code:"JS", start:"12:00",end:"00:00"},
+  {code:"JD", start:"11:00",end:"21:00"},
+  {code:"NVS",start:"18:00",end:"06:00"},
+  {code:"ND", start:"21:00",end:"07:00"},
+  {code:"S1", start:"18:00",end:"00:00"},
+  {code:"S2", start:"16:00",end:"01:00"},
+  {code:"SD", start:"16:00",end:"00:00"},
+  {code:"S2S",start:"16:00",end:"01:00"},
+  {code:"N",  start:"19:00",end:"07:00"},
+  {code:"R",  start:"15:00",end:"00:00"},
+  {code:"MS", start:"06:00",end:"18:00"},
+];
+let emps=[
+  {name:"VANHAEZEBROUCK Emmanuel",badge:"SSIAP2",role:"Chef d'équipe"},
+  {name:"Delhaye Eddy",           badge:"SSIAP2",role:"Chef d'équipe"},
+  {name:"Jomen Mickaël",          badge:"SSIAP2",role:"Chef d'équipe"},
+  {name:"Hardy Stéphane",         badge:"SSIAP2",role:"Chef d'équipe"},
+  {name:"David Jefferson",        badge:"SSIAP1",role:"Agent"},
+  {name:"Dilmi Nori Saïd",        badge:"SSIAP1",role:"Agent"},
+  {name:"Devalckenaere Bastien",  badge:"SSIAP1",role:"Agent"},
+  {name:"Lefebvre Pierre",        badge:"SSIAP1/2",role:"Agent polyvalent"},
+  {name:"Aziz Karim",             badge:"SSIAP1/2",role:"Agent polyvalent"},
+];
+let agentProfiles={};
+let shifts={};
+const today=new Date();
+let year=today.getFullYear(),month=today.getMonth();
+let holidays={};
+let autosaveTimer=null;
+let seBuffer=[];
+let profilesBuffer={};
+let activeCell=null; // {ei, day}
+
+const STORAGE_KEY="artemis_v5";
+
+// CONFIG GITHUB
+const GH_USER = "littlecrusher-ops";
+const GH_REPO = "Artemis-planning";
+const GH_FILE = "planning-data.json";
+let GH_TOKEN = localStorage.getItem("artemis_gh_token") || "";
+
+async function ghGetSha() {
+  try {
+    const r = await fetch("https://api.github.com/repos/"+GH_USER+"/"+GH_REPO+"/contents/"+GH_FILE, {
+      headers: { Authorization: "token "+GH_TOKEN, Accept: "application/vnd.github.v3+json" }
+    });
+    if (!r.ok) return null;
+    return (await r.json()).sha || null;
+  } catch(e) { return null; }
+}
+
+async function ghPush(content, message) {
+  const sha = await ghGetSha();
+  const b64 = btoa(unescape(encodeURIComponent(content)));
+  const body = { message: message, content: b64, branch: "main" };
+  if (sha) body.sha = sha;
+  const r = await fetch("https://api.github.com/repos/"+GH_USER+"/"+GH_REPO+"/contents/"+GH_FILE, {
+    method: "PUT",
+    headers: { Authorization: "token "+GH_TOKEN, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  return r.ok;
+}
+
+async function ghLoad() {
+  try {
+    const r = await fetch("https://raw.githubusercontent.com/"+GH_USER+"/"+GH_REPO+"/main/"+GH_FILE+"?t="+Date.now());
+    if (!r.ok) return null;
+    return await r.json();
+  } catch(e) { return null; }
+}
+
+// ════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════
+const toMin=t=>{if(!t)return 0;const[h,m]=t.split(":").map(Number);return h*60+m;};
+const fmtH=t=>{if(!t)return"";const[h,m]=t.split(":");return m==="00"?`${+h}h`:`${+h}h${m}`;};
+const findWS=c=>WORK_SHIFTS.find(s=>s.code===c);
+const findSS=c=>STATUS_SHIFTS.find(s=>s.code===c);
+const isWorkCode=c=>!!(c&&(c==="custom"||findWS(c)));
+const isWorkS=s=>!!(s&&isWorkCode(s.code));
+const shiftStart=s=>s.code==="custom"?s.start:findWS(s.code)?.start||"";
+const shiftEnd=s=>s.code==="custom"?s.end:findWS(s.code)?.end||"";
+const isOverflow=(st,en)=>{const e=toMin(en);return e>0&&e<toMin(st);};
+const isOvernight=s=>{if(!s)return false;const ws=findWS(s.code);return ws?isOverflow(ws.start,ws.end):false;};
+const calcDur=(st,en)=>{let d=toMin(en)-toMin(st);if(d<=0)d+=1440;return d/60;};
+const getDur=s=>{if(!s||!isWorkCode(s.code))return 0;const ws=findWS(s.code);if(!ws)return 0;return calcDur(ws.start,ws.end);};
+const shiftType=code=>SHIFT_TYPES[code]||"custom";
+
+const CONGE_H=35/6;
+const getEffectiveDur=(s,d)=>{
+  if(!s)return 0;
+  if(isWorkCode(s.code))return getDur(s);
+  if(s.code==="conge"){if(getDow(d)===0||isHoliday(d))return 0;return CONGE_H;}
+  return 0;
+};
+
+const dim=()=>new Date(year,month+1,0).getDate();
+const getDow=d=>new Date(year,month,d).getDay();
+const isWE=d=>{const w=getDow(d);return w===0||w===6;};
+const isSat=d=>getDow(d)===6;
+const isSun=d=>getDow(d)===0;
+const skey=(ei,d)=>`${ei}_${year}_${month}_${d}`;
+const getS=(ei,d)=>{if(d<1||d>dim())return null;return shifts[skey(ei,d)]||null;};
+const isHoliday=d=>!!holidays[`${month}-${d}`];
+
+// Passage minuit
+const restMinutesBetween=(ps,ns)=>{
+  if(!ps||!ns)return Infinity;
+  let peMin=toMin(shiftEnd(ps));
+  if(isOvernight(ps))peMin+=1440;
+  return toMin(shiftStart(ns))+1440-peMin;
+};
+
+// Présence physique : poste ce jour OU fin d'un overnight de J-1
+const physPresent=(ei,d)=>{
+  // Seuls les vrais postes de travail comptent — absences (congé/maladie/indispo) ignorées
+  if(d<1||d>dim())return false;
+  const s=getS(ei,d);
+  if(s&&isWorkS(s))return true; // poste de travail ce jour
+  // Shift overnight de J-1 qui déborde sur J → J est physiquement occupé
+  const p=getS(ei,d-1);
+  return !!(p&&isWorkS(p)&&isOvernight(p));
+};
+
+// Streak physique avant le jour d
+const streakAvant=(ei,d)=>{
+  let n=0;for(let x=d;x>=1;x--){if(physPresent(ei,x))n++;else break;}return n;
+};
+
+// WE de repos complet (sam + dim physiquement libres)
+const isWEOff=(ei,sat)=>{
+  // sat = jour du samedi, sat+1 = dimanche
+  if(sat<1||sat+1>dim())return false;
+  const sunOff = !physPresent(ei,sat+1);
+  if(!sunOff) return false; // dimanche travaillé = pas de WE repos
+  // WE valide si dim repos ET (sam repos OU lun repos)
+  const satOff = !physPresent(ei,sat);
+  const lunOff = !physPresent(ei,sat+2); // lundi = sat+2
+  return satOff || lunOff;
+};
+const countWEOff=(ei)=>{
+  let n=0,D=dim();
+  // On évite de compter le même WE deux fois (sam+dim+lun pourrait matcher sat et sat+1)
+  // On itère sur les dimanches et on vérifie
+  for(let d=1;d<=D;d++){
+    if(isSun(d)){
+      const sunOff=!physPresent(ei,d);
+      if(!sunOff) continue;
+      const satOff=d>1?!physPresent(ei,d-1):true;
+      const lunOff=d+1<=D?!physPresent(ei,d+1):true;
+      if(satOff||lunOff) n++;
+    }
+  }
+  return n;
+};
+const countTotalWE=()=>{
+  let n=0,D=dim();
+  for(let d=1;d<=D;d++)if(isSun(d))n++;
+  return n;
+};
+
+
+// Heures effectives ce mois
+const hMois=(ei)=>{const D=dim();let h=0;for(let d=1;d<=D;d++)h+=getEffectiveDur(getS(ei,d),d);return h;};
+
+// Rôle
+const estCE=(ei)=>emps[ei]?.role==="Chef d'équipe";
+const estAG=(ei)=>emps[ei]?.role==="Agent";
+const estPoly=(ei)=>emps[ei]?.role==="Agent polyvalent";
+
+// Postes requis du jour
+const postesJour=(d)=>isHoliday(d)?HOL_REQ:(DAY_REQ[getDow(d)]||[]);
+// Vérifie si un code couvre un slot (code principal OU alternatif)
+const codeCouvreSlot=(code,poste)=>code===poste.code||(poste.alt&&poste.alt.includes(code));
+// Retourne tous les codes acceptables pour un slot (principal + alt)
+const codesSlot=(poste)=>[poste.code,...(poste.alt||[])];
+
+// ════════════════════════════════════════════════════════
+// VÉRIFICATION CONTRAINTES (pour l'assistant)
+// Retourne {ok:bool, raison:string}
+// ════════════════════════════════════════════════════════
+function verifContraintes(ei,d,code){
+  const D=dim();
+  const ws=findWS(code);if(!ws)return{ok:false,raison:"Créneau inconnu"};
+  const cand={code};
+
+  // Poste de travail déjà saisi ce jour → bloquer (pas les absences)
+  const exJour=getS(ei,d);
+  if(exJour&&isWorkS(exJour))return{ok:false,raison:"Poste de travail déjà saisi ce jour"};
+
+  // Overnight → J+1 ne doit pas être absent
+  if(isOvernight(cand)&&d+1<=D){
+    const nx=getS(ei,d+1);
+    if(nx&&findSS(nx.code))return{ok:false,raison:"Poste overnight mais "+DAY_SHORT[getDow(d+1)]+" "+(d+1)+" est une absence"};
+  }
+
+  // Repos 11h avec J-1
+  const prev=getS(ei,d-1);
+  if(isWorkS(prev)){
+    const r=restMinutesBetween(prev,cand);
+    if(r<660)return{ok:false,raison:"Seulement "+Math.round(r/60*10)/10+"h de repos avec le poste de J-1 (min 11h)"};
+  }
+
+  // Repos 11h avec J+1
+  const next=getS(ei,d+1);
+  if(isWorkS(next)){
+    const r=restMinutesBetween(cand,next);
+    if(r<660)return{ok:false,raison:"Seulement "+Math.round(r/60*10)/10+"h de repos avec le poste de J+1 (min 11h)"};
+  }
+
+  // Max 6 jours physiques
+  const avant=streakAvant(ei,d-1);
+  const bonusON=isOvernight(cand)?1:0;
+  let apres=bonusON;
+  for(let x=d+1+bonusON;x<=D;x++){if(physPresent(ei,x))apres++;else break;}
+  if(avant+1+apres>6)return{ok:false,raison:`${avant+1+apres} jours consécutifs physiques (max 6)`};
+
+  // Max 48h semaine
+  const lundi=wkMon(year,month,d),dimS=new Date(lundi);dimS.setDate(dimS.getDate()+6);
+  let wkH=getDur(cand);
+  for(let x=1;x<=D;x++){
+    if(x===d)continue;
+    const dt=new Date(year,month,x);
+    if(dt>=lundi&&dt<=dimS&&isWorkS(getS(ei,x)))wkH+=getDur(getS(ei,x));
+  }
+  if(wkH>48)return{ok:false,raison:`${wkH.toFixed(1)}h cette semaine (max 48h)`};
+
+  // Heures réelles jour
+  let hJ=isOvernight(cand)?(1440-toMin(ws.start))/60:getDur(cand);
+  if(isWorkS(prev)&&isOvernight(prev))hJ+=toMin(shiftEnd(prev))/60;
+  if(hJ>13)return{ok:false,raison:`${hJ.toFixed(1)}h physiques ce jour (passage minuit J-1, max 13h)`};
+
+  return{ok:true,raison:""};
+}
+
+// ════════════════════════════════════════════════════════
+// MODAL DE SAISIE DIRECTE
+// ════════════════════════════════════════════════════════
+function openShiftModal(ei, d){
+  const emp = emps[ei];
+  const bCol = BADGE_COL[emp?.badge] || "#6b7280";
+  const exShift = getS(ei, d);
+  const postes = postesJour(d);
+  const ws_list = WORK_SHIFTS;
+
+  // Construire le contenu du modal
+  let html = "";
+
+  // ── Postes requis du jour ──
+  html += `<div style="margin-bottom:12px;">
+    <div style="font-size:10px;font-weight:700;color:var(--or);letter-spacing:.08em;margin-bottom:6px;">POSTES REQUIS CE JOUR</div>
+    <div style="display:flex;flex-wrap:wrap;gap:5px;">`;
+  postes.forEach(p => {
+    const who = emps.find((_,i) => { const s=getS(i,d); return s && codeCouvreSlot(s.code,p); });
+    const isSelf = who && emps.indexOf(who)===ei;
+    const col = who ? (isSelf?"var(--or)":"var(--gr)") : "var(--re)";
+    const bg  = who ? (isSelf?"var(--or-lt)":"var(--gr-lt)") : "var(--re-lt)";
+    const bd  = who ? (isSelf?"var(--or-bd)":"var(--gr-bd)") : "var(--re-bd)";
+    html += `<span style="font-size:9px;font-family:var(--mono);padding:3px 8px;border-radius:4px;background:${bg};color:${col};border:1px solid ${bd};">
+      ${p.code} ${p.role==="CE"?"👔":"👷"} ${who?(isSelf?"→ vous":who.name.split(" ")[0]):"❌ non couvert"}
+    </span>`;
+  });
+  html += `</div></div>`;
+
+  // ── Info absence si applicable ──
+  if(exShift && findSS(exShift.code)){
+    const ss = findSS(exShift.code);
+    html += '<div style="background:'+ss.bg+';border:1px solid '+ss.bd+';border-radius:8px;padding:8px 10px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">'
+      +'<div style="font-size:11px;font-weight:600;color:'+ss.col+';">📋 '+ss.label+' ce jour</div>'
+      +'<button onclick="suppAbsModal('+ei+','+d+')" style="font-size:10px;padding:3px 8px;border-radius:5px;background:'+ss.col+';color:#fff;border:none;cursor:pointer;">Supprimer</button>'
+      +'</div>'
+      +'<div style="font-size:9px;font-family:var(--mono);color:var(--text3);margin-bottom:10px;">ℹ️ Saisir un poste remplacera cette absence automatiquement.</div>';
+  }
+  // ── Alertes contraintes ──
+  const alerts = getModalAlerts(ei, d);
+  if(alerts.length){
+    html += `<div style="display:flex;flex-direction:column;gap:4px;margin-bottom:12px;">`;
+    alerts.forEach(a => {
+      html += `<div style="padding:5px 9px;border-radius:6px;font-size:10px;font-family:var(--mono);border:1px solid;background:${a.bg};color:${a.col};border-color:${a.bd};">${a.msg}</div>`;
+    });
+    html += `</div>`;
+  }
+
+  // ── Poste actuel si déjà saisi (seulement si poste de travail, pas absence) ──
+  if(exShift && isWorkS(exShift)){
+    const ss = findSS(exShift.code);
+    const ws = findWS(exShift.code);
+    html += `<div style="background:var(--bg2);border-radius:8px;padding:10px;margin-bottom:12px;border:1px solid var(--border);">
+      <div style="font-size:9px;font-weight:700;color:var(--text3);margin-bottom:6px;">POSTE ACTUEL</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="shift-box sc-${exShift.code}" style="width:52px;text-align:center;">
+          <div class="shift-code">${exShift.code}</div>
+          <div class="shift-times">${ws?fmtH(ws.start)+"→"+fmtH(ws.end):(ss?ss.label:"")}</div>
+        </span>
+        <div style="flex:1;">
+          <div style="font-size:11px;font-weight:600;">${ws?getDur(exShift).toFixed(0)+"h":ss?ss.label:""}</div>
+          ${isOvernight(exShift)?'<div style="font-size:9px;color:var(--or);">🌙 Passage minuit → lendemain physique</div>':""}
+        </div>
+        <button onclick="document.getElementById('sm-modal').remove();delete shifts[skey(${ei},${d})];triggerAutosave();render();" style="padding:5px 10px;border-radius:6px;background:var(--re-lt);color:var(--re);border:1px solid var(--re-bd);font-size:11px;font-weight:600;cursor:pointer;">🗑 Supprimer</button>
+      </div>
+    </div>`;
+  }
+
+  // ── Choisir un poste ──
+  html += `<div style="font-size:10px;font-weight:700;color:var(--text);margin-bottom:8px;">CHOISIR UN POSTE</div>`;
+
+  // Postes requis en premier
+  html += `<div style="font-size:9px;color:var(--text3);font-family:var(--mono);margin-bottom:5px;">POSTES DU JOUR (${DAY_FULL[getDow(d)]})</div>`;
+  html += `<div style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px;">`;
+  postes.forEach(p => {
+    // Afficher le code principal ET les alternatifs (ex: S1 et R)
+    codesSlot(p).forEach(code => {
+      const v = verifContraintes(ei, d, code);
+      const ws = findWS(code);
+      const ov = ws ? isOverflow(ws.start, ws.end) : false;
+      const dejaOccupe = emps.some((_,oi) => { if(oi===ei)return false; const s=getS(oi,d); return s&&codeCouvreSlot(s.code,p); });
+      const roleOk = (p.role==="CE"&&(estCE(ei)||estPoly(ei)))||(p.role==="AG"&&(estAG(ei)||estPoly(ei)));
+      const isAlt = code !== p.code;
+      const bdrCol = v.ok ? 'var(--border)' : 'var(--re-bd)';
+      const bgCol  = v.ok ? 'var(--card)'   : 'var(--re-lt)';
+      const dur    = ws ? getDur({code}).toFixed(0)+'h' : '';
+      const times  = ws ? fmtH(ws.start)+'→'+fmtH(ws.end) : '';
+      const roleLabel = p.role==="CE" ? "👔 Chef" : "👷 Agent";
+      const altLabel  = isAlt ? ' <span style="font-size:9px;color:var(--pu);font-family:var(--mono);">(renfort S1)</span>' : '';
+      const fn = v.ok ? "saisirPoste("+ei+","+d+",'"+(code)+"')" : '';
+      html += '<div onclick="'+fn+'" style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;border:1px solid '+bdrCol+';background:'+bgCol+';cursor:'+(v.ok?'pointer':'not-allowed')+';opacity:'+(v.ok?1:.7)+';">'
+            +'<span class="shift-box sc-'+code+'" style="width:48px;text-align:center;flex-shrink:0;">'
+            +'<div class="shift-code">'+code+'</div>'
+            +'<div class="shift-times">'+times+'</div>'
+            +'</span>'
+            +'<div style="flex:1;">'
+            +'<div style="font-size:11px;font-weight:600;">'+dur+' · '+roleLabel+altLabel+'</div>'
+            +(dejaOccupe ? '<div style="font-size:9px;color:var(--yl);">⚠ Déjà attribué ce jour</div>' : '')
+            +(!roleOk&&v.ok ? '<div style="font-size:9px;color:var(--yl);">⚠ Hors rôle habituel</div>' : '')
+            +(!v.ok ? '<div style="font-size:9px;color:var(--re);">✗ '+v.raison+'</div>' : '')
+            +'</div>'
+            +(v.ok ? '<span style="color:var(--gr);font-size:16px;font-weight:700;">→</span>' : '<span style="color:var(--re);font-size:14px;">✗</span>')
+            +'</div>';
+    });
+  });
+  html += `</div>`;
+
+  // Autres créneaux
+  const autres = WORK_SHIFTS.filter(ws => !postes.some(p => codesSlot(p).includes(ws.code)));
+  html += '<div style="font-size:9px;color:var(--text3);font-family:var(--mono);margin-bottom:5px;">AUTRES CRÉNEAUX</div>';
+  html += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:10px;">';
+  autres.forEach(ws => {
+    const v = verifContraintes(ei, d, ws.code);
+    const ov = isOverflow(ws.start, ws.end);
+    const fnA = v.ok ? "saisirPoste("+ei+","+d+","+"'"+ws.code+"')" : '';
+    html += '<div onclick="'+fnA+'" title="'+(v.ok?'':v.raison)+'" style="padding:7px 4px;border-radius:7px;border:1px solid '+(v.ok?'var(--border)':'var(--re-bd)')+';background:'+(v.ok?'var(--bg2)':'var(--re-lt)')+';cursor:'+(v.ok?'pointer':'not-allowed')+';opacity:'+(v.ok?1:.55)+';text-align:center;">'
+      +'<div style="font-size:10px;font-family:var(--mono);font-weight:700;color:'+(v.ok?'var(--text)':'var(--re)')+';">'+ws.code+'</div>'
+      +'<div style="font-size:8px;font-family:var(--mono);color:var(--text3);">'+fmtH(ws.start)+'→'+fmtH(ws.end)+(ov?'+1':'')+'</div>'
+      +'</div>';
+  });
+  html += '</div>';
+
+  // Absences
+  html += `<div style="font-size:9px;color:var(--text3);font-family:var(--mono);margin-bottom:5px;">ABSENCES</div>`;
+  html += `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:12px;">`;
+  STATUS_SHIFTS.forEach(ss => {
+    html += `<div onclick="ouvrirAbsenceModal(${ei},${d},'${ss.code}')" style="padding:8px 6px;border-radius:7px;border:1.5px solid ${ss.bd};background:${ss.bg};color:${ss.col};cursor:pointer;text-align:center;font-size:11px;font-weight:700;">${ss.label}</div>`;
+  });
+  html += `</div>`;
+
+  // Créer le modal
+  const existing = document.getElementById("sm-modal");
+  if(existing) existing.remove();
+
+  const overlay = document.createElement("div");
+  overlay.id = "sm-modal";
+  overlay.className = "overlay";
+  overlay.onclick = e => { if(e.target===overlay) overlay.remove(); };
+
+  const box = document.createElement("div");
+  box.className = "modal";
+  box.style.cssText = "width:500px;max-width:96vw;";
+  box.onclick = e => e.stopPropagation();
+
+  const head = `<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+    <div>
+      <div style="font-size:15px;font-weight:700;">${DAY_FULL[getDow(d)]} ${d} ${MONTH_NAMES[month]} ${year}${isHoliday(d)?" ★ Férié":""}</div>
+      <div style="font-size:11px;color:${bCol};font-weight:600;margin-top:2px;">${emp?.name||"—"} · ${emp?.badge||""}</div>
+    </div>
+    <button onclick="document.getElementById('sm-modal').remove()" style="background:none;border:none;font-size:20px;color:var(--text3);cursor:pointer;width:26px;">×</button>
+  </div>`;
+
+  box.innerHTML = head + html;
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+}
+
+function saisirPoste(ei, d, code){
+  document.getElementById("sm-modal")?.remove();
+  shifts[skey(ei,d)] = {code};
+  triggerAutosave();
+  render();
+}
+
+function ouvrirAbsenceModal(ei, d, code){
+  const ss = findSS(code);
+  if(!ss) return;
+  const D = dim();
+  const modal = document.getElementById("sm-modal");
+  if(!modal) return;
+
+  const box = modal.querySelector(".modal");
+  const form = document.createElement("div");
+  form.style.cssText = "position:absolute;inset:0;background:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;border-radius:14px;";
+  form.innerHTML = `<div style="background:var(--card);border-radius:10px;padding:16px;width:280px;border:1px solid ${ss.bd};">
+    <div style="font-size:13px;font-weight:700;color:${ss.col};margin-bottom:10px;">${ss.label}</div>
+    <div style="font-size:9px;color:${ss.col};font-family:var(--mono);margin-bottom:10px;">${code==="conge"?"5h50/jour ouvré":"0h comptabilisée"}</div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <div style="flex:1;"><div style="font-size:9px;letter-spacing:.1em;color:var(--text3);font-family:var(--mono);margin-bottom:3px;">DU JOUR</div>
+        <input type="number" id="abs-s" value="${d}" min="1" max="${D}" class="form-input"/></div>
+      <div style="flex:1;"><div style="font-size:9px;letter-spacing:.1em;color:var(--text3);font-family:var(--mono);margin-bottom:3px;">AU JOUR</div>
+        <input type="number" id="abs-e" value="${d}" min="1" max="${D}" class="form-input"/></div>
+    </div>
+    <div style="display:flex;gap:6px;">
+      <button onclick="this.closest('[style*=absolute]').remove()" class="btn-sec" style="flex:1;padding:7px;font-size:11px;">Annuler</button>
+      <button onclick="appliquerAbsM(${ei},'${code}')" style="flex:2;padding:7px;border-radius:7px;background:${ss.col};color:#fff;border:none;font-weight:700;font-size:11px;cursor:pointer;">Appliquer</button>
+    </div>
+  </div>`;
+  box.style.position = "relative";
+  box.appendChild(form);
+}
+
+function suppAbsModal(ei,d){
+  document.getElementById("sm-modal")?.remove();
+  delete shifts[skey(ei,d)];
+  triggerAutosave();render();
+}
+function appliquerAbsM(ei, code){
+  const D = dim();
+  const s = Math.max(1,Math.min(D,+document.getElementById("abs-s").value||1));
+  const e = Math.max(s,Math.min(D,+document.getElementById("abs-e").value||1));
+  for(let d=s;d<=e;d++) shifts[skey(ei,d)] = {code};
+  document.getElementById("sm-modal")?.remove();
+  triggerAutosave(); render();
+}
+
+function getModalAlerts(ei, d){
+  const alerts = [];
+  // Streak
+  const str = streakAvant(ei, d-1);
+  if(str>=5) alerts.push({msg:`🚨 ${str} jours consécutifs — 1 de plus max légalement`, col:"var(--re)", bg:"var(--re-lt)", bd:"var(--re-bd)"});
+  else if(str>=4) alerts.push({msg:`⚠ ${str} jours consécutifs — attention`, col:"var(--yl)", bg:"var(--yl-lt)", bd:"var(--yl-bd)"});
+  // WE
+  const we = countWEOff(ei);
+  if(we===0) alerts.push({msg:"⚠ Aucun WE de repos encore ce mois", col:"var(--yl)", bg:"var(--yl-lt)", bd:"var(--yl-bd)"});
+  // Repos avec J-1
+  const prev = getS(ei,d-1);
+  if(isWorkS(prev)){
+    const dummyCodes = postesJour(d).map(p=>p.code);
+    const minRest = Math.min(...dummyCodes.map(c=>{const ws=findWS(c);return ws?restMinutesBetween(prev,{code:c}):Infinity;}));
+    if(minRest<660) alerts.push({msg:`⏱ Fin du shift J-1 : seulement ${(minRest/60).toFixed(1)}h avant ce jour`, col:"var(--re)", bg:"var(--re-lt)", bd:"var(--re-bd)"});
+  }
+  return alerts;
+}
+
+// ════════════════════════════════════════════════════════
+// HOLIDAYS
+// ════════════════════════════════════════════════════════
+function getEaster(y){const a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),mo=Math.floor((h+l-7*m+114)/31)-1,dy=((h+l-7*m+114)%31)+1;return new Date(y,mo,dy);}
+function getHolidays(y){const e=getEaster(y),add=(d,n)=>{const r=new Date(d);r.setDate(r.getDate()+n);return r;};const list=[[new Date(y,0,1),"Jour de l'An"],[add(e,1),"Lundi de Pâques"],[new Date(y,4,1),"Fête du Travail"],[new Date(y,4,8),"Victoire 1945"],[add(e,39),"Ascension"],[add(e,50),"Lundi de Pentecôte"],[new Date(y,6,14),"Fête Nationale"],[new Date(y,7,15),"Assomption"],[new Date(y,10,1),"Toussaint"],[new Date(y,10,11),"Armistice"],[new Date(y,11,25),"Noël"]];const map={};list.forEach(([d,n])=>{map[`${d.getMonth()}-${d.getDate()}`]=n;});return map;}
+
+// ════════════════════════════════════════════════════════
+// RENDER
+// ════════════════════════════════════════════════════════
+function render(){
+  holidays=getHolidays(year);
+  const D=dim();
+  document.getElementById("month-lbl").textContent=MONTH_NAMES[month].toUpperCase()+" "+year;
+  document.getElementById("app-sub").textContent="Pôle Marine Dunkerque · "+emps.length+" agents";
+  document.getElementById("footer-txt").textContent="Artemis Planning · Pôle Marine Dunkerque · "+MONTH_NAMES[month]+" "+year;
+  renderGrid(D);renderWeekly(D);
+  if(activeCell)renderSidePanel(activeCell.ei,activeCell.day);
+}
+
+function cellHTML(s){
+  if(!s)return"";
+  const ss=findSS(s.code);
+  if(ss)return`<div class="status-box sc-${s.code}"><div class="status-lbl">${ss.label.split(" ")[0]}</div></div>`;
+  if(isWorkCode(s.code)){
+    const ov=isOvernight(s);
+    const ws=findWS(s.code);
+    return`<div class="shift-box sc-${s.code}"><div class="shift-code">${s.code}</div><div class="shift-times">${ws?fmtH(ws.start)+'→'+fmtH(ws.end):''} ${ov?'<span style="font-size:7px;">+1</span>':''}</div></div>`;
+  }
+  return"";
+}
+
+function renderGrid(D){
+  const tbl=document.getElementById("planning-grid");
+  let h="<thead><tr><th class='th-agent'>AGENT</th>";
+  for(let d=1;d<=D;d++){
+    const isH=isHoliday(d);
+    const isT=today.getDate()===d&&today.getMonth()===month&&today.getFullYear()===year;
+    const cls=isT?"today":isH?"hol":isWE(d)?"we":"normal";
+    const postes=postesJour(d);
+    const dots=postes.map(p=>{
+      const cov=emps.some((_,ei)=>{const s=getS(ei,d);return s&&codeCouvreSlot(s.code,p);});
+      return`<div class="sdot" style="background:${cov?"#1a7a3c":"#c0392b"};" title="${cov?"✓":"✗"} ${p.code}"></div>`;
+    }).join("");
+    h+=`<th class="th-day ${cls}" data-day="${d}" title="${isH?holidays[month+"-"+d]:""}">
+      <div class="dow">${DAY_SHORT[getDow(d)]}</div>
+      <div class="dnum">${d}</div>
+      ${isH?'<div style="font-size:7px;color:var(--yl);">★</div>':""}
+      <div class="slot-dots">${dots}</div>
+    </th>`;
+  }
+  h+=`<th class="th-total">TOT</th></tr></thead><tbody>`;
+
+  emps.forEach((emp,ei)=>{
+    const weOff=countWEOff(ei),totWE=countTotalWE();
+    const tH=Array.from({length:D},(_,i)=>getEffectiveDur(getS(ei,i+1),i+1)).reduce((a,b)=>a+b,0);
+    const tW=Array.from({length:D},(_,i)=>isWorkS(getS(ei,i+1))?1:0).reduce((a,b)=>a+b,0);
+    const bCol=BADGE_COL[emp.badge]||"#6b7280";
+    h+=`<tr><td class="td-agent" style="border-left:3px solid ${bCol};" onclick="openEmpModal(${ei})">
+      <div class="agent-name">${emp.name||"Nouvel agent..."}</div>
+      <div class="agent-meta"><span style="color:${bCol};font-weight:700;">${emp.badge}</span> · ${tH.toFixed(0)}h · ${tW}j</div>
+      <div class="agent-we" style="color:${weOff<1?"var(--re)":"var(--gr)"};">${weOff<1?"⚠":"✓"} ${weOff}/${totWE} WE repos</div>
+    </td>`;
+    for(let d=1;d<=D;d++){
+      const isH=isHoliday(d);
+      const isT=today.getDate()===d&&today.getMonth()===month&&today.getFullYear()===year;
+      const bgcls=isT?"today":isH?"hol":isWE(d)?"we":"";
+      const isActive=activeCell&&activeCell.ei===ei&&activeCell.day===d;
+      const vio=getCellVio(ei,d);
+      h+=`<td class="td-day ${bgcls}${isActive?" active-col":""}" data-day="${d}" onclick="openShiftModal(${ei},${d})">
+        <div class="cell-in">${cellHTML(getS(ei,d))}</div>
+        ${vio?`<div class="vio-dot" style="background:${vio==="error"?"#c0392b":"#9a6f00"};"></div>`:""}
+      </td>`;
+    }
+    h+=`<td class="td-total"><div class="total-h" style="color:${tH>0?"var(--or)":"#9ca3af"}">${tH>0?tH.toFixed(0)+"h":"—"}</div><div class="total-d">${tW}j</div></td></tr>`;
+  });
+  tbl.innerHTML=h+"</tbody>";
+}
+
+function getCellVio(ei,d){
+  const s=getS(ei,d);if(!isWorkS(s))return null;
+  const prev=getS(ei,d-1);
+  if(isWorkS(prev)&&restMinutesBetween(prev,s)<660)return"error";
+  const D=dim();let str=streakAvant(ei,d);
+  if(str>6)return"error";
+  const mon=wkMon(year,month,d),sat=new Date(mon);sat.setDate(sat.getDate()+6);
+  let wkH=0;for(let x=1;x<=D;x++){const dt=new Date(year,month,x);if(dt>=mon&&dt<=sat&&isWorkS(getS(ei,x)))wkH+=getDur(getS(ei,x));}
+  if(wkH>48)return"warn";
+  return null;
+}
+
+function wkMon(y,mo,d){const dt=new Date(y,mo,d),dow=dt.getDay();dt.setDate(dt.getDate()-(dow===0?6:dow-1));dt.setHours(0,0,0,0);return dt;}
+const wkKey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+
+function computeWeeklyH(ei){
+  const map={},D=dim();
+  const add=(mon,h)=>{const k=wkKey(mon);if(!map[k])map[k]={monday:new Date(mon),hours:0};map[k].hours+=h;};
+  for(let d=1;d<=D;d++){
+    const s=getS(ei,d);if(!s)continue;
+    const mon=wkMon(year,month,d);
+    if(isWorkCode(s.code)){
+      if(isOvernight(s)){const pre=(1440-toMin(findWS(s.code)?.start||"00:00"))/60;const post=toMin(findWS(s.code)?.end||"00:00")/60;add(mon,pre);add(wkMon(year,month,d+1),post);}
+      else add(mon,getDur(s));
+    } else {const hh=getEffectiveDur(s,d);if(hh>0)add(mon,hh);}
+  }
+  return Object.values(map).sort((a,b)=>a.monday-b.monday);
+}
+function getMonthWeeks(){const seen=new Set(),weeks=[],D=dim();for(let d=1;d<=D;d++){const mon=wkMon(year,month,d),k=wkKey(mon);if(!seen.has(k)){seen.add(k);weeks.push({key:k,monday:new Date(mon)});}}return weeks;}
+
+function renderWeekly(D){
+  const weeks=getMonthWeeks(),fmtD=d=>`${d.getDate()}/${d.getMonth()+1}`;
+  let h="<thead><tr><th style='text-align:left;position:sticky;left:0;z-index:2;background:var(--bg2);'>AGENT</th>";
+  weeks.forEach((w,i)=>{const sun=new Date(w.monday);sun.setDate(sun.getDate()+6);h+=`<th>S${i+1}<br><span style="font-size:8px;font-family:var(--mono);font-weight:400;">${fmtD(w.monday)}›${fmtD(sun)}</span></th>`;});
+  h+=`<th style="color:var(--or)">TOTAL</th></tr></thead><tbody>`;
+  emps.forEach((emp,ei)=>{
+    const wData=computeWeeklyH(ei),wMap={};wData.forEach(w=>{wMap[wkKey(w.monday)]=w.hours;});
+    const total=wData.reduce((a,w)=>a+w.hours,0),bCol=BADGE_COL[emp.badge]||"#666";
+    h+=`<tr><td style="text-align:left;position:sticky;left:0;background:var(--card);z-index:1;border-left:3px solid ${bCol};padding:4px 8px;">
+      <div style="font-size:10px;font-weight:600;color:${bCol};max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${emp.name||"—"}</div>
+      <div style="font-size:9px;color:var(--text3);font-family:var(--mono);">${emp.badge}</div>
+    </td>`;
+    weeks.forEach(w=>{const hh=wMap[w.key]||0;const hc=hh>48?"var(--re)":hh>40?"var(--yl)":"var(--text2)";const hb=hh>48?"var(--re-lt)":hh>40?"var(--yl-lt)":"transparent";h+=`<td>${hh>0?`<span style="color:${hc};background:${hb};border-radius:4px;padding:2px 4px;">${hh.toFixed(1)}h</span>`:'<span style="color:#d1d5db;">—</span>'}</td>`;});
+    h+=`<td style="color:${total>0?"var(--or)":"#9ca3af"};font-weight:700;">${total>0?total.toFixed(1)+"h":"—"}</td></tr>`;
+  });
+  document.getElementById("weekly-table").innerHTML=h+"</tbody>";
+}
+
+// ════════════════════════════════════════════════════════
+// NAV
+// ════════════════════════════════════════════════════════
+function prevMonth(){if(month===0){month=11;year--;}else month--;activeCell=null;render();}
+function nextMonth(){if(month===11){month=0;year++;}else month++;activeCell=null;render();}
+function addEmployee(){emps.push({name:"",badge:"SSIAP1",role:"Agent"});triggerAutosave();render();}
+
+// ════════════════════════════════════════════════════════
+// EMPLOYEE MODAL
+// ════════════════════════════════════════════════════════
+let editEI=null;
+function openEmpModal(ei){
+  event.stopPropagation();
+  editEI=ei;const emp=emps[ei];
+  document.getElementById("em-name").value=emp.name||"";
+  document.getElementById("em-role").value=emp.role||"Agent";
+  let bh="";
+  Object.entries(BADGE_COL).forEach(([k,col])=>{
+    const sel=emp.badge===k;
+    bh+=`<button class="badge-btn" id="bbtn-${k}" onclick="pickBadge('${k}')" style="color:${sel?col:"var(--text2)"};border-color:${sel?col:"var(--border)"};background:${sel?col+"18":"var(--bg2)"};">${k}</button>`;
+  });
+  document.getElementById("em-badges").innerHTML=bh;
+  document.getElementById("emp-modal").style.display="flex";
+}
+function pickBadge(k){
+  Object.entries(BADGE_COL).forEach(([b,col])=>{
+    const btn=document.getElementById(`bbtn-${b}`);if(!btn)return;
+    const sel=b===k;btn.style.color=sel?col:"var(--text2)";btn.style.borderColor=sel?col:"var(--border)";btn.style.background=sel?col+"18":"var(--bg2)";
+  });
+  emps[editEI].badge=k;
+}
+function saveEmployee(){
+  emps[editEI]={...emps[editEI],name:document.getElementById("em-name").value.trim(),role:document.getElementById("em-role").value};
+  document.getElementById("emp-modal").style.display="none";triggerAutosave();render();
+}
+function deleteEmployee(){
+  if(!confirm(`Supprimer "${emps[editEI].name||"cet agent"}" ?`))return;
+  emps.splice(editEI,1);
+  document.getElementById("emp-modal").style.display="none";triggerAutosave();render();
+}
+function closeEmpModal(){document.getElementById("emp-modal").style.display="none";}
+
+// ════════════════════════════════════════════════════════
+// PROFILES MODAL
+// ════════════════════════════════════════════════════════
+function openProfiles(){
+  profilesBuffer={};
+  emps.forEach((_,ei)=>{profilesBuffer[ei]=agentProfiles[ei]?[...agentProfiles[ei]]:[];});
+  renderProfilesList();document.getElementById("profiles-modal").style.display="flex";
+}
+function renderProfilesList(){
+  let h="";
+  emps.forEach((emp,ei)=>{
+    const bCol=BADGE_COL[emp.badge]||"#6b7280";const sel=profilesBuffer[ei]||[];
+    h+=`<div style="border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:8px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span style="font-size:9px;font-family:var(--mono);font-weight:700;padding:2px 6px;border-radius:4px;background:${bCol}18;color:${bCol};">${emp.badge}</span>
+        <span style="font-size:12px;font-weight:600;">${emp.name||"Nouvel agent"}</span>
+        <span style="margin-left:auto;font-size:9px;color:var(--text3);font-family:var(--mono);">${sel.length} sélectionné(s)</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;">
+        ${WORK_SHIFTS.map(ws=>{const on=sel.includes(ws.code);const dur=calcDur(ws.start,ws.end);const ov=isOverflow(ws.start,ws.end);const t=SHIFT_TYPES[ws.code]||"custom";const tc={matin:"#c8a000",jour:"#2e7d32",soir:"#c2185b",nuit:"#3949ab",custom:"#7b1fa2"}[t]||"#555";
+          return`<span class="profile-shift-tag${on?" active":""}" onclick="togglePS(${ei},'${ws.code}')"
+            style="background:${on?tc+"18":"var(--bg2)"};border-color:${on?tc:"var(--border2)"};color:${on?tc:"var(--text3)"};">
+            ${ws.code} <span style="font-size:8px;opacity:.7;">${fmtH(ws.start)}-${fmtH(ws.end)}${ov?"+1":""}</span>
+          </span>`;}).join("")}
+      </div>
+    </div>`;
+  });
+  document.getElementById("profiles-list").innerHTML=h;
+}
+function togglePS(ei,code){const buf=profilesBuffer[ei]||(profilesBuffer[ei]=[]);const idx=buf.indexOf(code);if(idx>=0)buf.splice(idx,1);else buf.push(code);renderProfilesList();}
+function saveProfiles(){emps.forEach((_,ei)=>{agentProfiles[ei]=profilesBuffer[ei]||[];});document.getElementById("profiles-modal").style.display="none";triggerAutosave();}
+function closeProfiles(){document.getElementById("profiles-modal").style.display="none";}
+
+// ════════════════════════════════════════════════════════
+// SHIFTS MGR
+// ════════════════════════════════════════════════════════
+function openShiftsMgr(){seBuffer=WORK_SHIFTS.map(ws=>({...ws}));renderSeList();document.getElementById("shifts-modal").style.display="flex";}
+function renderSeList(){
+  let h="";
+  seBuffer.forEach((ws,i)=>{
+    const dur=calcDur(ws.start,ws.end),ov=isOverflow(ws.start,ws.end);
+    const col=dur>=10?"var(--gr)":dur>=8?"var(--yl)":"var(--or)";
+    h+=`<div class="se-row">
+      <input class="se-input se-code" value="${ws.code}" maxlength="6" oninput="seBuffer[${i}].code=this.value.toUpperCase();this.value=this.value.toUpperCase()"/>
+      <input type="time" class="se-input" value="${ws.start}" oninput="seBuffer[${i}].start=this.value;renderSeList()"/>
+      <input type="time" class="se-input" value="${ws.end}" oninput="seBuffer[${i}].end=this.value;renderSeList()"/>
+      <div style="font-family:var(--mono);font-size:10px;font-weight:700;text-align:center;color:${col};">${dur.toFixed(1)}h${ov?'<br><span style="font-size:8px;">+1j</span>':""}</div>
+      <button class="se-del" onclick="seBuffer.splice(${i},1);renderSeList()">×</button>
+    </div>`;
+  });
+  document.getElementById("se-list").innerHTML=h;
+}
+function seAddRow(){seBuffer.push({code:"NVX",start:"08:00",end:"16:00"});renderSeList();}
+function seApply(){
+  const codes=seBuffer.map(ws=>ws.code.trim().toUpperCase());
+  if(new Set(codes).size!==codes.length){alert("Codes dupliqués.");return;}
+  WORK_SHIFTS=seBuffer.map(ws=>({...ws,code:ws.code.trim().toUpperCase()}));
+  document.getElementById("shifts-modal").style.display="none";triggerAutosave();render();
+}
+function closeShiftsMgr(){document.getElementById("shifts-modal").style.display="none";}
+
+// ════════════════════════════════════════════════════════
+// AUTOSAVE + JSON + PDF
+// ════════════════════════════════════════════════════════
+function triggerAutosave(){
+  const badge=document.getElementById("save-badge"),txt=document.getElementById("save-txt");
+  badge.className="save-badge";txt.textContent="Sauvegarde...";
+  clearTimeout(autosaveTimer);
+  autosaveTimer=setTimeout(async ()=>{
+    try{
+      const data=JSON.stringify({version:5,emps,shifts,year,month,workShifts:WORK_SHIFTS,agentProfiles},null,2);
+      localStorage.setItem(STORAGE_KEY, data);
+      const n=new Date();
+      const msg="Planning "+n.toLocaleDateString("fr-FR")+" "+n.getHours()+":"+String(n.getMinutes()).padStart(2,"0");
+      const ok = GH_TOKEN ? await ghPush(data, msg) : false;
+      badge.className="save-badge saved";
+      txt.textContent=n.getHours()+":"+String(n.getMinutes()).padStart(2,"0")+(ok?" ☁":" ??");
+      setTimeout(()=>{badge.className="save-badge";txt.textContent=ok?"Synchronisé":"Local only";},3500);
+    }catch(e){txt.textContent="Erreur";}
+  },800);
+}
+async function loadFromStorage(){
+  const badge=document.getElementById("save-badge"),txt=document.getElementById("save-txt");
+  txt.textContent="Chargement...";
+  let d = GH_TOKEN ? await ghLoad() : null;
+  if(!d){
+    try{
+      const raw=localStorage.getItem(STORAGE_KEY)||localStorage.getItem("artemis_v4")||localStorage.getItem("artemis_v3");
+      if(raw) d=JSON.parse(raw);
+    }catch(e){}
+  }
+  if(d){
+    if(d.emps)emps=d.emps;
+    if(d.shifts)shifts=d.shifts;
+    if(d.year!=null)year=d.year;
+    if(d.month!=null)month=d.month;
+    if(d.workShifts?.length)WORK_SHIFTS=d.workShifts;
+    if(d.agentProfiles)agentProfiles=d.agentProfiles;
+    badge.className="save-badge saved";
+    txt.textContent="Synchronisé ☁";
+    setTimeout(()=>{badge.className="save-badge";txt.textContent="Sauvegardé";},2500);
+  } else {
+    txt.textContent="Nouveau";
+  }
+  render();
+}
+function saveJSON(){
+  const blob=new Blob([JSON.stringify({version:5,emps,shifts,year,month,workShifts:WORK_SHIFTS,agentProfiles},null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download=`artemis-${MONTH_NAMES[month]}-${year}.json`;a.click();URL.revokeObjectURL(url);
+}
+function loadJSON(e){
+  const file=e.target.files?.[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    try{
+      const d=JSON.parse(ev.target.result);
+      if(d.emps)emps=d.emps;if(d.shifts)shifts=d.shifts;
+      if(d.year!=null)year=d.year;if(d.month!=null)month=d.month;
+      if(d.workShifts?.length)WORK_SHIFTS=d.workShifts;
+      if(d.agentProfiles)agentProfiles=d.agentProfiles;
+      triggerAutosave();render();
+    }catch{alert("Fichier invalide.");}
+  };
+  r.readAsText(file);e.target.value="";
+}
+function clearWork(){
+  const D=dim();let n=0;
+  emps.forEach((_,ei)=>{for(let d=1;d<=D;d++){const k=skey(ei,d);const s=shifts[k];if(s&&isWorkCode(s.code)){delete shifts[k];n++;}}});
+  triggerAutosave();render();
+}
+function exportPDF(){
+  const D=dim();
+  const fmtD=d=>`${d.getDate()}/${d.getMonth()+1}`;
+  const weeks=getMonthWeeks();
+  const DS=["D","L","M","M","J","V","S"];
+  const cellTxt=(ei,d)=>{const s=getS(ei,d);if(!s)return"";if(isWorkCode(s.code)){const ws=findWS(s.code);const ov=ws?isOverflow(ws.start,ws.end):false;return ws?fmtH(ws.start)+"–"+fmtH(ws.end):"";}const ss=findSS(s.code);return ss?ss.label.split(" ")[0]:"";};
+  const cellBg=(ei,d)=>{const s=getS(ei,d);if(!s)return isHoliday(d)?"#fffbeb":isWE(d)?"#ede9fe":"#fff";if(s.code==="conge")return"#edfaf3";if(s.code==="maladie")return"#fdf2f1";if(s.code==="indispo")return"#fdf8ec";const t=SHIFT_TYPES[s.code];return t==="matin"?"#fffef5":t==="jour"?"#f5fdf5":t==="soir"?"#fff8fb":t==="nuit"?"#f0f0ff":"#fff";};
+  const wkHRows=emps.map((_,ei)=>{const data=computeWeeklyH(ei),map={};data.forEach(w=>{map[wkKey(w.monday)]=w.hours;});return weeks.map(w=>map[w.key]||0);});
+  const head=Array.from({length:D},(_,i)=>i+1).map(d=>{const isH=isHoliday(d),iswk=isWE(d);const bg=isH?"#f59e0b":iswk?"#7c3aed":"#374151";const postes=postesJour(d);const dots=postes.map(p=>{const cov=emps.some((_,ei)=>{const s=getS(ei,d);return s&&codeCouvreSlot(s.code,p);});return`<span style="display:inline-block;width:4px;height:4px;border-radius:50%;background:${cov?"#16a34a":"#dc2626"};margin:0 1px;"></span>`;}).join("");return`<th style="background:${bg};color:#fff;font-weight:700;padding:3px 1px;font-size:8px;border:1px solid #ddd;min-width:22px;text-align:center;">${DS[getDow(d)]}<br>${d}${isH?"★":""}<br>${dots}</th>`;}).join("");
+  const wkHead=weeks.map((w,i)=>{const sun=new Date(w.monday);sun.setDate(sun.getDate()+6);return`<th style="background:#fff7ed;color:#9a3412;font-size:8px;border:1px solid #ddd;padding:2px;white-space:nowrap;">S${i+1}<br>${fmtD(w.monday)}›${fmtD(sun)}</th>`;}).join("");
+  const rows=emps.map((emp,ei)=>{const cells=Array.from({length:D},(_,i)=>i+1).map(d=>`<td style="background:${cellBg(ei,d)};padding:2px;font-size:7px;text-align:center;border:1px solid #ddd;line-height:1.3;">${cellTxt(ei,d)}</td>`).join("");const wkCells=wkHRows[ei].map(h=>`<td style="text-align:center;font-size:8px;padding:2px;border:1px solid #ddd;color:${h>48?"#c0392b":h>40?"#9a6f00":"#222"};font-weight:${h>40?"bold":"normal"};">${h>0?h.toFixed(1)+"h":"-"}</td>`).join("");const tot=wkHRows[ei].reduce((a,h)=>a+h,0),bCol=BADGE_COL[emp.badge]||"#666";return`<tr><td style="border-left:3px solid ${bCol};padding:3px 5px;font-size:8px;white-space:nowrap;border:1px solid #ddd;border-left:3px solid ${bCol};"><b style="color:${bCol};">${emp.badge}</b><br>${emp.name||"—"}</td>${cells}${wkCells}<td style="text-align:center;font-size:9px;font-weight:bold;color:#d4510c;border:1px solid #ddd;">${tot>0?tot.toFixed(1)+"h":"-"}</td></tr>`;}).join("");
+  const html=`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Planning ${MONTH_NAMES[month]} ${year}</title><style>*{box-sizing:border-box;}body{font-family:Arial,sans-serif;font-size:9px;margin:0;padding:8px;}table{border-collapse:collapse;width:100%;}@media print{@page{size:A3 landscape;margin:5mm;}}</style></head><body><div style="display:flex;gap:8px;margin-bottom:8px;"><button onclick="window.print()" style="padding:6px 14px;background:#d4510c;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:bold;">🖨 Imprimer</button></div><h2 style="color:#d4510c;font-size:13px;margin:0;">ARTEMIS PLANNING</h2><h4 style="color:#666;margin:2px 0 6px;font-size:10px;">Pôle Marine Dunkerque · ${MONTH_NAMES[month]} ${year}</h4><table><thead><tr><th style="text-align:left;padding:3px 5px;background:#111;color:#fff;font-size:8px;border:1px solid #333;">AGENT</th>${head}${wkHead}<th style="background:#fff7ed;color:#d4510c;font-size:9px;border:1px solid #ddd;padding:2px;">TOTAL</th></tr></thead><tbody>${rows}</tbody></table><script>window.addEventListener('load',()=>setTimeout(()=>window.print(),400));<\/script>
+<!-- ABSENCES MODAL -->
+<div id="abs-modal" class="overlay" style="display:none" onclick="if(event.target===this)closeAbsModal()">
+  <div class="modal" onclick="event.stopPropagation()" style="width:560px;max-width:96vw;">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title">📋 Saisie des absences</div>
+        <div class="modal-sub">Ajoutez toutes les absences et congés du mois en une seule fois.</div>
+      </div>
+      <button class="modal-close" onclick="closeAbsModal()">×</button>
+    </div>
+
+    <!-- Type d'absence -->
+    <div class="section-lbl">TYPE D'ABSENCE</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px;" id="abs-type-btns"></div>
+
+    <!-- Liste des absences saisies -->
+    <div class="section-lbl">ABSENCES SAISIES <span id="abs-count" style="color:var(--or);"></span></div>
+    <div style="display:grid;grid-template-columns:1fr 80px 80px 28px;gap:5px;padding:3px 6px;background:var(--bg3);border-radius:5px;margin-bottom:4px;">
+      <span style="font-size:8px;letter-spacing:.1em;color:var(--text3);font-family:var(--mono);">AGENT</span>
+      <span style="font-size:8px;letter-spacing:.1em;color:var(--text3);font-family:var(--mono);">DU JOUR</span>
+      <span style="font-size:8px;letter-spacing:.1em;color:var(--text3);font-family:var(--mono);">AU JOUR</span>
+      <span></span>
+    </div>
+    <div id="abs-list" style="max-height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;"></div>
+
+    <!-- Ajouter une absence -->
+    <div style="margin-top:10px;padding:10px;background:var(--bg2);border-radius:8px;border:1px solid var(--border);">
+      <div class="section-lbl" style="margin-top:0;">NOUVELLE ABSENCE</div>
+      <div style="display:grid;grid-template-columns:1fr 70px 70px auto;gap:6px;align-items:flex-end;">
+        <div>
+          <div class="form-label">AGENT</div>
+          <select id="abs-agent" class="form-input"></select>
+        </div>
+        <div>
+          <div class="form-label">DU JOUR</div>
+          <input type="number" id="abs-from" class="form-input" min="1" max="31" value="1"/>
+        </div>
+        <div>
+          <div class="form-label">AU JOUR</div>
+          <input type="number" id="abs-to" class="form-input" min="1" max="31" value="1"/>
+        </div>
+        <button onclick="ajouterAbsence()" style="padding:7px 14px;border-radius:7px;background:var(--or);color:#fff;border:none;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap;">+ Ajouter</button>
+      </div>
+    </div>
+
+    <div class="btn-row" style="margin-top:12px;">
+      <button class="btn-sec" onclick="closeAbsModal()">Fermer</button>
+      <button class="btn-pri" onclick="appliquerToutesAbsences()">✓ Appliquer toutes les absences</button>
+    </div>
+  </div>
+</div>
+
+</body></html>`;
+  const win=window.open("","_blank");if(win){win.document.write(html);win.document.close();}else alert("Pop-up bloquée.");
+}
+
+
+// ════════════════════════════════════════════════════════
+// MODAL ABSENCES GROUPÉES
+// ════════════════════════════════════════════════════════
+let absBuffer = []; // [{ei, from, to, code}]
+let absTypeSelected = "conge";
+
+function openAbsModal(){
+  absBuffer = [];
+  absTypeSelected = "conge";
+  const D = dim();
+
+  // Remplir le select agents
+  const sel = document.getElementById("abs-agent");
+  sel.innerHTML = emps.map((e,i) => `<option value="${i}">${e.name||"Agent "+(i+1)}</option>`).join("");
+
+  // Remplir les boutons type
+  document.getElementById("abs-type-btns").innerHTML = STATUS_SHIFTS.map(ss =>
+    `<div id="abstype-${ss.code}" onclick="selectAbsType('${ss.code}')"
+      style="padding:8px 6px;border-radius:7px;border:1.5px solid ${ss.bd};background:${ss.bg};color:${ss.col};cursor:pointer;text-align:center;font-size:11px;font-weight:700;transition:all .1s;">
+      ${ss.label}
+    </div>`
+  ).join("");
+  selectAbsType("conge");
+
+  // Limiter le max des jours au nombre de jours du mois
+  document.getElementById("abs-from").max = D;
+  document.getElementById("abs-to").max = D;
+  document.getElementById("abs-from").value = 1;
+  document.getElementById("abs-to").value = D;
+
+  renderAbsList();
+  document.getElementById("abs-modal").style.display = "flex";
+}
+
+function closeAbsModal(){ document.getElementById("abs-modal").style.display = "none"; }
+
+function selectAbsType(code){
+  absTypeSelected = code;
+  STATUS_SHIFTS.forEach(ss => {
+    const btn = document.getElementById("abstype-"+ss.code);
+    if(!btn) return;
+    const sel = ss.code === code;
+    btn.style.boxShadow = sel ? "0 0 0 2px "+ss.col : "none";
+    btn.style.transform = sel ? "scale(1.03)" : "scale(1)";
+  });
+}
+
+function ajouterAbsence(){
+  const D = dim();
+  const ei = parseInt(document.getElementById("abs-agent").value);
+  const from = Math.max(1, Math.min(D, parseInt(document.getElementById("abs-from").value)||1));
+  const to = Math.max(from, Math.min(D, parseInt(document.getElementById("abs-to").value)||from));
+  absBuffer.push({ei, from, to, code: absTypeSelected});
+  renderAbsList();
+}
+
+function retirerAbsence(idx){
+  absBuffer.splice(idx, 1);
+  renderAbsList();
+}
+
+function renderAbsList(){
+  const D = dim();
+  const list = document.getElementById("abs-list");
+  document.getElementById("abs-count").textContent = absBuffer.length ? "("+absBuffer.length+")" : "";
+
+  if(!absBuffer.length){
+    list.innerHTML = `<div style="text-align:center;font-size:11px;color:var(--text3);padding:12px;font-family:var(--mono);">Aucune absence — utilisez le formulaire ci-dessous pour en ajouter</div>`;
+    return;
+  }
+
+  list.innerHTML = absBuffer.map((ab, i) => {
+    const emp = emps[ab.ei];
+    const ss = findSS(ab.code);
+    const bCol = BADGE_COL[emp?.badge] || "#6b7280";
+    const nbJours = ab.to - ab.from + 1;
+    return `<div style="display:grid;grid-template-columns:1fr 80px 80px 28px;gap:5px;align-items:center;padding:6px 8px;border:1px solid ${ss?.bd||"var(--border)"};border-radius:7px;background:${ss?.bg||"var(--bg2)"};">
+      <div>
+        <span style="font-size:10px;font-weight:600;color:${bCol};">${emp?.name||"—"}</span>
+        <span style="font-size:9px;font-family:var(--mono);color:${ss?.col||"var(--text3)"};margin-left:6px;">${ss?.label||ab.code}</span>
+      </div>
+      <div style="font-size:11px;font-family:var(--mono);text-align:center;">Jour ${ab.from}</div>
+      <div style="font-size:11px;font-family:var(--mono);text-align:center;">Jour ${ab.to} <span style="font-size:9px;color:var(--text3);">(${nbJours}j)</span></div>
+      <button onclick="retirerAbsence(${i})" style="width:26px;height:26px;border-radius:5px;border:1px solid var(--re-bd);background:var(--re-lt);color:var(--re);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;">×</button>
+    </div>`;
+  }).join("");
+}
+
+function appliquerToutesAbsences(){
+  if(!absBuffer.length){ closeAbsModal(); return; }
+  const D = dim();
+  absBuffer.forEach(ab => {
+    for(let d = ab.from; d <= ab.to; d++){
+      if(d >= 1 && d <= D) shifts[skey(ab.ei, d)] = {code: ab.code};
+    }
+  });
+  absBuffer = [];
+  closeAbsModal();
+  triggerAutosave();
+  render();
+}
+
+// ════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════
+function showTokenModal(){
+  const existing = document.getElementById("token-modal");
+  if(existing) existing.remove();
+  const overlay = document.createElement("div");
+  overlay.id = "token-modal";
+  overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;";
+  const box = document.createElement("div");
+  box.style.cssText = "background:#fff;border-radius:14px;padding:28px;width:420px;max-width:96vw;box-shadow:0 20px 48px rgba(0,0,0,.2);font-family:Inter,sans-serif;";
+  box.innerHTML = "<div style=\"font-size:18px;font-weight:700;margin-bottom:6px;\">Connexion GitHub</div>"
+    + "<div style=\"font-size:12px;color:#666;margin-bottom:18px;\">Entre ton token GitHub pour synchroniser le planning avec ton collegue. Stocke uniquement dans ton navigateur.</div>"
+    + "<div style=\"font-size:10px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;\">Token GitHub (commence par ghp_...)</div>"
+    + "<input id=\"token-input\" type=\"password\" placeholder=\"ghp_xxxxxxxxxxxx\" style=\"width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:13px;font-family:monospace;outline:none;margin-bottom:14px;display:block;\"/>"
+    + "<button id=\"token-btn\" style=\"width:100%;padding:10px;border-radius:8px;background:#d4510c;color:#fff;border:none;font-size:14px;font-weight:700;cursor:pointer;\">Se connecter</button>"
+    + "<div style=\"font-size:10px;color:#999;margin-top:10px;text-align:center;\">github.com > Avatar > Settings > Developer settings > Personal access tokens > Tokens (classic) > coche repo</div>";
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+  document.getElementById("token-btn").onclick = saveToken;
+  document.getElementById("token-input").onkeydown = e=>{ if(e.key==="Enter") saveToken(); };
+  setTimeout(()=>document.getElementById("token-input")?.focus(), 100);
+}
+
+function saveToken(){
+  const val = (document.getElementById("token-input")?.value||"").trim();
+  if(!val || !val.startsWith("ghp_")){ alert("Token invalide - il doit commencer par ghp_"); return; }
+  GH_TOKEN = val;
+  localStorage.setItem("artemis_gh_token", val);
+  document.getElementById("token-modal")?.remove();
+  loadFromStorage();
+}
+
+function resetToken(){
+  localStorage.removeItem("artemis_gh_token");
+  GH_TOKEN = "";
+  showTokenModal();
+}
+
+// INIT
+if(!GH_TOKEN){ showTokenModal(); render(); } else { loadFromStorage(); }
+
+// Sync auto toutes les 5 min
+setInterval(async ()=>{
+  if(!GH_TOKEN) return;
+  const d = await ghLoad();
+  if(!d) return;
+  if(d.emps)emps=d.emps;
+  if(d.shifts)shifts=d.shifts;
+  if(d.year!=null)year=d.year;
+  if(d.month!=null)month=d.month;
+  if(d.workShifts?.length)WORK_SHIFTS=d.workShifts;
+  if(d.agentProfiles)agentProfiles=d.agentProfiles;
+  render();
+}, 5*60*1000);
+</script>
+
+<!-- ABSENCES MODAL -->
+<div id="abs-modal" class="overlay" style="display:none" onclick="if(event.target===this)closeAbsModal()">
+  <div class="modal" onclick="event.stopPropagation()" style="width:560px;max-width:96vw;">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title">📋 Saisie des absences</div>
+        <div class="modal-sub">Ajoutez toutes les absences et congés du mois en une seule fois.</div>
+      </div>
+      <button class="modal-close" onclick="closeAbsModal()">×</button>
+    </div>
+
+    <!-- Type d'absence -->
+    <div class="section-lbl">TYPE D'ABSENCE</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px;" id="abs-type-btns"></div>
+
+    <!-- Liste des absences saisies -->
+    <div class="section-lbl">ABSENCES SAISIES <span id="abs-count" style="color:var(--or);"></span></div>
+    <div style="display:grid;grid-template-columns:1fr 80px 80px 28px;gap:5px;padding:3px 6px;background:var(--bg3);border-radius:5px;margin-bottom:4px;">
+      <span style="font-size:8px;letter-spacing:.1em;color:var(--text3);font-family:var(--mono);">AGENT</span>
+      <span style="font-size:8px;letter-spacing:.1em;color:var(--text3);font-family:var(--mono);">DU JOUR</span>
+      <span style="font-size:8px;letter-spacing:.1em;color:var(--text3);font-family:var(--mono);">AU JOUR</span>
+      <span></span>
+    </div>
+    <div id="abs-list" style="max-height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;"></div>
+
+    <!-- Ajouter une absence -->
+    <div style="margin-top:10px;padding:10px;background:var(--bg2);border-radius:8px;border:1px solid var(--border);">
+      <div class="section-lbl" style="margin-top:0;">NOUVELLE ABSENCE</div>
+      <div style="display:grid;grid-template-columns:1fr 70px 70px auto;gap:6px;align-items:flex-end;">
+        <div>
+          <div class="form-label">AGENT</div>
+          <select id="abs-agent" class="form-input"></select>
+        </div>
+        <div>
+          <div class="form-label">DU JOUR</div>
+          <input type="number" id="abs-from" class="form-input" min="1" max="31" value="1"/>
+        </div>
+        <div>
+          <div class="form-label">AU JOUR</div>
+          <input type="number" id="abs-to" class="form-input" min="1" max="31" value="1"/>
+        </div>
+        <button onclick="ajouterAbsence()" style="padding:7px 14px;border-radius:7px;background:var(--or);color:#fff;border:none;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap;">+ Ajouter</button>
+      </div>
+    </div>
+
+    <div class="btn-row" style="margin-top:12px;">
+      <button class="btn-sec" onclick="closeAbsModal()">Fermer</button>
+      <button class="btn-pri" onclick="appliquerToutesAbsences()">✓ Appliquer toutes les absences</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
