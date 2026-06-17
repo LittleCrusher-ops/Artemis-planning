@@ -223,7 +223,7 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
   </div>
   <div class="tb-actions">
     <div class="save-badge" id="save-badge"><div class="save-dot"></div><span id="save-txt">—</span></div>
-    <button class="tb-btn" style="background:#edfaf3;border-color:#a3e0bc;color:#1a7a3c;font-weight:700;" onclick="loadFromStorage()">🔄 Sync</button>
+    <button class="tb-btn" style="background:#edfaf3;border-color:#a3e0bc;color:#1a7a3c;font-weight:700;" onclick="loadFromStorage(true)">🔄 Sync</button>
     <button class="tb-btn" onclick="openShiftsMgr()">⚙ Créneaux</button>
     <button class="tb-btn" style="background:var(--pu-lt);border-color:var(--pu-bd);color:var(--pu);font-weight:700;" onclick="openAbsModal()">📋 Absences</button>
     <button class="tb-btn" onclick="openProfiles()">👤 Profils</button>
@@ -1052,7 +1052,9 @@ function triggerAutosave(){
   clearTimeout(autosaveTimer);
   autosaveTimer=setTimeout(async ()=>{
     try{
-      const data=JSON.stringify({version:5,emps,shifts,year,month,workShifts:WORK_SHIFTS,agentProfiles},null,2);
+      const ts = Date.now();
+      const data=JSON.stringify({version:5,emps,shifts,year,month,workShifts:WORK_SHIFTS,agentProfiles,lastModified:ts},null,2);
+      localStorage.setItem('artemis_last_modified', ts);
       localStorage.setItem(STORAGE_KEY, data);
       const n=new Date();
       const msg="Planning "+n.toLocaleDateString("fr-FR")+" "+n.getHours()+":"+String(n.getMinutes()).padStart(2,"0");
@@ -1063,16 +1065,34 @@ function triggerAutosave(){
     }catch(e){txt.textContent="Erreur";}
   },800);
 }
-async function loadFromStorage(){
+async function loadFromStorage(forceRemote){
   const badge=document.getElementById("save-badge"),txt=document.getElementById("save-txt");
   txt.textContent="Chargement...";
-  let d = GH_TOKEN ? await ghLoad() : null;
-  if(!d){
-    try{
-      const raw=localStorage.getItem(STORAGE_KEY)||localStorage.getItem("artemis_v4")||localStorage.getItem("artemis_v3");
-      if(raw) d=JSON.parse(raw);
-    }catch(e){}
+
+  // Charger depuis GitHub
+  let remote = GH_TOKEN ? await ghLoad() : null;
+
+  // Charger depuis localStorage
+  let local = null;
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY)||localStorage.getItem("artemis_v4")||localStorage.getItem("artemis_v3");
+    if(raw) local=JSON.parse(raw);
+  }catch(e){}
+
+  const localTs = parseInt(localStorage.getItem('artemis_last_modified')||'0');
+  const remoteTs = remote?.lastModified || 0;
+
+  let d = null;
+  if(forceRemote && remote){
+    // Sync manuel : on prend le plus recent
+    d = remoteTs >= localTs ? remote : local;
+  } else {
+    // Au chargement : local en priorite si plus recent, sinon remote
+    if(local && localTs >= remoteTs) d = local;
+    else if(remote) d = remote;
+    else d = local;
   }
+
   if(d){
     if(d.emps)emps=d.emps;
     if(d.shifts)shifts=d.shifts;
@@ -1081,7 +1101,8 @@ async function loadFromStorage(){
     if(d.workShifts?.length)WORK_SHIFTS=d.workShifts;
     if(d.agentProfiles)agentProfiles=d.agentProfiles;
     badge.className="save-badge saved";
-    txt.textContent="Synchronisé ☁";
+    const src = (d===remote) ? "Sync ☁" : "Local ??";
+    txt.textContent=src;
     setTimeout(()=>{badge.className="save-badge";txt.textContent="Sauvegardé";},2500);
   } else {
     txt.textContent="Nouveau";
@@ -1329,15 +1350,20 @@ if(!GH_TOKEN){ showTokenModal(); render(); } else { loadFromStorage(); }
 // Sync auto toutes les 5 min
 setInterval(async ()=>{
   if(!GH_TOKEN) return;
-  const d = await ghLoad();
-  if(!d) return;
-  if(d.emps)emps=d.emps;
-  if(d.shifts)shifts=d.shifts;
-  if(d.year!=null)year=d.year;
-  if(d.month!=null)month=d.month;
-  if(d.workShifts?.length)WORK_SHIFTS=d.workShifts;
-  if(d.agentProfiles)agentProfiles=d.agentProfiles;
-  render();
+  const remote = await ghLoad();
+  if(!remote) return;
+  const localTs = parseInt(localStorage.getItem('artemis_last_modified')||'0');
+  const remoteTs = remote.lastModified || 0;
+  if(remoteTs > localTs){
+    if(remote.emps)emps=remote.emps;
+    if(remote.shifts)shifts=remote.shifts;
+    if(remote.year!=null)year=remote.year;
+    if(remote.month!=null)month=remote.month;
+    if(remote.workShifts?.length)WORK_SHIFTS=remote.workShifts;
+    if(remote.agentProfiles)agentProfiles=remote.agentProfiles;
+    localStorage.setItem('artemis_last_modified', remoteTs);
+    render();
+  }
 }, 5*60*1000);
 </script>
 
