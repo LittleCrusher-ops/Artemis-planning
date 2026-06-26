@@ -1,0 +1,22 @@
+name: Surveillance Gmail Guardtek
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  surveiller:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Installer dependances
+        run: pip install google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client requests
+      - name: Lancer surveillance
+        env:
+          GITHUB_TOKEN_SECRET: ${{ secrets.GH_TOKEN }}
+          TOKEN_JSON: ${{ secrets.TOKEN_JSON }}
+        run: python surveillance_gmail.py
