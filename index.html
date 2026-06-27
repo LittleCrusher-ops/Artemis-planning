@@ -1345,7 +1345,139 @@ function resetToken(){
 }
 
 // INIT
-if(!GH_TOKEN){ showTokenModal(); render(); } else { loadFromStorage(); }
+if(!GH_TOKEN){ showTokenModal(); render(); } else { loadFromStorage(); setTimeout(checkDemandes, 3000); }
+
+// GESTION DES DEMANDES GUARDTEK
+async function checkDemandes(){
+  if(!GH_TOKEN) return;
+  try {
+    const r = await fetch("https://raw.githubusercontent.com/"+GH_USER+"/"+GH_REPO+"/main/demandes.json?t="+Date.now());
+    if(!r.ok) return;
+    const data = await r.json();
+    const demandes = (data.demandes||[]).filter(d=>d.statut==="en_attente");
+    const vues = JSON.parse(localStorage.getItem('artemis_demandes_vues')||'[]');
+    const nouvelles = demandes.filter(d=>!vues.includes(d.id));
+    if(nouvelles.length > 0) showDemandeModal(nouvelles, data);
+  } catch(e) {}
+}
+
+function showDemandeModal(demandes, fullData){
+  const existing = document.getElementById('demande-modal');
+  if(existing) return; // deja affiche
+
+  const d = demandes[0]; // afficher une par une
+  const motifLabel = d.motif==='conge' ? 'Conge paye' : d.motif==='repos_compensateur' ? 'Repos compensateur' : 'Indisponibilite';
+  const overlay = document.createElement('div');
+  overlay.id = 'demande-modal';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;';
+  const box = document.createElement('div');
+  box.style.cssText = 'background:#fff;border-radius:14px;padding:28px;width:440px;max-width:96vw;box-shadow:0 20px 48px rgba(0,0,0,.25);font-family:Inter,sans-serif;';
+  box.innerHTML = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">'
+    + '<div style="width:40px;height:40px;border-radius:10px;background:#fff3e0;display:flex;align-items:center;justify-content:center;font-size:20px;">📋</div>'
+    + '<div><div style="font-size:16px;font-weight:700;">Nouvelle demande</div><div style="font-size:11px;color:#999;">Recue le '+d.recu_le+'</div></div>'
+    + '</div>'
+    + '<div style="background:#f8f9fa;border-radius:10px;padding:16px;margin-bottom:16px;">'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">'
+    + '<div><div style="font-size:10px;font-weight:700;color:#999;text-transform:uppercase;margin-bottom:3px;">Demandeur</div><div style="font-size:14px;font-weight:600;">'+d.demandeur+'</div></div>'
+    + '<div><div style="font-size:10px;font-weight:700;color:#999;text-transform:uppercase;margin-bottom:3px;">Motif</div><div style="font-size:14px;font-weight:600;">'+motifLabel+'</div></div>'
+    + '<div style="grid-column:1/-1"><div style="font-size:10px;font-weight:700;color:#999;text-transform:uppercase;margin-bottom:3px;">Date(s) souhaitee(s)</div><div style="font-size:14px;font-weight:600;">'+d.dates_texte+'</div></div>'
+    + '</div></div>'
+    + (demandes.length > 1 ? '<div style="font-size:12px;color:#666;margin-bottom:12px;text-align:center;">+'+(demandes.length-1)+' autre(s) demande(s) en attente</div>' : '')
+    + '<div style="display:flex;gap:10px;">'
+    + '<button id="dem-refuser" style="flex:1;padding:11px;border-radius:8px;background:#fff;border:1.5px solid #ddd;font-size:14px;font-weight:600;cursor:pointer;color:#666;">Refuser</button>'
+    + '<button id="dem-accepter" style="flex:2;padding:11px;border-radius:8px;background:#d4510c;border:none;font-size:14px;font-weight:700;cursor:pointer;color:#fff;">Accepter</button>'
+    + '</div>';
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+
+  document.getElementById('dem-accepter').onclick = async ()=>{
+    await updateDemandeStatut(d.id, 'acceptee', fullData);
+    const vues = JSON.parse(localStorage.getItem('artemis_demandes_vues')||'[]');
+    vues.push(d.id);
+    localStorage.setItem('artemis_demandes_vues', JSON.stringify(vues));
+    overlay.remove();
+
+    // Appliquer automatiquement l'absence dans le planning
+    if(d.date_debut && d.demandeur) {
+      const code = d.motif === 'conge' ? 'conge' : d.motif === 'repos_compensateur' ? 'conge' : 'indispo';
+      // Trouver l'agent par nom
+      const nomRecherche = d.demandeur.toUpperCase().trim();
+      const agentIdx = emps.findIndex(e => {
+        const nom = (e.name||e.nom||'').toUpperCase();
+        return nom.includes(nomRecherche) || nomRecherche.includes(nom.split(' ')[0]);
+      });
+
+      if(agentIdx !== -1) {
+        // Boucler sur toutes les dates de la demande
+        const start = new Date(d.date_debut + 'T12:00:00');
+        const end = new Date((d.date_fin || d.date_debut) + 'T12:00:00');
+        let applied = 0;
+        for(let dt = new Date(start); dt <= end; dt.setDate(dt.getDate()+1)){
+          const y = dt.getFullYear();
+          const m = dt.getMonth();
+          const day = dt.getDate();
+          // Verifier si c'est le bon mois affiche
+          if(y === year && m === month) {
+            const key = agentIdx + '_' + day;
+            shifts[key] = code;
+            applied++;
+          }
+        }
+        if(applied > 0) {
+          triggerAutosave();
+          render();
+          // Petit toast de confirmation
+          const t = document.createElement('div');
+          t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#1a7a3c;color:#fff;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;';
+          t.textContent = 'Absence de '+d.demandeur+' appliquee ('+applied+' jour(s))';
+          document.body.appendChild(t);
+          setTimeout(()=>t.remove(), 4000);
+        } else {
+          alert('Agent trouve mais les dates ne sont pas sur le mois affiche. Change de mois et rapplique.');
+        }
+      } else {
+        alert('Agent "'+d.demandeur+'" non trouve dans le planning. Verifie le nom.');
+      }
+    }
+
+    const restantes = demandes.slice(1);
+    if(restantes.length > 0) setTimeout(()=>showDemandeModal(restantes, fullData), 500);
+  };
+
+  document.getElementById('dem-refuser').onclick = async ()=>{
+    await updateDemandeStatut(d.id, 'refusee', fullData);
+    const vues = JSON.parse(localStorage.getItem('artemis_demandes_vues')||'[]');
+    vues.push(d.id);
+    localStorage.setItem('artemis_demandes_vues', JSON.stringify(vues));
+    overlay.remove();
+    const restantes = demandes.slice(1);
+    if(restantes.length > 0) setTimeout(()=>showDemandeModal(restantes, fullData), 500);
+  };
+}
+
+async function updateDemandeStatut(id, statut, fullData){
+  const demandes = fullData.demandes || [];
+  const idx = demandes.findIndex(d=>d.id===id);
+  if(idx !== -1) demandes[idx].statut = statut;
+  fullData.demandes = demandes;
+  fullData.updated_at = new Date().toISOString();
+  const GH_FILE_D = "demandes.json";
+  const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(fullData, null, 2))));
+  // Recuperer SHA
+  try {
+    const sha_r = await fetch("https://api.github.com/repos/"+GH_USER+"/"+GH_REPO+"/contents/"+GH_FILE_D, {
+      headers: { Authorization: "token "+GH_TOKEN, Accept: "application/vnd.github.v3+json" }
+    });
+    const sha = sha_r.ok ? (await sha_r.json()).sha : null;
+    const body = { message: "Demande "+statut+" - "+id.slice(0,20), content: b64, branch: "main" };
+    if(sha) body.sha = sha;
+    await fetch("https://api.github.com/repos/"+GH_USER+"/"+GH_REPO+"/contents/"+GH_FILE_D, {
+      method: "PUT",
+      headers: { Authorization: "token "+GH_TOKEN, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+  } catch(e) {}
+}
 
 // Sync auto toutes les 5 min
 setInterval(async ()=>{
