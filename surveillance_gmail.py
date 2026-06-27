@@ -13,15 +13,13 @@ import requests
 from datetime import datetime, timezone
 
 # ─── CONFIGURATION ─────────────────────────────────────────────────────────────
-# En local : remplis ici
-# Sur GitHub Actions : lu depuis les secrets automatiquement
-GITHUB_TOKEN  = os.environ.get("GITHUB_TOKEN_SECRET", "TON_TOKEN_GITHUB")
+GITHUB_TOKEN  = os.environ.get("GITHUB_TOKEN_SECRET", "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")
 GITHUB_USER   = "littlecrusher-ops"
 GITHUB_REPO   = "Artemis-planning"
 DEMANDES_FILE = "demandes.json"
-CHECK_INTERVAL = 5  # minutes (ignoré sur GitHub Actions)
+CHECK_INTERVAL = 5
 
-SUBJECT_KEYWORDS = ["indisponibilit", "cong", "repos compensateur", "rc"]
+SUBJECT_KEYWORDS = ["indisponibilit", "cong", "repos compensateur", "rc", "demande"]
 
 # ─── GMAIL API AUTH ────────────────────────────────────────────────────────────
 def get_gmail_service():
@@ -132,6 +130,7 @@ def fetch_new_guardtek_mails(service, already_processed):
 
 # ─── PARSING ───────────────────────────────────────────────────────────────────
 def parse_demande(body, subject, msg_id):
+    # Nom du demandeur
     demandeur = ""
     for p in [
         r'Demandeur\s*[:\-]?\s*(?:Mr|Mme|M\.)?\s*([A-Z][A-Z\s]+)',
@@ -143,45 +142,85 @@ def parse_demande(body, subject, msg_id):
             demandeur = m.group(1).strip()
             break
 
+    # Motif — ordre important : indispo en premier !
     motif = "indisponibilite"
     body_lower = body.lower()
-    if "conge" in body_lower or "congé" in body_lower:
-        motif = "conge"
-    elif "repos compensateur" in body_lower:
-        motif = "repos_compensateur"
+    
+    # Chercher la valeur apres "indisponibilite /conges/ Repos compensateur :"
+    motif_match = re.search(
+        r'indisponibilit[^\n:]*[:\s]+([^\n]+)',
+        body, re.IGNORECASE
+    )
+    if motif_match:
+        valeur = motif_match.group(1).strip().lower()
+        if 'indisponibilit' in valeur:
+            motif = "indisponibilite"
+        elif 'repos compensateur' in valeur or ' rc' in valeur:
+            motif = "repos_compensateur"
+        elif 'cong' in valeur:
+            motif = "conge"
+    else:
+        # Fallback : chercher dans tout le corps
+        if 'indisponibilit' in body_lower:
+            motif = "indisponibilite"
+        elif 'repos compensateur' in body_lower:
+            motif = "repos_compensateur"
+        elif 'conge' in body_lower or 'congé' in body_lower:
+            motif = "conge"
 
+    # Dates — chercher "Date souhaitee : X mois YYYY" en priorite
     dates_texte = ""
     date_debut = None
     date_fin = None
-    annee = datetime.now().year
 
-    m = re.search(r'du\s+(\d{1,2})\s+au\s+(\d{1,2})\s+([a-z\u00e0-\u00ff]+)', body, re.IGNORECASE)
+    # Pattern "X mois YYYY" (ex: "8 août 2026")
+    m = re.search(
+        r'[Dd]ate\s+souhait[^\n:]*[:\s]+(?:le\s+)?(\d{1,2})\s+([a-z\u00e0-\u00ff]+)\s*(\d{4})?',
+        body, re.IGNORECASE
+    )
     if m:
-        j1, j2, mois_str = m.group(1), m.group(2), m.group(3)
+        jour = m.group(1)
+        mois_str = m.group(2)
+        annee_str = m.group(3)
         mn = mois_to_num(mois_str)
+        annee = int(annee_str) if annee_str else datetime.now().year
         if mn:
-            date_debut = f"{annee}-{mn:02d}-{int(j1):02d}"
-            date_fin   = f"{annee}-{mn:02d}-{int(j2):02d}"
-            dates_texte = f"du {j1} au {j2} {mois_str}"
+            date_debut = f"{annee}-{mn:02d}-{int(jour):02d}"
+            date_fin = date_debut
+            dates_texte = f"le {jour} {mois_str} {annee}"
 
+    # Pattern "du X au Y mois YYYY"
     if not date_debut:
-        m = re.search(r'[Ll]e\s+(\d{1,2})\s+([a-z\u00e0-\u00ff]+)', body, re.IGNORECASE)
+        m = re.search(
+            r'du\s+(\d{1,2})\s+au\s+(\d{1,2})\s+([a-z\u00e0-\u00ff]+)\s*(\d{4})?',
+            body, re.IGNORECASE
+        )
         if m:
-            jour, mois_str = m.group(1), m.group(2)
+            j1, j2, mois_str = m.group(1), m.group(2), m.group(3)
+            annee_str = m.group(4)
             mn = mois_to_num(mois_str)
+            annee = int(annee_str) if annee_str else datetime.now().year
+            if mn:
+                date_debut = f"{annee}-{mn:02d}-{int(j1):02d}"
+                date_fin   = f"{annee}-{mn:02d}-{int(j2):02d}"
+                dates_texte = f"du {j1} au {j2} {mois_str} {annee}"
+
+    # Pattern "le X mois YYYY"
+    if not date_debut:
+        m = re.search(
+            r'[Ll]e\s+(\d{1,2})\s+([a-z\u00e0-\u00ff]+)\s*(\d{4})?',
+            body, re.IGNORECASE
+        )
+        if m:
+            jour = m.group(1)
+            mois_str = m.group(2)
+            annee_str = m.group(3)
+            mn = mois_to_num(mois_str)
+            annee = int(annee_str) if annee_str else datetime.now().year
             if mn:
                 date_debut = f"{annee}-{mn:02d}-{int(jour):02d}"
-                date_fin   = date_debut
-                dates_texte = f"le {jour} {mois_str}"
-
-    if not date_debut:
-        m = re.search(r'(\d{1,2})[/\-](\d{1,2})[/\-](\d{2,4})', body)
-        if m:
-            j, mo, a = m.group(1), m.group(2), m.group(3)
-            if len(a) == 2: a = "20" + a
-            date_debut = f"{a}-{int(mo):02d}-{int(j):02d}"
-            date_fin   = date_debut
-            dates_texte = f"{j}/{mo}/{a}"
+                date_fin = date_debut
+                dates_texte = f"le {jour} {mois_str} {annee}"
 
     if not demandeur and not dates_texte:
         return None
@@ -266,8 +305,6 @@ def main():
     if existing:
         processed_ids = existing.get("processed_ids", [])
 
-    # Sur GitHub Actions : on tourne une seule fois
-    # En local : on boucle toutes les 5 minutes
     on_github_actions = os.environ.get("GITHUB_ACTIONS") == "true"
 
     if on_github_actions:
