@@ -104,7 +104,7 @@ def get_mail_body(service, msg_id):
 
 def fetch_new_guardtek_mails(service, already_processed):
     try:
-        query = 'is:unread subject:(indisponibilit OR congé OR "repos compensateur")'
+        query = 'is:unread subject:Demande'
         results = service.users().messages().list(userId='me', q=query).execute()
         messages = results.get('messages', [])
 
