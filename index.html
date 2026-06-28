@@ -205,9 +205,160 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
 .se-del{width:26px;height:26px;border-radius:5px;border:1px solid var(--re-bd);background:var(--re-lt);color:var(--re);font-size:13px;display:flex;align-items:center;justify-content:center;}
 .se-add{width:100%;padding:7px;border-radius:7px;border:1px dashed var(--border2);background:var(--card);color:var(--text3);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:5px;margin:7px 0;}
 .se-add:hover{border-color:var(--or);color:var(--or);}
+
+#agent-page{display:none;min-height:100vh;background:linear-gradient(135deg,#1a1917 0%,#2d2c28 100%);align-items:center;justify-content:center;padding:20px;}
+#agent-page.active{display:flex;}
+#planning-page{display:none;}
+#planning-page.active{display:block;}
+.agent-card{background:#fff;border-radius:16px;padding:32px;width:100%;max-width:500px;box-shadow:0 24px 64px rgba(0,0,0,.4);}
+.agent-logo{display:flex;align-items:center;gap:12px;margin-bottom:24px;}
+.agent-logo-icon{width:44px;height:44px;background:var(--or);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;}
+.agent-logo-text{font-size:20px;font-weight:700;}
+.agent-logo-sub{font-size:11px;color:var(--text3);margin-top:1px;}
+.form-label-ag{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text3);margin-bottom:5px;}
+.form-ctrl{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:var(--sans);color:var(--text);background:#fff;outline:none;transition:border-color .15s;margin-bottom:14px;appearance:none;-webkit-appearance:none;}
+.form-ctrl:focus{border-color:var(--or);}
+.date-row-ag{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;}
+.btn-submit-ag{width:100%;padding:12px;border-radius:8px;background:var(--or);color:#fff;border:none;font-size:15px;font-weight:700;margin-top:6px;cursor:pointer;}
+.btn-submit-ag:hover{background:#b8430a;}
+.btn-conn-ag{width:100%;padding:10px;border-radius:8px;background:transparent;color:var(--text3);border:1.5px solid var(--border);font-size:13px;font-weight:500;margin-top:8px;cursor:pointer;}
+.btn-conn-ag:hover{border-color:var(--or);color:var(--or);}
+.agent-success{display:none;text-align:center;padding:20px 0;}
+.pwd-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.pwd-overlay.open{display:flex;}
+.pwd-card{background:#fff;border-radius:14px;padding:28px;width:360px;max-width:96vw;box-shadow:var(--sh-lg);}
+.pwd-error{color:var(--re);font-size:12px;margin-bottom:10px;display:none;}
+.pwd-input{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:var(--mono);outline:none;margin-bottom:14px;letter-spacing:2px;}
+.pwd-input:focus{border-color:var(--or);}
+.notif-btn{position:relative;background:transparent;border:1.5px solid var(--border);border-radius:8px;padding:5px 9px;font-size:17px;line-height:1;color:var(--text2);cursor:pointer;}
+.notif-btn:hover{border-color:var(--or);color:var(--or);}
+.notif-badge{position:absolute;top:-6px;right:-6px;background:var(--re);color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:700;display:none;align-items:center;justify-content:center;}
+.notif-badge.visible{display:flex;}
+.demandes-panel{display:none;position:fixed;top:0;right:0;width:420px;max-width:100vw;height:100vh;background:#fff;border-left:1px solid var(--border);box-shadow:-4px 0 24px rgba(0,0,0,.1);z-index:500;flex-direction:column;}
+.demandes-panel.open{display:flex;}
+.panel-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.panel-title{font-size:15px;font-weight:700;}
+.panel-tabs{display:flex;border-bottom:1px solid var(--border);}
+.panel-tab{flex:1;padding:10px;border:none;background:transparent;font-size:12px;font-weight:600;color:var(--text3);border-bottom:2px solid transparent;cursor:pointer;}
+.panel-tab.active{color:var(--or);border-bottom-color:var(--or);}
+.panel-body{flex:1;overflow-y:auto;padding:14px;}
+.demande-item{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;}
+.demande-item.acceptee{border-left:3px solid var(--gr);}
+.demande-item.refusee{border-left:3px solid var(--re);}
+.demande-item.en_attente{border-left:3px solid var(--yl);}
+.demande-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.demande-name{font-weight:700;font-size:13px;}
+.demande-time{font-size:10px;color:var(--text3);font-family:var(--mono);}
+.demande-motif{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;margin-bottom:6px;}
+.motif-indispo{background:var(--yl-lt);color:var(--yl);border:1px solid var(--yl-bd);}
+.motif-conge{background:var(--gr-lt);color:var(--gr);border:1px solid var(--gr-bd);}
+.motif-rc{background:var(--pu-lt);color:var(--pu);border:1px solid var(--pu-bd);}
+.demande-date{font-size:12px;color:var(--text2);margin-bottom:8px;}
+.demande-actions{display:flex;gap:8px;}
+.btn-accept{flex:1;padding:7px;border-radius:6px;background:var(--gr-lt);color:var(--gr);border:1px solid var(--gr-bd);font-size:12px;font-weight:700;cursor:pointer;}
+.btn-accept:hover{background:var(--gr);color:#fff;}
+.btn-refuse{flex:1;padding:7px;border-radius:6px;background:var(--re-lt);color:var(--re);border:1px solid var(--re-bd);font-size:12px;font-weight:700;cursor:pointer;}
+.btn-refuse:hover{background:var(--re);color:#fff;}
+.statut-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:700;}
+.statut-acceptee{background:var(--gr-lt);color:var(--gr);}
+.statut-refusee{background:var(--re-lt);color:var(--re);}
+.panel-close{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:16px;color:var(--text2);cursor:pointer;}
+.empty-panel{text-align:center;padding:40px 20px;color:var(--text3);}
+.toast-notif{position:fixed;bottom:24px;right:24px;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;color:#fff;transform:translateY(80px);opacity:0;transition:all .3s;}
+.toast-notif.show{transform:translateY(0);opacity:1;}
+.toast-notif.success{background:var(--gr);}
+.toast-notif.info{background:var(--or);}
 </style>
 </head>
 <body>
+
+<div id="agent-page" class="active">
+  <div class="agent-card">
+    <div class="agent-logo">
+      <div class="agent-logo-icon">🛡️</div>
+      <div>
+        <div class="agent-logo-text">Artemis Planning</div>
+        <div class="agent-logo-sub">Pôle Marine Dunkerque — SSIAP</div>
+      </div>
+    </div>
+    <div id="agent-form">
+      <label class="form-label-ag">Votre nom</label>
+      <select class="form-ctrl" id="agent-nom">
+        <option value="">-- Sélectionnez votre nom --</option>
+        <option>VANHAEZEBROUCK Emmanuel</option><option>Delhaye Eddy</option>
+        <option>Jomen Mickaël</option><option>Hardy Stéphane</option>
+        <option>David Jefferson</option><option>Dilmi Nori Saïd</option>
+        <option>Devalckenaere Bastien</option><option>Lefebvre Pierre</option>
+        <option>Aziz Karim</option>
+      </select>
+      <label class="form-label-ag">Type de demande</label>
+      <select class="form-ctrl" id="agent-motif">
+        <option value="">-- Sélectionnez le motif --</option>
+        <option value="indisponibilite">Indisponibilité</option>
+        <option value="conge">Congé payé</option>
+        <option value="repos_compensateur">Repos compensateur (RC)</option>
+      </select>
+      <label class="form-label-ag">Date de début souhaitée</label>
+      <div class="date-row-ag">
+        <select class="form-ctrl" id="agent-jour-debut" style="margin-bottom:0;"></select>
+        <select class="form-ctrl" id="agent-mois-debut" style="margin-bottom:0;">
+          <option value="">Mois</option>
+          <option value="1">Janvier</option><option value="2">Février</option><option value="3">Mars</option>
+          <option value="4">Avril</option><option value="5">Mai</option><option value="6">Juin</option>
+          <option value="7">Juillet</option><option value="8">Août</option><option value="9">Septembre</option>
+          <option value="10">Octobre</option><option value="11">Novembre</option><option value="12">Décembre</option>
+        </select>
+        <select class="form-ctrl" id="agent-annee-debut" style="margin-bottom:0;"></select>
+      </div>
+      <label class="form-label-ag">Date de fin <span style="color:var(--text3);font-weight:400;">(si plusieurs jours)</span></label>
+      <div class="date-row-ag">
+        <select class="form-ctrl" id="agent-jour-fin" style="margin-bottom:0;"></select>
+        <select class="form-ctrl" id="agent-mois-fin" style="margin-bottom:0;">
+          <option value="">Mois</option>
+          <option value="1">Janvier</option><option value="2">Février</option><option value="3">Mars</option>
+          <option value="4">Avril</option><option value="5">Mai</option><option value="6">Juin</option>
+          <option value="7">Juillet</option><option value="8">Août</option><option value="9">Septembre</option>
+          <option value="10">Octobre</option><option value="11">Novembre</option><option value="12">Décembre</option>
+        </select>
+        <select class="form-ctrl" id="agent-annee-fin" style="margin-bottom:0;"></select>
+      </div>
+      <label class="form-label-ag">Message (optionnel)</label>
+      <textarea class="form-ctrl" id="agent-message" rows="2" placeholder="Précisions supplémentaires..." style="resize:vertical;"></textarea>
+      <button class="btn-submit-ag" onclick="submitDemande()">📤 Envoyer ma demande</button>
+      <button class="btn-conn-ag" onclick="openPwdModal()">🔐 Accès responsable</button>
+    </div>
+    <div class="agent-success" id="agent-success">
+      <div style="font-size:48px;margin-bottom:12px;">✅</div>
+      <div style="font-size:18px;font-weight:700;margin-bottom:6px;">Demande envoyée !</div>
+      <div style="font-size:13px;color:var(--text2);">Votre demande a bien été transmise.<br>Vous serez informé de la décision.</div>
+      <button class="btn-conn-ag" onclick="resetAgentForm()" style="margin-top:20px;">Nouvelle demande</button>
+    </div>
+  </div>
+</div>
+<div class="pwd-overlay" id="pwd-overlay" onclick="closePwdOutside(event)">
+  <div class="pwd-card">
+    <div style="font-size:17px;font-weight:700;margin-bottom:6px;">🔐 Accès responsable</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:20px;">Entrez le mot de passe pour accéder au planning</div>
+    <div class="pwd-error" id="pwd-error">❌ Mot de passe incorrect</div>
+    <input type="password" class="pwd-input" id="pwd-input" placeholder="••••••••••••" onkeydown="if(event.key==='Enter')checkPassword()"/>
+    <button class="btn-submit-ag" onclick="checkPassword()">Connexion</button>
+    <button class="btn-conn-ag" onclick="closePwdModal()" style="margin-top:8px;">Annuler</button>
+  </div>
+</div>
+<div class="demandes-panel" id="demandes-panel">
+  <div class="panel-header">
+    <div class="panel-title">📋 Demandes d'absence</div>
+    <button class="panel-close" onclick="closeDemandes()">✕</button>
+  </div>
+  <div class="panel-tabs">
+    <button class="panel-tab active" onclick="switchTab('attente',this)">En attente</button>
+    <button class="panel-tab" onclick="switchTab('historique',this)">Historique</button>
+  </div>
+  <div class="panel-body" id="panel-body"></div>
+</div>
+<div class="toast-notif" id="toast-notif"></div>
+<div id="planning-page">
+
 <div id="shell">
 <!-- TOPBAR -->
 <div id="topbar">
@@ -223,12 +374,13 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
   </div>
   <div class="tb-actions">
     <div class="save-badge" id="save-badge"><div class="save-dot"></div><span id="save-txt">—</span></div>
-    <button class="tb-btn" style="background:#edfaf3;border-color:#a3e0bc;color:#1a7a3c;font-weight:700;" onclick="loadFromStorage(true)">🔄 Sync</button>
+    <button class="notif-btn" id="notif-btn" onclick="openDemandes()">🔔<span class="notif-badge" id="notif-badge"></span></button>
+    <button class="tb-btn" onclick="exitPlanning()" style="background:var(--pu-lt);border-color:var(--pu-bd);color:var(--pu);">← Agents</button>
     <button class="tb-btn" onclick="openShiftsMgr()">⚙ Créneaux</button>
     <button class="tb-btn" style="background:var(--pu-lt);border-color:var(--pu-bd);color:var(--pu);font-weight:700;" onclick="openAbsModal()">📋 Absences</button>
     <button class="tb-btn" onclick="openProfiles()">👤 Profils</button>
     <button class="tb-btn" onclick="saveJSON()">💾 Export</button>
-    <button class="tb-btn" onclick="document.getElementById('file-in').click()">📂 Charger</button>
+    <button class="tb-btn" onclick="document.getElementById('file-in').click()" title="Importer un fichier JSON depuis l'ancien planning ou une sauvegarde">📂 Importer JSON</button>
     <input type="file" id="file-in" accept=".json" style="display:none" onchange="loadJSON(event)"/>
     <button class="tb-btn" onclick="exportPDF()">🖨 PDF</button>
     <button class="tb-btn danger" onclick="clearWork()">🗑 Effacer</button>
@@ -387,43 +539,6 @@ let profilesBuffer={};
 let activeCell=null; // {ei, day}
 
 const STORAGE_KEY="artemis_v5";
-
-// CONFIG GITHUB
-const GH_USER = "littlecrusher-ops";
-const GH_REPO = "Artemis-planning";
-const GH_FILE = "planning-data.json";
-let GH_TOKEN = localStorage.getItem("artemis_gh_token") || "";
-
-async function ghGetSha() {
-  try {
-    const r = await fetch("https://api.github.com/repos/"+GH_USER+"/"+GH_REPO+"/contents/"+GH_FILE, {
-      headers: { Authorization: "token "+GH_TOKEN, Accept: "application/vnd.github.v3+json" }
-    });
-    if (!r.ok) return null;
-    return (await r.json()).sha || null;
-  } catch(e) { return null; }
-}
-
-async function ghPush(content, message) {
-  const sha = await ghGetSha();
-  const b64 = btoa(unescape(encodeURIComponent(content)));
-  const body = { message: message, content: b64, branch: "main" };
-  if (sha) body.sha = sha;
-  const r = await fetch("https://api.github.com/repos/"+GH_USER+"/"+GH_REPO+"/contents/"+GH_FILE, {
-    method: "PUT",
-    headers: { Authorization: "token "+GH_TOKEN, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
-    body: JSON.stringify(body)
-  });
-  return r.ok;
-}
-
-async function ghLoad() {
-  try {
-    const r = await fetch("https://raw.githubusercontent.com/"+GH_USER+"/"+GH_REPO+"/main/"+GH_FILE+"?t="+Date.now());
-    if (!r.ok) return null;
-    return await r.json();
-  } catch(e) { return null; }
-}
 
 // ════════════════════════════════════════════════════════
 // HELPERS
@@ -1052,61 +1167,38 @@ function triggerAutosave(){
   clearTimeout(autosaveTimer);
   autosaveTimer=setTimeout(async ()=>{
     try{
-      const ts = Date.now();
-      const data=JSON.stringify({version:5,emps,shifts,year,month,workShifts:WORK_SHIFTS,agentProfiles,lastModified:ts},null,2);
-      localStorage.setItem('artemis_last_modified', ts);
-      localStorage.setItem(STORAGE_KEY, data);
-      const n=new Date();
-      const msg="Planning "+n.toLocaleDateString("fr-FR")+" "+n.getHours()+":"+String(n.getMinutes()).padStart(2,"0");
-      const ok = GH_TOKEN ? await ghPush(data, msg) : false;
+      const ts=Date.now();
+      const _data=JSON.stringify({version:5,emps,shifts,year,month,workShifts:WORK_SHIFTS,agentProfiles,lastModified:ts},null,2);
+      localStorage.setItem('artemis_last_modified',ts);
+      localStorage.setItem(STORAGE_KEY,_data);
+      const _n=new Date();
+      const _ok=GH_TOKEN?await ghPush(_data,"Planning "+_n.toLocaleDateString("fr-FR")+" "+_n.getHours()+":"+String(_n.getMinutes()).padStart(2,"0")):false;
       badge.className="save-badge saved";
-      txt.textContent=n.getHours()+":"+String(n.getMinutes()).padStart(2,"0")+(ok?" ☁":" ??");
-      setTimeout(()=>{badge.className="save-badge";txt.textContent=ok?"Synchronisé":"Local only";},3500);
+      txt.textContent=_n.getHours()+":"+String(_n.getMinutes()).padStart(2,"0")+(_ok?" ☁":" 💾");
+      setTimeout(()=>{badge.className="save-badge";txt.textContent=_ok?"Synchronisé":"Local only";},3500);
     }catch(e){txt.textContent="Erreur";}
-  },800);
+  },600);
 }
 async function loadFromStorage(forceRemote){
   const badge=document.getElementById("save-badge"),txt=document.getElementById("save-txt");
-  txt.textContent="Chargement...";
-
-  // Charger depuis GitHub
-  let remote = GH_TOKEN ? await ghLoad() : null;
-
-  // Charger depuis localStorage
-  let local = null;
-  try{
-    const raw=localStorage.getItem(STORAGE_KEY)||localStorage.getItem("artemis_v4")||localStorage.getItem("artemis_v3");
-    if(raw) local=JSON.parse(raw);
-  }catch(e){}
-
-  const localTs = parseInt(localStorage.getItem('artemis_last_modified')||'0');
-  const remoteTs = remote?.lastModified || 0;
-
-  let d = null;
-  if(forceRemote && remote){
-    // Sync manuel : on prend le plus recent
-    d = remoteTs >= localTs ? remote : local;
-  } else {
-    // Au chargement : local en priorite si plus recent, sinon remote
-    if(local && localTs >= remoteTs) d = local;
-    else if(remote) d = remote;
-    else d = local;
-  }
-
+  if(txt)txt.textContent="Chargement...";
+  let remote=GH_TOKEN?await ghLoad():null;
+  let local=null;
+  try{const raw=localStorage.getItem(STORAGE_KEY)||localStorage.getItem("artemis_v4")||localStorage.getItem("artemis_v3");if(raw)local=JSON.parse(raw);}catch(e){}
+  const localTs=parseInt(localStorage.getItem("artemis_last_modified")||"0");
+  const remoteTs=remote?.lastModified||0;
+  let d=null;
+  if(forceRemote&&remote){d=remoteTs>=localTs?remote:local;}
+  else{d=(local&&localTs>=remoteTs)?local:(remote||local);}
   if(d){
-    if(d.emps)emps=d.emps;
-    if(d.shifts)shifts=d.shifts;
-    if(d.year!=null)year=d.year;
-    if(d.month!=null)month=d.month;
+    if(d.emps)emps=d.emps;if(d.shifts)shifts=d.shifts;
+    if(d.year!=null)year=d.year;if(d.month!=null)month=d.month;
     if(d.workShifts?.length)WORK_SHIFTS=d.workShifts;
     if(d.agentProfiles)agentProfiles=d.agentProfiles;
-    badge.className="save-badge saved";
-    const src = (d===remote) ? "Sync ☁" : "Local ??";
-    txt.textContent=src;
-    setTimeout(()=>{badge.className="save-badge";txt.textContent="Sauvegardé";},2500);
-  } else {
-    txt.textContent="Nouveau";
-  }
+    if(badge)badge.className="save-badge saved";
+    if(txt)txt.textContent=d===remote?"Sync ☁":"Local 💾";
+    setTimeout(()=>{if(badge)badge.className="save-badge";if(txt)txt.textContent="Sauvegardé";},2500);
+  }else{if(txt)txt.textContent="Nouveau";}
   render();
 }
 function saveJSON(){
@@ -1305,198 +1397,209 @@ function appliquerToutesAbsences(){
   render();
 }
 
+
 // ════════════════════════════════════════════════════════
-// INIT
+// CONFIG GITHUB + SYSTEME DEMANDES
 // ════════════════════════════════════════════════════════
-function showTokenModal(){
-  const existing = document.getElementById("token-modal");
-  if(existing) existing.remove();
-  const overlay = document.createElement("div");
-  overlay.id = "token-modal";
-  overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;";
-  const box = document.createElement("div");
-  box.style.cssText = "background:#fff;border-radius:14px;padding:28px;width:420px;max-width:96vw;box-shadow:0 20px 48px rgba(0,0,0,.2);font-family:Inter,sans-serif;";
-  box.innerHTML = "<div style=\"font-size:18px;font-weight:700;margin-bottom:6px;\">Connexion GitHub</div>"
-    + "<div style=\"font-size:12px;color:#666;margin-bottom:18px;\">Entre ton token GitHub pour synchroniser le planning avec ton collegue. Stocke uniquement dans ton navigateur.</div>"
-    + "<div style=\"font-size:10px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;\">Token GitHub (commence par ghp_...)</div>"
-    + "<input id=\"token-input\" type=\"password\" placeholder=\"ghp_xxxxxxxxxxxx\" style=\"width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:13px;font-family:monospace;outline:none;margin-bottom:14px;display:block;\"/>"
-    + "<button id=\"token-btn\" style=\"width:100%;padding:10px;border-radius:8px;background:#d4510c;color:#fff;border:none;font-size:14px;font-weight:700;cursor:pointer;\">Se connecter</button>"
-    + "<div style=\"font-size:10px;color:#999;margin-top:10px;text-align:center;\">github.com > Avatar > Settings > Developer settings > Personal access tokens > Tokens (classic) > coche repo</div>";
-  overlay.appendChild(box);
-  document.body.appendChild(overlay);
-  document.getElementById("token-btn").onclick = saveToken;
-  document.getElementById("token-input").onkeydown = e=>{ if(e.key==="Enter") saveToken(); };
-  setTimeout(()=>document.getElementById("token-input")?.focus(), 100);
-}
+const GH_USER = "littlecrusher-ops";
+const GH_REPO = "Artemis-planning";
+const GH_FILE = "planning-data.json";
+const GH_DEMANDES = "demandes.json";
+const MOT_DE_PASSE = "hardyestunfdp";
+const MOIS_NOMS = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+let GH_TOKEN = localStorage.getItem("artemis_gh_token") || "";
+let currentPanelTab = "attente";
+let demandesDataCache = null;
 
-function saveToken(){
-  const val = (document.getElementById("token-input")?.value||"").trim();
-  if(!val || !val.startsWith("ghp_")){ alert("Token invalide - il doit commencer par ghp_"); return; }
-  GH_TOKEN = val;
-  localStorage.setItem("artemis_gh_token", val);
-  document.getElementById("token-modal")?.remove();
-  loadFromStorage();
-}
-
-function resetToken(){
-  localStorage.removeItem("artemis_gh_token");
-  GH_TOKEN = "";
-  showTokenModal();
-}
-
-// INIT
-if(!GH_TOKEN){ showTokenModal(); render(); } else { loadFromStorage(); setTimeout(checkDemandes, 3000); }
-
-// GESTION DES DEMANDES GUARDTEK
-async function checkDemandes(){
-  if(!GH_TOKEN) return;
+async function ghGetSha(file) {
   try {
-    const r = await fetch("https://raw.githubusercontent.com/"+GH_USER+"/"+GH_REPO+"/main/demandes.json?t="+Date.now());
-    if(!r.ok) return;
-    const data = await r.json();
-    const demandes = (data.demandes||[]).filter(d=>d.statut==="en_attente");
-    const vues = JSON.parse(localStorage.getItem('artemis_demandes_vues')||'[]');
-    const nouvelles = demandes.filter(d=>!vues.includes(d.id));
-    if(nouvelles.length > 0) showDemandeModal(nouvelles, data);
-  } catch(e) {}
-}
-
-function showDemandeModal(demandes, fullData){
-  const existing = document.getElementById('demande-modal');
-  if(existing) return; // deja affiche
-
-  const d = demandes[0]; // afficher une par une
-  const motifLabel = d.motif==='conge' ? 'Conge paye' : d.motif==='repos_compensateur' ? 'Repos compensateur' : 'Indisponibilite';
-  const overlay = document.createElement('div');
-  overlay.id = 'demande-modal';
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;';
-  const box = document.createElement('div');
-  box.style.cssText = 'background:#fff;border-radius:14px;padding:28px;width:440px;max-width:96vw;box-shadow:0 20px 48px rgba(0,0,0,.25);font-family:Inter,sans-serif;';
-  box.innerHTML = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">'
-    + '<div style="width:40px;height:40px;border-radius:10px;background:#fff3e0;display:flex;align-items:center;justify-content:center;font-size:20px;">📋</div>'
-    + '<div><div style="font-size:16px;font-weight:700;">Nouvelle demande</div><div style="font-size:11px;color:#999;">Recue le '+d.recu_le+'</div></div>'
-    + '</div>'
-    + '<div style="background:#f8f9fa;border-radius:10px;padding:16px;margin-bottom:16px;">'
-    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">'
-    + '<div><div style="font-size:10px;font-weight:700;color:#999;text-transform:uppercase;margin-bottom:3px;">Demandeur</div><div style="font-size:14px;font-weight:600;">'+d.demandeur+'</div></div>'
-    + '<div><div style="font-size:10px;font-weight:700;color:#999;text-transform:uppercase;margin-bottom:3px;">Motif</div><div style="font-size:14px;font-weight:600;">'+motifLabel+'</div></div>'
-    + '<div style="grid-column:1/-1"><div style="font-size:10px;font-weight:700;color:#999;text-transform:uppercase;margin-bottom:3px;">Date(s) souhaitee(s)</div><div style="font-size:14px;font-weight:600;">'+d.dates_texte+'</div></div>'
-    + '</div></div>'
-    + (demandes.length > 1 ? '<div style="font-size:12px;color:#666;margin-bottom:12px;text-align:center;">+'+(demandes.length-1)+' autre(s) demande(s) en attente</div>' : '')
-    + '<div style="display:flex;gap:10px;">'
-    + '<button id="dem-refuser" style="flex:1;padding:11px;border-radius:8px;background:#fff;border:1.5px solid #ddd;font-size:14px;font-weight:600;cursor:pointer;color:#666;">Refuser</button>'
-    + '<button id="dem-accepter" style="flex:2;padding:11px;border-radius:8px;background:#d4510c;border:none;font-size:14px;font-weight:700;cursor:pointer;color:#fff;">Accepter</button>'
-    + '</div>';
-  overlay.appendChild(box);
-  document.body.appendChild(overlay);
-
-  document.getElementById('dem-accepter').onclick = async ()=>{
-    await updateDemandeStatut(d.id, 'acceptee', fullData);
-    const vues = JSON.parse(localStorage.getItem('artemis_demandes_vues')||'[]');
-    vues.push(d.id);
-    localStorage.setItem('artemis_demandes_vues', JSON.stringify(vues));
-    overlay.remove();
-
-    // Appliquer automatiquement l'absence dans le planning
-    if(d.date_debut && d.demandeur) {
-      const code = d.motif === 'conge' ? 'conge' : d.motif === 'repos_compensateur' ? 'conge' : 'indispo';
-      // Trouver l'agent par nom
-      const nomRecherche = d.demandeur.toUpperCase().trim();
-      const agentIdx = emps.findIndex(e => {
-        const nom = (e.name||e.nom||'').toUpperCase();
-        return nom.includes(nomRecherche) || nomRecherche.includes(nom.split(' ')[0]);
-      });
-
-      if(agentIdx !== -1) {
-        // Boucler sur toutes les dates de la demande
-        const start = new Date(d.date_debut + 'T12:00:00');
-        const end = new Date((d.date_fin || d.date_debut) + 'T12:00:00');
-        let applied = 0;
-        for(let dt = new Date(start); dt <= end; dt.setDate(dt.getDate()+1)){
-          const y = dt.getFullYear();
-          const m = dt.getMonth();
-          const day = dt.getDate();
-          // Verifier si c'est le bon mois affiche
-          if(y === year && m === month) {
-            const key = agentIdx + '_' + day;
-            shifts[key] = code;
-            applied++;
-          }
-        }
-        if(applied > 0) {
-          triggerAutosave();
-          render();
-          // Petit toast de confirmation
-          const t = document.createElement('div');
-          t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#1a7a3c;color:#fff;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;';
-          t.textContent = 'Absence de '+d.demandeur+' appliquee ('+applied+' jour(s))';
-          document.body.appendChild(t);
-          setTimeout(()=>t.remove(), 4000);
-        } else {
-          alert('Agent trouve mais les dates ne sont pas sur le mois affiche. Change de mois et rapplique.');
-        }
-      } else {
-        alert('Agent "'+d.demandeur+'" non trouve dans le planning. Verifie le nom.');
-      }
-    }
-
-    const restantes = demandes.slice(1);
-    if(restantes.length > 0) setTimeout(()=>showDemandeModal(restantes, fullData), 500);
-  };
-
-  document.getElementById('dem-refuser').onclick = async ()=>{
-    await updateDemandeStatut(d.id, 'refusee', fullData);
-    const vues = JSON.parse(localStorage.getItem('artemis_demandes_vues')||'[]');
-    vues.push(d.id);
-    localStorage.setItem('artemis_demandes_vues', JSON.stringify(vues));
-    overlay.remove();
-    const restantes = demandes.slice(1);
-    if(restantes.length > 0) setTimeout(()=>showDemandeModal(restantes, fullData), 500);
-  };
-}
-
-async function updateDemandeStatut(id, statut, fullData){
-  const demandes = fullData.demandes || [];
-  const idx = demandes.findIndex(d=>d.id===id);
-  if(idx !== -1) demandes[idx].statut = statut;
-  fullData.demandes = demandes;
-  fullData.updated_at = new Date().toISOString();
-  const GH_FILE_D = "demandes.json";
-  const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(fullData, null, 2))));
-  // Recuperer SHA
-  try {
-    const sha_r = await fetch("https://api.github.com/repos/"+GH_USER+"/"+GH_REPO+"/contents/"+GH_FILE_D, {
+    const r = await fetch("https://api.github.com/repos/"+GH_USER+"/"+GH_REPO+"/contents/"+(file||GH_FILE), {
       headers: { Authorization: "token "+GH_TOKEN, Accept: "application/vnd.github.v3+json" }
     });
-    const sha = sha_r.ok ? (await sha_r.json()).sha : null;
-    const body = { message: "Demande "+statut+" - "+id.slice(0,20), content: b64, branch: "main" };
-    if(sha) body.sha = sha;
-    await fetch("https://api.github.com/repos/"+GH_USER+"/"+GH_REPO+"/contents/"+GH_FILE_D, {
-      method: "PUT",
-      headers: { Authorization: "token "+GH_TOKEN, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
-      body: JSON.stringify(body)
-    });
-  } catch(e) {}
+    if (!r.ok) return null;
+    return (await r.json()).sha || null;
+  } catch(e) { return null; }
+}
+async function ghPushFile(file, content, message) {
+  const sha = await ghGetSha(file);
+  const b64 = btoa(unescape(encodeURIComponent(content)));
+  const body = { message, content: b64, branch: "main" };
+  if (sha) body.sha = sha;
+  const r = await fetch("https://api.github.com/repos/"+GH_USER+"/"+GH_REPO+"/contents/"+file, {
+    method: "PUT",
+    headers: { Authorization: "token "+GH_TOKEN, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  return r.ok;
+}
+async function ghPush(content, message) { return ghPushFile(GH_FILE, content, message); }
+async function ghLoadFile(file) {
+  try {
+    const r = await fetch("https://raw.githubusercontent.com/"+GH_USER+"/"+GH_REPO+"/main/"+file+"?t="+Date.now());
+    if (!r.ok) return null;
+    return await r.json();
+  } catch(e) { return null; }
+}
+async function ghLoad() { return ghLoadFile(GH_FILE); }
+
+// ── PAGE AGENT ──
+function initAgentSelects() {
+  const anneeNow = new Date().getFullYear();
+  ["agent-jour-debut","agent-jour-fin"].forEach(id => {
+    const s = document.getElementById(id); if(!s) return;
+    s.innerHTML = '<option value="">Jour</option>';
+    for(let j=1;j<=31;j++){const o=document.createElement("option");o.value=j;o.textContent=j;s.appendChild(o);}
+  });
+  ["agent-annee-debut","agent-annee-fin"].forEach(id => {
+    const s = document.getElementById(id); if(!s) return;
+    s.innerHTML = '<option value="">Année</option>';
+    for(let a=anneeNow;a<=anneeNow+20;a++){const o=document.createElement("option");o.value=a;o.textContent=a;s.appendChild(o);}
+  });
 }
 
-// Sync auto toutes les 5 min
-setInterval(async ()=>{
-  if(!GH_TOKEN) return;
-  const remote = await ghLoad();
-  if(!remote) return;
-  const localTs = parseInt(localStorage.getItem('artemis_last_modified')||'0');
-  const remoteTs = remote.lastModified || 0;
-  if(remoteTs > localTs){
-    if(remote.emps)emps=remote.emps;
-    if(remote.shifts)shifts=remote.shifts;
-    if(remote.year!=null)year=remote.year;
-    if(remote.month!=null)month=remote.month;
+async function submitDemande() {
+  const nom = document.getElementById("agent-nom").value;
+  const motif = document.getElementById("agent-motif").value;
+  const jd=document.getElementById("agent-jour-debut").value, md=document.getElementById("agent-mois-debut").value, ad=document.getElementById("agent-annee-debut").value;
+  const jf=document.getElementById("agent-jour-fin").value, mf=document.getElementById("agent-mois-fin").value, af=document.getElementById("agent-annee-fin").value;
+  const msg=document.getElementById("agent-message").value.trim();
+  if(!nom){alert("Veuillez sélectionner votre nom");return;}
+  if(!motif){alert("Veuillez sélectionner le motif");return;}
+  if(!jd||!md||!ad){alert("Veuillez saisir la date de début");return;}
+  const dateDebut = ad+"-"+String(md).padStart(2,"0")+"-"+String(jd).padStart(2,"0");
+  let dateFin = dateDebut;
+  let datesTexte = "le "+jd+" "+MOIS_NOMS[parseInt(md)-1]+" "+ad;
+  if(jf&&mf&&af){dateFin=af+"-"+String(mf).padStart(2,"0")+"-"+String(jf).padStart(2,"0");datesTexte="du "+jd+" "+MOIS_NOMS[parseInt(md)-1]+" "+ad+" au "+jf+" "+MOIS_NOMS[parseInt(mf)-1]+" "+af;}
+  const now = new Date();
+  const demande = {
+    id:"d_"+Date.now(), demandeur:nom, motif, dates_texte:datesTexte,
+    date_debut:dateDebut, date_fin:dateFin, message:msg, statut:"en_attente",
+    recu_le:now.toLocaleDateString("fr-FR")+" à "+now.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}),
+    traite_le:null
+  };
+  const btn = document.querySelector(".btn-submit-ag");
+  btn.textContent="Envoi en cours..."; btn.disabled=true;
+  let existing = {demandes:[], processed_ids:[]};
+  try {
+    const r = await fetch("https://raw.githubusercontent.com/"+GH_USER+"/"+GH_REPO+"/main/"+GH_DEMANDES+"?t="+Date.now());
+    if(r.ok) existing = await r.json();
+  } catch(e) {}
+  existing.demandes.push(demande); existing.processed_ids.push(demande.id); existing.updated_at = now.toISOString();
+  const savedToken = localStorage.getItem("artemis_gh_token")||"";
+  let ok = false;
+  if(savedToken) { const tmp=GH_TOKEN; GH_TOKEN=savedToken; ok=await ghPushFile(GH_DEMANDES, JSON.stringify(existing,null,2), "Demande de "+nom); GH_TOKEN=tmp; }
+  document.getElementById("agent-form").style.display="none";
+  document.getElementById("agent-success").style.display="block";
+  btn.textContent="📤 Envoyer ma demande"; btn.disabled=false;
+}
+function resetAgentForm() {
+  document.getElementById("agent-form").style.display="block";
+  document.getElementById("agent-success").style.display="none";
+  ["agent-nom","agent-motif","agent-message"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});
+}
+
+// ── MOT DE PASSE ──
+function openPwdModal(){document.getElementById("pwd-overlay").classList.add("open");document.getElementById("pwd-error").style.display="none";document.getElementById("pwd-input").value="";setTimeout(()=>document.getElementById("pwd-input").focus(),100);}
+function closePwdModal(){document.getElementById("pwd-overlay").classList.remove("open");}
+function closePwdOutside(e){if(e.target===document.getElementById("pwd-overlay"))closePwdModal();}
+function checkPassword(){const val=document.getElementById("pwd-input").value;if(val===MOT_DE_PASSE){closePwdModal();enterPlanning();}else{document.getElementById("pwd-error").style.display="block";document.getElementById("pwd-input").value="";document.getElementById("pwd-input").focus();}}
+function enterPlanning(){document.getElementById("agent-page").classList.remove("active");document.getElementById("planning-page").classList.add("active");if(!GH_TOKEN)showTokenModal();else{loadFromStorage();setTimeout(checkNotifications,2000);}}
+function exitPlanning(){document.getElementById("planning-page").classList.remove("active");document.getElementById("agent-page").classList.add("active");}
+
+// ── TOKEN MODAL ──
+function showTokenModal(){
+  const existing=document.getElementById("token-modal");if(existing)existing.remove();
+  const overlay=document.createElement("div");overlay.id="token-modal";overlay.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;";
+  const box=document.createElement("div");box.style.cssText="background:#fff;border-radius:14px;padding:28px;width:420px;max-width:96vw;box-shadow:0 20px 48px rgba(0,0,0,.2);font-family:Inter,sans-serif;";
+  box.innerHTML="<div style='font-size:18px;font-weight:700;margin-bottom:6px;'>Connexion GitHub</div><div style='font-size:12px;color:#666;margin-bottom:18px;'>Entre ton token GitHub pour synchroniser le planning.</div><div style='font-size:10px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;'>Token GitHub (commence par ghp_...)</div><input id='token-input' type='password' placeholder='ghp_xxxxxxxxxxxx' style='width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:13px;font-family:monospace;outline:none;margin-bottom:14px;display:block;'/><button id='token-btn' style='width:100%;padding:10px;border-radius:8px;background:#d4510c;color:#fff;border:none;font-size:14px;font-weight:700;cursor:pointer;'>Se connecter</button>";
+  overlay.appendChild(box);document.body.appendChild(overlay);
+  document.getElementById("token-btn").onclick=saveToken;document.getElementById("token-input").onkeydown=e=>{if(e.key==="Enter")saveToken();};
+  setTimeout(()=>document.getElementById("token-input")?.focus(),100);
+}
+function saveToken(){const val=(document.getElementById("token-input")?.value||"").trim();if(!val||!val.startsWith("ghp_")){alert("Token invalide");return;}GH_TOKEN=val;localStorage.setItem("artemis_gh_token",val);document.getElementById("token-modal")?.remove();loadFromStorage();setTimeout(checkNotifications,2000);}
+
+// ── NOTIFICATIONS ──
+async function checkNotifications(){
+  if(!GH_TOKEN)return;
+  const data=await ghLoadFile(GH_DEMANDES);if(!data)return;
+  demandesDataCache=data;
+  const enAttente=(data.demandes||[]).filter(d=>d.statut==="en_attente");
+  const badge=document.getElementById("notif-badge");
+  if(badge){if(enAttente.length>0){badge.textContent=enAttente.length;badge.classList.add("visible");}else badge.classList.remove("visible");}
+}
+function openDemandes(){document.getElementById("demandes-panel").classList.add("open");renderDemandesPanel();}
+function closeDemandes(){document.getElementById("demandes-panel").classList.remove("open");}
+function switchTab(tab,btn){currentPanelTab=tab;document.querySelectorAll(".panel-tab").forEach(b=>b.classList.remove("active"));btn.classList.add("active");renderDemandesPanel();}
+
+async function renderDemandesPanel(){
+  const body=document.getElementById("panel-body");
+  body.innerHTML="<div style='text-align:center;padding:20px;color:#999;'>Chargement...</div>";
+  const data=await ghLoadFile(GH_DEMANDES)||{demandes:[]};
+  demandesDataCache=data;
+  const demandes=data.demandes||[];
+  const filtered=currentPanelTab==="attente"?demandes.filter(d=>d.statut==="en_attente").reverse():demandes.filter(d=>d.statut!=="en_attente").reverse();
+  if(!filtered.length){body.innerHTML="<div class='empty-panel'><div class='icon'>"+(currentPanelTab==="attente"?"✅":"📂")+"</div><div>"+(currentPanelTab==="attente"?"Aucune demande en attente":"Aucun historique")+"</div></div>";checkNotifications();return;}
+  const mL={indisponibilite:"Indisponibilité",conge:"Congé payé",repos_compensateur:"RC"};
+  const mC={indisponibilite:"motif-indispo",conge:"motif-conge",repos_compensateur:"motif-rc"};
+  body.innerHTML=filtered.map(d=>{
+    const actions=d.statut==="en_attente"
+      ?`<div class="demande-actions"><button class="btn-accept" onclick="traiterDemandePanel('${d.id}','acceptee')">✓ Accepter</button><button class="btn-refuse" onclick="traiterDemandePanel('${d.id}','refusee')">✕ Refuser</button></div>`
+      :`<div><span class="statut-badge ${d.statut==="acceptee"?"statut-acceptee":"statut-refusee"}">${d.statut==="acceptee"?"✓ Acceptée":"✕ Refusée"}</span>${d.traite_le?`<span style="font-size:10px;color:#999;margin-left:8px;">le ${d.traite_le}</span>`:""}</div>`;
+    return `<div class="demande-item ${d.statut}"><div class="demande-header"><div class="demande-name">${d.demandeur}</div><div class="demande-time">${d.recu_le}</div></div><span class="demande-motif ${mC[d.motif]||"motif-indispo"}">${mL[d.motif]||d.motif}</span><div class="demande-date">📅 ${d.dates_texte}</div>${d.message?`<div style="font-size:12px;color:#666;background:#f5f4f0;padding:8px;border-radius:6px;margin-bottom:8px;">${d.message}</div>`:""}${actions}</div>`;
+  }).join("");
+  checkNotifications();
+}
+
+async function traiterDemandePanel(id,statut){
+  const data=demandesDataCache||await ghLoadFile(GH_DEMANDES);if(!data)return;
+  const now=new Date();const traite_le=now.toLocaleDateString("fr-FR")+" à "+now.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
+  const idx=data.demandes.findIndex(d=>d.id===id);if(idx===-1)return;
+  data.demandes[idx].statut=statut;data.demandes[idx].traite_le=traite_le;data.updated_at=now.toISOString();
+  const demande=data.demandes[idx];
+  if(statut==="acceptee"&&demande.date_debut){
+    const code=demande.motif==="conge"?"conge":demande.motif==="repos_compensateur"?"conge":"indispo";
+    const nomR=demande.demandeur.toUpperCase().trim();
+    const agentIdx=emps.findIndex(e=>{const n=(e.name||"").toUpperCase();return n.includes(nomR)||nomR.includes(n.split(" ")[0]);});
+    if(agentIdx!==-1){
+      const start=new Date(demande.date_debut+"T12:00:00"),end=new Date((demande.date_fin||demande.date_debut)+"T12:00:00");
+      let applied=0;
+      for(let dt=new Date(start);dt<=end;dt.setDate(dt.getDate()+1)){
+        const y=dt.getFullYear(),m=dt.getMonth(),day=dt.getDate();
+        if(y===year&&m===month){shifts[skey(agentIdx,day)]={code};applied++;}
+      }
+      if(applied>0){triggerAutosave();render();showToastNotif("Absence de "+demande.demandeur+" appliquée ("+applied+"j)","success");}
+      else showToastNotif("Acceptée ! Navigue au bon mois pour voir les modifications","info");
+    }else showToastNotif("Agent non trouvé","info");
+  }
+  await ghPushFile(GH_DEMANDES,JSON.stringify(data,null,2),"Demande "+statut+" - "+demande.demandeur);
+  demandesDataCache=data;renderDemandesPanel();
+}
+
+function showToastNotif(msg,type){const t=document.getElementById("toast-notif");if(!t)return;t.textContent=msg;t.className="toast-notif "+type;setTimeout(()=>t.classList.add("show"),10);setTimeout(()=>t.classList.remove("show"),4000);}
+
+setInterval(()=>{if(document.getElementById("planning-page")?.classList.contains("active"))checkNotifications();},60000);
+
+// ════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════
+initAgentSelects();
+if(!GH_TOKEN){showTokenModal();render();}else{loadFromStorage();setTimeout(checkNotifications,2000);}
+
+// Sync auto 1 min
+setInterval(async()=>{
+  if(!document.getElementById("planning-page")?.classList.contains("active"))return;
+  const remote=await ghLoad();if(!remote)return;
+  const localTs=parseInt(localStorage.getItem("artemis_last_modified")||"0");
+  const remoteTs=remote.lastModified||0;
+  if(remoteTs>localTs){
+    if(remote.emps)emps=remote.emps;if(remote.shifts)shifts=remote.shifts;
+    if(remote.year!=null)year=remote.year;if(remote.month!=null)month=remote.month;
     if(remote.workShifts?.length)WORK_SHIFTS=remote.workShifts;
     if(remote.agentProfiles)agentProfiles=remote.agentProfiles;
-    localStorage.setItem('artemis_last_modified', remoteTs);
-    render();
+    localStorage.setItem("artemis_last_modified",remoteTs);render();
   }
-}, 1*60*1000);
+  checkNotifications();
+},60000);
 </script>
 
 <!-- ABSENCES MODAL -->
@@ -1551,5 +1654,6 @@ setInterval(async ()=>{
   </div>
 </div>
 
+</div><!-- /planning-page -->
 </body>
 </html>
