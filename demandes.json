@@ -8,13 +8,13 @@
       "date_debut": "2026-08-14",
       "date_fin": "2026-08-15",
       "message": "",
-      "statut": "en_attente",
+      "statut": "acceptee",
       "recu_le": "28/06/2026 à 16:42",
-      "traite_le": null
+      "traite_le": "28/06/2026 à 16:46"
     }
   ],
   "processed_ids": [
     "d_1782657768874"
   ],
-  "updated_at": "2026-06-28T14:42:48.874Z"
+  "updated_at": "2026-06-28T14:46:20.191Z"
 }
