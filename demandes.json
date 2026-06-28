@@ -23,11 +23,24 @@
       "statut": "refusee",
       "recu_le": "28/06/2026 à 17:08",
       "traite_le": "28/06/2026 à 17:14"
+    },
+    {
+      "id": "d_1782661920610",
+      "demandeur": "VANHAEZEBROUCK Emmanuel",
+      "motif": "indisponibilite",
+      "dates_texte": "du 16 Août 2026 au 16 Août 2026",
+      "date_debut": "2026-08-16",
+      "date_fin": "2026-08-16",
+      "message": "",
+      "statut": "en_attente",
+      "recu_le": "28/06/2026 à 17:52",
+      "traite_le": null
     }
   ],
   "processed_ids": [
     "d_1782657768874",
-    "d_1782659333713"
+    "d_1782659333713",
+    "d_1782661920610"
   ],
-  "updated_at": "2026-06-28T15:14:24.136Z"
+  "updated_at": "2026-06-28T15:52:00.610Z"
 }
