@@ -1199,6 +1199,7 @@ async function loadFromStorage(forceRemote){
     if(txt)txt.textContent=d===remote?"Sync ☁":"Local 💾";
     setTimeout(()=>{if(badge)badge.className="save-badge";if(txt)txt.textContent="Sauvegardé";},2500);
   }else{if(txt)txt.textContent="Nouveau";}
+  planningCharge=true;
   render();
 }
 function saveJSON(){
@@ -1410,6 +1411,7 @@ const MOIS_NOMS = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","A
 let GH_TOKEN = localStorage.getItem("artemis_gh_token") || "";
 let currentPanelTab = "attente";
 let demandesDataCache = null;
+let planningCharge = false;
 
 async function ghGetSha(file) {
   try {
@@ -1569,7 +1571,7 @@ async function traiterDemandePanel(id,statut){
         const y=dt.getFullYear(),m=dt.getMonth(),day=dt.getDate();
         if(y===year&&m===month){shifts[skey(agentIdx,day)]={code};applied++;}
       }
-      if(applied>0){triggerAutosave();render();showToastNotif("Absence de "+demande.demandeur+" appliquée ("+applied+"j)","success");}
+      if(applied>0){if(planningCharge)triggerAutosave();render();showToastNotif("Absence de "+demande.demandeur+" appliquée ("+applied+"j)","success");}
       else showToastNotif("Acceptée ! Navigue au bon mois pour voir les modifications","info");
     }else showToastNotif("Agent non trouvé","info");
   }
