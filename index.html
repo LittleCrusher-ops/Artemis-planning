@@ -1571,8 +1571,13 @@ async function traiterDemandePanel(id,statut){
       else showToastNotif("Acceptée ! Navigue au bon mois pour voir les modifications","info");
     }else showToastNotif("Agent non trouvé","info");
   }
-  await ghPushFile(GH_DEMANDES,JSON.stringify(data,null,2),"Demande "+statut+" - "+demande.demandeur);
-  demandesDataCache=data;renderDemandesPanel();
+  // Mise a jour immediate du cache local AVANT le push GitHub
+  demandesDataCache=data;
+  // Rafraichir le panel et le badge immediatement
+  renderDemandesPanel();
+  checkNotifications();
+  // Puis pousser sur GitHub en arriere-plan
+  ghPushFile(GH_DEMANDES,JSON.stringify(data,null,2),"Demande "+statut+" - "+demande.demandeur);
 }
 
 function showToastNotif(msg,type){const t=document.getElementById("toast-notif");if(!t)return;t.textContent=msg;t.className="toast-notif "+type;setTimeout(()=>t.classList.add("show"),10);setTimeout(()=>t.classList.remove("show"),4000);}
