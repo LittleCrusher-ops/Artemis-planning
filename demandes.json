@@ -20,14 +20,14 @@
       "date_debut": "2026-08-20",
       "date_fin": "2026-08-20",
       "message": "",
-      "statut": "en_attente",
+      "statut": "refusee",
       "recu_le": "28/06/2026 à 17:08",
-      "traite_le": null
+      "traite_le": "28/06/2026 à 17:10"
     }
   ],
   "processed_ids": [
     "d_1782657768874",
     "d_1782659333713"
   ],
-  "updated_at": "2026-06-28T15:08:53.713Z"
+  "updated_at": "2026-06-28T15:10:21.112Z"
 }
