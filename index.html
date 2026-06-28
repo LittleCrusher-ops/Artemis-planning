@@ -1573,10 +1573,20 @@ async function traiterDemandePanel(id,statut){
   }
   // Mise a jour immediate du cache local AVANT le push GitHub
   demandesDataCache=data;
-  // Rafraichir le panel et le badge immediatement
-  renderDemandesPanel();
-  checkNotifications();
-  // Puis pousser sur GitHub en arriere-plan
+  // Rafraichir le panel et le badge immediatement sans recharger depuis GitHub
+  const _demandes=data.demandes||[];
+  const _filtered=currentPanelTab==="attente"?_demandes.filter(d=>d.statut==="en_attente").reverse():_demandes.filter(d=>d.statut!=="en_attente").reverse();
+  const _enAttente=_demandes.filter(d=>d.statut==="en_attente");
+  const _badge=document.getElementById("notif-badge");
+  if(_badge){if(_enAttente.length>0){_badge.textContent=_enAttente.length;_badge.classList.add("visible");}else _badge.classList.remove("visible");}
+  const mL={indisponibilite:"Indisponibilité",conge:"Congé payé",repos_compensateur:"RC"};
+  const mC={indisponibilite:"motif-indispo",conge:"motif-conge",repos_compensateur:"motif-rc"};
+  const _body=document.getElementById("panel-body");
+  if(_body){
+    if(!_filtered.length){_body.innerHTML="<div class='empty-panel'><div class='icon'>"+(currentPanelTab==="attente"?"✅":"📂")+"</div><div>"+(currentPanelTab==="attente"?"Aucune demande en attente":"Aucun historique")+"</div></div>";}
+    else{_body.innerHTML=_filtered.map(d=>{const actions=d.statut==="en_attente"?`<div class="demande-actions"><button class="btn-accept" onclick="traiterDemandePanel('${d.id}','acceptee')">✓ Accepter</button><button class="btn-refuse" onclick="traiterDemandePanel('${d.id}','refusee')">✕ Refuser</button></div>`:`<div><span class="statut-badge ${d.statut==="acceptee"?"statut-acceptee":"statut-refusee"}">${d.statut==="acceptee"?"✓ Acceptée":"✕ Refusée"}</span>${d.traite_le?`<span style="font-size:10px;color:#999;margin-left:8px;">le ${d.traite_le}</span>`:""}</div>`;return `<div class="demande-item ${d.statut}"><div class="demande-header"><div class="demande-name">${d.demandeur}</div><div class="demande-time">${d.recu_le}</div></div><span class="demande-motif ${mC[d.motif]||"motif-indispo"}">${mL[d.motif]||d.motif}</span><div class="demande-date">📅 ${d.dates_texte}</div>${d.message?`<div style="font-size:12px;color:#666;background:#f5f4f0;padding:8px;border-radius:6px;margin-bottom:8px;">${d.message}</div>`:""}${actions}</div>`;}).join("");}
+  }
+  // Pousser sur GitHub en arriere-plan
   ghPushFile(GH_DEMANDES,JSON.stringify(data,null,2),"Demande "+statut+" - "+demande.demandeur);
 }
 
