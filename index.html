@@ -31,6 +31,7 @@
 .sc-conge{background:#edfaf3;border-color:#a3e0bc;color:#1a7a3c;}
 .sc-maladie{background:#fdf2f1;border-color:#f5b5af;color:#c0392b;}
 .sc-indispo{background:#fdf8ec;border-color:#f0d98a;color:#9a6f00;}
+.sc-deleg{background:#f2f0fb;border-color:#c4b8f0;color:#5b3fa6;}
 
 body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;font-size:13px;}
 ::-webkit-scrollbar{width:5px;height:5px;}
@@ -484,6 +485,7 @@ const STATUS_SHIFTS=[
   {code:"conge",  label:"Congé payé",  col:"#1a7a3c",bg:"#edfaf3",bd:"#a3e0bc"},
   {code:"maladie",label:"Maladie",     col:"#c0392b",bg:"#fdf2f1",bd:"#f5b5af"},
   {code:"indispo",label:"Indisponible",col:"#9a6f00",bg:"#fdf8ec",bd:"#f0d98a"},
+  {code:"deleg",  label:"Délégation",  col:"#5b3fa6",bg:"#f2f0fb",bd:"#c4b8f0"},
 ];
 
 // Postes requis par jour avec rôle
@@ -554,7 +556,7 @@ const shiftEnd=s=>s.code==="custom"?s.end:findWS(s.code)?.end||"";
 const isOverflow=(st,en)=>{const e=toMin(en);return e>0&&e<toMin(st);};
 const isOvernight=s=>{if(!s)return false;const ws=findWS(s.code);return ws?isOverflow(ws.start,ws.end):false;};
 const calcDur=(st,en)=>{let d=toMin(en)-toMin(st);if(d<=0)d+=1440;return d/60;};
-const getDur=s=>{if(!s||!isWorkCode(s.code))return 0;const ws=findWS(s.code);if(!ws)return 0;return calcDur(ws.start,ws.end);};
+const getDur=s=>{if(!s)return 0;if(s.code==="custom")return s.start&&s.end?calcDur(s.start,s.end):0;if(!isWorkCode(s.code))return 0;const ws=findWS(s.code);if(!ws)return 0;return calcDur(ws.start,ws.end);};
 const shiftType=code=>SHIFT_TYPES[code]||"custom";
 
 const CONGE_H=35/6;
@@ -827,12 +829,32 @@ function openShiftModal(ei, d){
   html += '</div>';
 
   // Absences
-  html += `<div style="font-size:9px;color:var(--text3);font-family:var(--mono);margin-bottom:5px;">ABSENCES</div>`;
-  html += `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:12px;">`;
+  html += `<div style="font-size:9px;color:var(--text3);font-family:var(--mono);margin-bottom:5px;">ABSENCES & SPECIAL</div>`;
+  html += `<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:5px;margin-bottom:8px;">`;
   STATUS_SHIFTS.forEach(ss => {
     html += `<div onclick="ouvrirAbsenceModal(${ei},${d},'${ss.code}')" style="padding:8px 6px;border-radius:7px;border:1.5px solid ${ss.bd};background:${ss.bg};color:${ss.col};cursor:pointer;text-align:center;font-size:11px;font-weight:700;">${ss.label}</div>`;
   });
   html += `</div>`;
+
+  // Créneau personnalisé
+  html += `<div style="font-size:9px;color:var(--text3);font-family:var(--mono);margin-bottom:5px;">CRÉNEAU PERSONNALISÉ</div>`;
+  html += `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:12px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:flex-end;">
+      <div>
+        <div style="font-size:9px;color:var(--text3);font-family:var(--mono);margin-bottom:3px;">DÉBUT</div>
+        <input type="time" id="custom-start-${ei}-${d}" value="08:00" style="width:100%;padding:6px 8px;border:1px solid var(--border2);border-radius:6px;font-family:var(--mono);font-size:12px;background:var(--card);outline:none;color:var(--text);"/>
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--text3);font-family:var(--mono);margin-bottom:3px;">FIN</div>
+        <input type="time" id="custom-end-${ei}-${d}" value="16:00" style="width:100%;padding:6px 8px;border:1px solid var(--border2);border-radius:6px;font-family:var(--mono);font-size:12px;background:var(--card);outline:none;color:var(--text);"/>
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--text3);font-family:var(--mono);margin-bottom:3px;">LABEL</div>
+        <input type="text" id="custom-label-${ei}-${d}" value="" placeholder="Ex: Formation" style="width:100%;padding:6px 8px;border:1px solid var(--border2);border-radius:6px;font-family:var(--mono);font-size:12px;background:var(--card);outline:none;color:var(--text);"/>
+      </div>
+    </div>
+    <button onclick="saisirPersonnalise(${ei},${d})" style="width:100%;margin-top:8px;padding:8px;border-radius:7px;background:var(--or);color:#fff;border:none;font-weight:700;font-size:12px;cursor:pointer;">✓ Appliquer ce créneau</button>
+  </div>`;
 
   // Créer le modal
   const existing = document.getElementById("sm-modal");
@@ -864,6 +886,17 @@ function openShiftModal(ei, d){
 function saisirPoste(ei, d, code){
   document.getElementById("sm-modal")?.remove();
   shifts[skey(ei,d)] = {code};
+  triggerAutosave();
+  render();
+}
+
+function saisirPersonnalise(ei, d){
+  const start = document.getElementById("custom-start-"+ei+"-"+d)?.value || "08:00";
+  const end   = document.getElementById("custom-end-"+ei+"-"+d)?.value || "16:00";
+  const label = document.getElementById("custom-label-"+ei+"-"+d)?.value.trim() || "Perso";
+  if(!start || !end){ alert("Veuillez saisir les heures de début et de fin"); return; }
+  document.getElementById("sm-modal")?.remove();
+  shifts[skey(ei,d)] = {code:"custom", start, end, label};
   triggerAutosave();
   render();
 }
@@ -950,12 +983,18 @@ function render(){
 
 function cellHTML(s){
   if(!s)return"";
+  // Creneau personnalise
+  if(s.code==="custom"){
+    const dur=s.start&&s.end?calcDur(s.start,s.end):0;
+    const ov=s.start&&s.end?isOverflow(s.start,s.end):false;
+    return`<div class="shift-box sc-custom"><div class="shift-code" style="font-size:9px;">${s.label||"Perso"}</div><div class="shift-times">${s.start?fmtH(s.start)+"→"+fmtH(s.end):""} ${ov?'<span style="font-size:7px;">+1</span>':""}</div></div>`;
+  }
   const ss=findSS(s.code);
   if(ss)return`<div class="status-box sc-${s.code}"><div class="status-lbl">${ss.label.split(" ")[0]}</div></div>`;
   if(isWorkCode(s.code)){
     const ov=isOvernight(s);
     const ws=findWS(s.code);
-    return`<div class="shift-box sc-${s.code}"><div class="shift-code">${s.code}</div><div class="shift-times">${ws?fmtH(ws.start)+'→'+fmtH(ws.end):''} ${ov?'<span style="font-size:7px;">+1</span>':''}</div></div>`;
+    return`<div class="shift-box sc-${s.code}"><div class="shift-code">${s.code}</div><div class="shift-times">${ws?fmtH(ws.start)+"→"+fmtH(ws.end):""} ${ov?'<span style="font-size:7px;">+1</span>':""}</div></div>`;
   }
   return"";
 }
