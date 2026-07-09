@@ -269,6 +269,72 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
 .toast-notif.show{transform:translateY(0);opacity:1;}
 .toast-notif.success{background:var(--gr);}
 .toast-notif.info{background:var(--or);}
+
+/* ═══ ANIMATIONS PRO ═══ */
+@keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+@keyframes slideUp { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
+@keyframes slideDown { from{opacity:0;transform:translateY(-10px);} to{opacity:1;transform:translateY(0);} }
+@keyframes popIn { 0%{opacity:0;transform:scale(.92);} 100%{opacity:1;transform:scale(1);} }
+@keyframes pulseGlow { 0%,100%{box-shadow:0 0 0 0 rgba(212,81,12,.35);} 50%{box-shadow:0 0 0 6px rgba(212,81,12,0);} }
+@keyframes shimmer { 0%{background-position:-400px 0;} 100%{background-position:400px 0;} }
+@keyframes bounceIn { 0%{transform:scale(0);} 60%{transform:scale(1.15);} 100%{transform:scale(1);} }
+
+.overlay { animation: fadeIn .18s ease-out; }
+.modal { animation: popIn .22s cubic-bezier(.34,1.4,.64,1); }
+.demandes-panel.open { animation: slideInRight .25s cubic-bezier(.22,1,.36,1); }
+@keyframes slideInRight { from{transform:translateX(100%);} to{transform:translateX(0);} }
+.demande-item { animation: slideUp .3s ease-out backwards; }
+.demande-item:nth-child(1){animation-delay:.02s;}
+.demande-item:nth-child(2){animation-delay:.06s;}
+.demande-item:nth-child(3){animation-delay:.1s;}
+.demande-item:nth-child(4){animation-delay:.14s;}
+.demande-item:nth-child(5){animation-delay:.18s;}
+.notif-badge.visible { animation: bounceIn .4s cubic-bezier(.34,1.56,.64,1); }
+.td-day { transition: transform .12s ease, filter .12s ease, box-shadow .12s ease; }
+.td-day:hover { transform: scale(1.06); z-index:5; box-shadow: 0 4px 14px rgba(0,0,0,.14); border-radius:6px; }
+.td-day:active { transform: scale(.97); }
+.shift-box, .status-box { transition: transform .15s ease; }
+.tb-btn { transition: all .16s ease; }
+.tb-btn:hover { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,.1); }
+.tb-btn:active { transform: translateY(0); }
+.nav-btn { transition: all .15s ease; }
+.nav-btn:hover { transform: scale(1.1); }
+.btn-pri, .btn-sec, .btn-danger, .btn-accept, .btn-refuse, .btn-submit-ag { transition: all .18s ease; }
+.btn-pri:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(212,81,12,.35); }
+.agent-card { animation: slideUp .4s cubic-bezier(.22,1,.36,1); }
+.pwd-card { animation: popIn .25s cubic-bezier(.34,1.4,.64,1); }
+.toast-notif { transition: all .35s cubic-bezier(.22,1,.36,1); }
+.save-badge { transition: all .25s ease; }
+#planning-grid tbody tr { transition: background .15s ease; }
+#planning-grid tbody tr:hover td:not(.td-day):not(.td-total) { background: var(--bg2); }
+.month-lbl { transition: opacity .2s ease; }
+
+/* ═══ THEME SOMBRE ═══ */
+body.dark-mode {
+  --bg:#12131a;--card:#1b1d27;--bg2:#232633;--bg3:#2b2e3d;
+  --border:#31344a;--border2:#3d415c;
+  --text:#e8eaf2;--text2:#a5a9bf;--text3:#6c7089;
+  --or:#ff7a33;--or-lt:#2c2018;--or-bd:#5c3a1e;
+  --gr:#3ecf8e;--gr-lt:#16281f;--gr-bd:#1f4a34;
+  --re:#f76a5c;--re-lt:#2c1a18;--re-bd:#5c2a24;
+  --yl:#f5c842;--yl-lt:#2b2513;--yl-bd:#57491c;
+  --pu:#a68bfa;--pu-lt:#211c33;--pu-bd:#413566;
+  --we:#221f33;--hol:#2b2513;
+  --sh:0 1px 3px rgba(0,0,0,.4);--sh-lg:0 20px 48px rgba(0,0,0,.6);
+}
+body.dark-mode .sc-M,body.dark-mode .sc-MS{background:#2b2513;border-color:#8a6d00;color:#f5c842;}
+body.dark-mode .sc-JM,body.dark-mode .sc-JS,body.dark-mode .sc-JD{background:#16281f;border-color:#2e7d32;color:#7ee2a8;}
+body.dark-mode .sc-S1,body.dark-mode .sc-S2,body.dark-mode .sc-S2S,body.dark-mode .sc-SD,body.dark-mode .sc-R{background:#2c1622;border-color:#c2185b;color:#ff8fb3;}
+body.dark-mode .sc-N,body.dark-mode .sc-NVS,body.dark-mode .sc-ND{background:#1a237e;border-color:#5c6bc0;color:#c5cae9;}
+body.dark-mode .sc-conge{background:#16281f;border-color:#1f4a34;color:#3ecf8e;}
+body.dark-mode .sc-maladie{background:#2c1a18;border-color:#5c2a24;color:#f76a5c;}
+body.dark-mode .sc-indispo{background:#2b2513;border-color:#57491c;color:#f5c842;}
+body.dark-mode .sc-deleg{background:#211c33;border-color:#413566;color:#a68bfa;}
+body.dark-mode .sc-custom{background:#241a2e;border-color:#7b1fa2;color:#d69ae8;}
+body.dark-mode .agent-card,body.dark-mode .pwd-card{background:var(--card);color:var(--text);}
+body.dark-mode .form-ctrl,body.dark-mode .pwd-input{background:var(--bg2);color:var(--text);border-color:var(--border2);}
+body.dark-mode .demandes-panel{background:var(--card);}
+body.dark-mode .modal{background:var(--card);}
 </style>
 </head>
 <body>
@@ -374,14 +440,17 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
     <button class="nav-btn" onclick="nextMonth()">›</button>
   </div>
   <div class="tb-actions">
+    <button class="tb-btn" id="undo-btn" onclick="undoAction()" title="Annuler (Ctrl+Z)" style="opacity:.35;font-size:14px;padding:0 8px;">↩</button>
+    <button class="tb-btn" id="redo-btn" onclick="redoAction()" title="Rétablir (Ctrl+Y)" style="opacity:.35;font-size:14px;padding:0 8px;">↪</button>
     <div class="save-badge" id="save-badge"><div class="save-dot"></div><span id="save-txt">—</span></div>
     <button class="notif-btn" id="notif-btn" onclick="openDemandes()">🔔<span class="notif-badge" id="notif-badge"></span></button>
     <button class="tb-btn" onclick="exitPlanning()" style="background:var(--pu-lt);border-color:var(--pu-bd);color:var(--pu);">← Agents</button>
     <button class="tb-btn" onclick="openShiftsMgr()">⚙ Créneaux</button>
+    <button class="tb-btn" onclick="openThemePanel()" style="background:linear-gradient(135deg,#f2f0fb,#fff3ec);border-color:var(--pu-bd);">🎨 Thème</button>
     <button class="tb-btn" style="background:var(--pu-lt);border-color:var(--pu-bd);color:var(--pu);font-weight:700;" onclick="openAbsModal()">📋 Absences</button>
-    <button class="tb-btn" onclick="openProfiles()">👤 Profils</button>
-    <button class="tb-btn" onclick="saveJSON()">💾 Export</button>
-    <button class="tb-btn" onclick="document.getElementById('file-in').click()" title="Importer un fichier JSON depuis l'ancien planning ou une sauvegarde">📂 Importer JSON</button>
+    
+    
+    
     <input type="file" id="file-in" accept=".json" style="display:none" onchange="loadJSON(event)"/>
     <button class="tb-btn" onclick="exportPDF()">🖨 PDF</button>
     <button class="tb-btn danger" onclick="clearWork()">🗑 Effacer</button>
@@ -564,6 +633,7 @@ const getEffectiveDur=(s,d)=>{
   if(!s)return 0;
   if(isWorkCode(s.code))return getDur(s);
   if(s.code==="conge"){if(getDow(d)===0||isHoliday(d))return 0;return CONGE_H;}
+  if(s.code==="deleg"&&s.start&&s.end)return calcDur(s.start,s.end);
   return 0;
 };
 
@@ -769,7 +839,7 @@ function openShiftModal(ei, d){
           <div style="font-size:11px;font-weight:600;">${ws?getDur(exShift).toFixed(0)+"h":ss?ss.label:""}</div>
           ${isOvernight(exShift)?'<div style="font-size:9px;color:var(--or);">🌙 Passage minuit → lendemain physique</div>':""}
         </div>
-        <button onclick="document.getElementById('sm-modal').remove();delete shifts[skey(${ei},${d})];triggerAutosave();render();" style="padding:5px 10px;border-radius:6px;background:var(--re-lt);color:var(--re);border:1px solid var(--re-bd);font-size:11px;font-weight:600;cursor:pointer;">🗑 Supprimer</button>
+        <button onclick="document.getElementById('sm-modal').remove();pushHistory();delete shifts[skey(${ei},${d})];triggerAutosave();render();" style="padding:5px 10px;border-radius:6px;background:var(--re-lt);color:var(--re);border:1px solid var(--re-bd);font-size:11px;font-weight:600;cursor:pointer;">🗑 Supprimer</button>
       </div>
     </div>`;
   }
@@ -885,6 +955,7 @@ function openShiftModal(ei, d){
 
 function saisirPoste(ei, d, code){
   document.getElementById("sm-modal")?.remove();
+  pushHistory();
   shifts[skey(ei,d)] = {code};
   triggerAutosave();
   render();
@@ -896,6 +967,7 @@ function saisirPersonnalise(ei, d){
   const label = document.getElementById("custom-label-"+ei+"-"+d)?.value.trim() || "Perso";
   if(!start || !end){ alert("Veuillez saisir les heures de début et de fin"); return; }
   document.getElementById("sm-modal")?.remove();
+  pushHistory();
   shifts[skey(ei,d)] = {code:"custom", start, end, label};
   triggerAutosave();
   render();
@@ -911,6 +983,28 @@ function ouvrirAbsenceModal(ei, d, code){
   const box = modal.querySelector(".modal");
   const form = document.createElement("div");
   form.style.cssText = "position:absolute;inset:0;background:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;border-radius:14px;";
+
+  // DELEGATION : demander uniquement les horaires
+  if(code === "deleg"){
+    form.innerHTML = `<div style="background:var(--card);border-radius:10px;padding:16px;width:280px;border:1px solid ${ss.bd};">
+      <div style="font-size:13px;font-weight:700;color:${ss.col};margin-bottom:10px;">${ss.label}</div>
+      <div style="font-size:9px;color:${ss.col};font-family:var(--mono);margin-bottom:10px;">Heures comptabilisées selon les horaires saisis</div>
+      <div style="display:flex;gap:8px;margin-bottom:10px;">
+        <div style="flex:1;"><div style="font-size:9px;letter-spacing:.1em;color:var(--text3);font-family:var(--mono);margin-bottom:3px;">DÉBUT</div>
+          <input type="time" id="deleg-start" value="08:00" class="form-input"/></div>
+        <div style="flex:1;"><div style="font-size:9px;letter-spacing:.1em;color:var(--text3);font-family:var(--mono);margin-bottom:3px;">FIN</div>
+          <input type="time" id="deleg-end" value="16:00" class="form-input"/></div>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <button onclick="this.closest('[style*=absolute]').remove()" class="btn-sec" style="flex:1;padding:7px;font-size:11px;">Annuler</button>
+        <button onclick="appliquerDeleg(${ei},${d})" style="flex:2;padding:7px;border-radius:7px;background:${ss.col};color:#fff;border:none;font-weight:700;font-size:11px;cursor:pointer;">Appliquer</button>
+      </div>
+    </div>`;
+    box.style.position = "relative";
+    box.appendChild(form);
+    return;
+  }
+
   form.innerHTML = `<div style="background:var(--card);border-radius:10px;padding:16px;width:280px;border:1px solid ${ss.bd};">
     <div style="font-size:13px;font-weight:700;color:${ss.col};margin-bottom:10px;">${ss.label}</div>
     <div style="font-size:9px;color:${ss.col};font-family:var(--mono);margin-bottom:10px;">${code==="conge"?"5h50/jour ouvré":"0h comptabilisée"}</div>
@@ -929,12 +1023,24 @@ function ouvrirAbsenceModal(ei, d, code){
   box.appendChild(form);
 }
 
+function appliquerDeleg(ei, d){
+  const start = document.getElementById("deleg-start")?.value || "08:00";
+  const end = document.getElementById("deleg-end")?.value || "16:00";
+  pushHistory();
+  shifts[skey(ei,d)] = {code:"deleg", start, end};
+  document.getElementById("sm-modal")?.remove();
+  triggerAutosave();
+  render();
+}
+
 function suppAbsModal(ei,d){
   document.getElementById("sm-modal")?.remove();
+  pushHistory();
   delete shifts[skey(ei,d)];
   triggerAutosave();render();
 }
 function appliquerAbsM(ei, code){
+  pushHistory();
   const D = dim();
   const s = Math.max(1,Math.min(D,+document.getElementById("abs-s").value||1));
   const e = Math.max(s,Math.min(D,+document.getElementById("abs-e").value||1));
@@ -990,7 +1096,13 @@ function cellHTML(s){
     return`<div class="shift-box sc-custom"><div class="shift-code" style="font-size:9px;">${s.label||"Perso"}</div><div class="shift-times">${s.start?fmtH(s.start)+"→"+fmtH(s.end):""} ${ov?'<span style="font-size:7px;">+1</span>':""}</div></div>`;
   }
   const ss=findSS(s.code);
-  if(ss)return`<div class="status-box sc-${s.code}"><div class="status-lbl">${ss.label.split(" ")[0]}</div></div>`;
+  if(ss){
+    // Delegation avec horaires
+    if(s.code==="deleg"&&s.start&&s.end){
+      return`<div class="shift-box sc-deleg"><div class="shift-code" style="font-size:9px;">Déleg</div><div class="shift-times">${fmtH(s.start)}→${fmtH(s.end)}</div></div>`;
+    }
+    return`<div class="status-box sc-${s.code}"><div class="status-lbl">${ss.label.split(" ")[0]}</div></div>`;
+  }
   if(isWorkCode(s.code)){
     const ov=isOvernight(s);
     const ws=findWS(s.code);
@@ -1262,6 +1374,8 @@ function loadJSON(e){
   r.readAsText(file);e.target.value="";
 }
 function clearWork(){
+  if(!confirm("Effacer tous les postes de travail du mois ?"))return;
+  pushHistory();
   const D=dim();let n=0;
   emps.forEach((_,ei)=>{for(let d=1;d<=D;d++){const k=skey(ei,d);const s=shifts[k];if(s&&isWorkCode(s.code)){delete shifts[k];n++;}}});
   triggerAutosave();render();
@@ -1425,6 +1539,7 @@ function renderAbsList(){
 
 function appliquerToutesAbsences(){
   if(!absBuffer.length){ closeAbsModal(); return; }
+  pushHistory();
   const D = dim();
   absBuffer.forEach(ab => {
     for(let d = ab.from; d <= ab.to; d++){
@@ -1604,6 +1719,7 @@ async function traiterDemandePanel(id,statut){
     const nomR=demande.demandeur.toUpperCase().trim();
     const agentIdx=emps.findIndex(e=>{const n=(e.name||"").toUpperCase();return n.includes(nomR)||nomR.includes(n.split(" ")[0]);});
     if(agentIdx!==-1){
+      pushHistory();
       const start=new Date(demande.date_debut+"T12:00:00"),end=new Date((demande.date_fin||demande.date_debut)+"T12:00:00");
       let applied=0;
       for(let dt=new Date(start);dt<=end;dt.setDate(dt.getDate()+1)){
@@ -1640,6 +1756,182 @@ async function traiterDemandePanel(id,statut){
 function showToastNotif(msg,type){const t=document.getElementById("toast-notif");if(!t)return;t.textContent=msg;t.className="toast-notif "+type;setTimeout(()=>t.classList.add("show"),10);setTimeout(()=>t.classList.remove("show"),4000);}
 
 setInterval(()=>{if(document.getElementById("planning-page")?.classList.contains("active"))checkNotifications();},60000);
+
+
+
+// ════════════════════════════════════════════════════════
+// PANNEAU PERSONNALISATION / THEME
+// ════════════════════════════════════════════════════════
+let customTheme = JSON.parse(localStorage.getItem("artemis_theme")||"{}");
+
+function applyTheme(){
+  // Mode sombre
+  if(customTheme.darkMode) document.body.classList.add("dark-mode");
+  else document.body.classList.remove("dark-mode");
+  // Couleur accent
+  if(customTheme.accentColor){
+    document.documentElement.style.setProperty("--or", customTheme.accentColor);
+  }
+  // Couleurs personnalisees des types de postes
+  if(customTheme.shiftColors){
+    let styleEl = document.getElementById("custom-shift-colors");
+    if(!styleEl){ styleEl = document.createElement("style"); styleEl.id = "custom-shift-colors"; document.head.appendChild(styleEl); }
+    let css = "";
+    Object.entries(customTheme.shiftColors).forEach(([type, color]) => {
+      const selectors = {
+        matin: ".sc-M,.sc-MS", jour: ".sc-JM,.sc-JS,.sc-JD",
+        soir: ".sc-S1,.sc-S2,.sc-S2S,.sc-SD,.sc-R", nuit: ".sc-N,.sc-NVS,.sc-ND"
+      }[type];
+      if(selectors && color) css += selectors + "{background:" + color + "22;border-color:" + color + ";color:" + color + ";}";
+    });
+    styleEl.textContent = css;
+  }
+}
+
+function openThemePanel(){
+  const existing = document.getElementById("theme-modal");
+  if(existing){ existing.remove(); return; }
+  const overlay = document.createElement("div");
+  overlay.id = "theme-modal";
+  overlay.className = "overlay";
+  overlay.onclick = e => { if(e.target===overlay) overlay.remove(); };
+  const box = document.createElement("div");
+  box.className = "modal modal-sm";
+  box.onclick = e => e.stopPropagation();
+  box.innerHTML = `
+    <div class="modal-head">
+      <div><div class="modal-title">🎨 Personnalisation</div>
+      <div class="modal-sub">Adapte l'apparence du planning à ton goût</div></div>
+      <button class="modal-close" onclick="document.getElementById('theme-modal').remove()">×</button>
+    </div>
+    <div class="section-lbl">MODE D'AFFICHAGE</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
+      <button onclick="setDarkMode(false)" style="padding:14px 8px;border-radius:10px;border:2px solid ${!customTheme.darkMode?'var(--or)':'var(--border)'};background:#f5f4f0;color:#1a1917;font-weight:700;font-size:12px;cursor:pointer;">☀️ Clair</button>
+      <button onclick="setDarkMode(true)" style="padding:14px 8px;border-radius:10px;border:2px solid ${customTheme.darkMode?'var(--or)':'var(--border)'};background:#1b1d27;color:#e8eaf2;font-weight:700;font-size:12px;cursor:pointer;">🌙 Sombre</button>
+    </div>
+    <div class="section-lbl">COULEUR D'ACCENT</div>
+    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+      ${["#d4510c","#2563eb","#7c3aed","#059669","#dc2626","#db2777","#0891b2","#ca8a04"].map(c =>
+        `<div onclick="setAccent('${c}')" style="width:36px;height:36px;border-radius:50%;background:${c};cursor:pointer;border:3px solid ${customTheme.accentColor===c?'var(--text)':'transparent'};transition:transform .15s;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'"></div>`
+      ).join("")}
+    </div>
+    <div class="section-lbl">COULEURS DES POSTES</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
+      ${[["matin","Matin (M, MS)","#f5c842"],["jour","Jour (JM, JS, JD)","#66bb6a"],["soir","Soir (S1, S2, SD...)","#e91e63"],["nuit","Nuit (N, NVS, ND)","#3949ab"]].map(([type,label,def]) => `
+        <div style="display:flex;align-items:center;gap:10px;">
+          <input type="color" value="${(customTheme.shiftColors||{})[type]||def}" onchange="setShiftColor('${type}',this.value)" style="width:36px;height:30px;border:none;border-radius:6px;cursor:pointer;background:transparent;"/>
+          <span style="font-size:12px;flex:1;">${label}</span>
+          <button onclick="resetShiftColor('${type}')" style="font-size:10px;padding:3px 8px;border-radius:5px;border:1px solid var(--border);background:var(--bg2);color:var(--text3);cursor:pointer;">Défaut</button>
+        </div>`).join("")}
+    </div>
+    <div class="btn-row">
+      <button class="btn-sec" onclick="resetTheme()">Tout réinitialiser</button>
+      <button class="btn-pri" onclick="document.getElementById('theme-modal').remove()">✓ Terminé</button>
+    </div>`;
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+}
+
+function setDarkMode(on){
+  customTheme.darkMode = on;
+  localStorage.setItem("artemis_theme", JSON.stringify(customTheme));
+  applyTheme();
+  document.getElementById("theme-modal")?.remove();
+  openThemePanel();
+}
+function setAccent(color){
+  customTheme.accentColor = color;
+  localStorage.setItem("artemis_theme", JSON.stringify(customTheme));
+  applyTheme();
+  document.getElementById("theme-modal")?.remove();
+  openThemePanel();
+}
+function setShiftColor(type, color){
+  if(!customTheme.shiftColors) customTheme.shiftColors = {};
+  customTheme.shiftColors[type] = color;
+  localStorage.setItem("artemis_theme", JSON.stringify(customTheme));
+  applyTheme();
+}
+function resetShiftColor(type){
+  if(customTheme.shiftColors) delete customTheme.shiftColors[type];
+  localStorage.setItem("artemis_theme", JSON.stringify(customTheme));
+  const el = document.getElementById("custom-shift-colors");
+  if(el) el.remove();
+  applyTheme();
+  document.getElementById("theme-modal")?.remove();
+  openThemePanel();
+}
+function resetTheme(){
+  customTheme = {};
+  localStorage.removeItem("artemis_theme");
+  document.body.classList.remove("dark-mode");
+  document.documentElement.style.removeProperty("--or");
+  const el = document.getElementById("custom-shift-colors");
+  if(el) el.remove();
+  document.getElementById("theme-modal")?.remove();
+  openThemePanel();
+}
+applyTheme();
+
+// ════════════════════════════════════════════════════════
+// SYSTEME UNDO / REDO
+// ════════════════════════════════════════════════════════
+let historyStack = [];
+let redoStack = [];
+const MAX_HISTORY = 50;
+
+function snapshotState(){
+  return JSON.stringify({shifts, emps: emps.map(e=>({...e}))});
+}
+
+function pushHistory(){
+  historyStack.push(snapshotState());
+  if(historyStack.length > MAX_HISTORY) historyStack.shift();
+  redoStack = []; // toute nouvelle action efface le redo
+  updateUndoButtons();
+}
+
+function restoreState(snap){
+  try{
+    const d = JSON.parse(snap);
+    shifts = d.shifts || {};
+    if(d.emps) emps = d.emps;
+    triggerAutosave();
+    render();
+  }catch(e){}
+}
+
+function undoAction(){
+  if(!historyStack.length) return;
+  redoStack.push(snapshotState());
+  const snap = historyStack.pop();
+  restoreState(snap);
+  updateUndoButtons();
+  showToastNotif("↩ Action annulée","info");
+}
+
+function redoAction(){
+  if(!redoStack.length) return;
+  historyStack.push(snapshotState());
+  const snap = redoStack.pop();
+  restoreState(snap);
+  updateUndoButtons();
+  showToastNotif("↪ Action rétablie","info");
+}
+
+function updateUndoButtons(){
+  const ub = document.getElementById("undo-btn");
+  const rb = document.getElementById("redo-btn");
+  if(ub){ ub.disabled = !historyStack.length; ub.style.opacity = historyStack.length ? "1" : ".35"; }
+  if(rb){ rb.disabled = !redoStack.length; rb.style.opacity = redoStack.length ? "1" : ".35"; }
+}
+
+// Raccourcis clavier Ctrl+Z / Ctrl+Y
+document.addEventListener("keydown", e => {
+  if(!document.getElementById("planning-page")?.classList.contains("active")) return;
+  if((e.ctrlKey||e.metaKey) && !e.shiftKey && e.key.toLowerCase()==="z"){ e.preventDefault(); undoAction(); }
+  if((e.ctrlKey||e.metaKey) && (e.key.toLowerCase()==="y" || (e.shiftKey && e.key.toLowerCase()==="z"))){ e.preventDefault(); redoAction(); }
+});
 
 // ════════════════════════════════════════════════════════
 // INIT
