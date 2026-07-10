@@ -45,11 +45,6 @@
       "name": "Aziz Karim",
       "badge": "SSIAP1/2",
       "role": "Agent polyvalent"
-    },
-    {
-      "name": "",
-      "badge": "SSIAP1",
-      "role": "Agent"
     }
   ],
   "shifts": {
@@ -2917,5 +2912,5 @@
     ],
     "9": []
   },
-  "lastModified": 1783689191114
+  "lastModified": 1783689214290
 }
