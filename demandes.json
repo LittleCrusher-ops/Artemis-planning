@@ -140,9 +140,21 @@
       "date_debut": "2026-09-14",
       "date_fin": "2026-09-27",
       "message": "",
-      "statut": "acceptee",
+      "statut": "en_attente",
       "recu_le": "20/07/2026 à 21:52",
-      "traite_le": "20/07/2026 à 21:59"
+      "traite_le": null
+    },
+    {
+      "id": "d_1784577598206",
+      "demandeur": "Aziz Karim",
+      "motif": "indisponibilite",
+      "dates_texte": "du 12 Septembre 2026 au 13 Septembre 2026",
+      "date_debut": "2026-09-12",
+      "date_fin": "2026-09-13",
+      "message": "",
+      "statut": "en_attente",
+      "recu_le": "20/07/2026 à 21:59",
+      "traite_le": null
     }
   ],
   "processed_ids": [
@@ -157,7 +169,8 @@
     "d_1783952960485",
     "d_1784038020241",
     "d_1784574161061",
-    "d_1784577173166"
+    "d_1784577173166",
+    "d_1784577598206"
   ],
-  "updated_at": "2026-07-20T19:59:31.597Z"
+  "updated_at": "2026-07-20T19:59:58.206Z"
 }
