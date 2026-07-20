@@ -131,6 +131,18 @@
       "statut": "acceptee",
       "recu_le": "20/07/2026 à 21:02",
       "traite_le": "20/07/2026 à 21:08"
+    },
+    {
+      "id": "d_1784577173166",
+      "demandeur": "Aziz Karim",
+      "motif": "conge",
+      "dates_texte": "du 14 Septembre 2026 au 27 Septembre 2026",
+      "date_debut": "2026-09-14",
+      "date_fin": "2026-09-27",
+      "message": "",
+      "statut": "en_attente",
+      "recu_le": "20/07/2026 à 21:52",
+      "traite_le": null
     }
   ],
   "processed_ids": [
@@ -144,7 +156,8 @@
     "d_1782678186450",
     "d_1783952960485",
     "d_1784038020241",
-    "d_1784574161061"
+    "d_1784574161061",
+    "d_1784577173166"
   ],
-  "updated_at": "2026-07-20T19:08:47.414Z"
+  "updated_at": "2026-07-20T19:52:53.166Z"
 }
