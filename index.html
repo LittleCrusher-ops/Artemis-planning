@@ -1635,17 +1635,37 @@ async function submitDemande() {
   };
   const btn = document.querySelector(".btn-submit-ag");
   btn.textContent="Envoi en cours..."; btn.disabled=true;
-  let existing = {demandes:[], processed_ids:[]};
-  try {
-    const r = await fetch("https://raw.githubusercontent.com/"+GH_USER+"/"+GH_REPO+"/main/"+GH_DEMANDES+"?t="+Date.now());
-    if(r.ok) existing = await r.json();
-  } catch(e) {}
-  existing.demandes.push(demande); existing.processed_ids.push(demande.id); existing.updated_at = now.toISOString();
   const savedToken = localStorage.getItem("artemis_gh_token")||"";
   let ok = false;
-  if(savedToken) { const tmp=GH_TOKEN; GH_TOKEN=savedToken; ok=await ghPushFile(GH_DEMANDES, JSON.stringify(existing,null,2), "Demande de "+nom); GH_TOKEN=tmp; }
-  document.getElementById("agent-form").style.display="none";
-  document.getElementById("agent-success").style.display="block";
+  if(savedToken) {
+    const tmp=GH_TOKEN; GH_TOKEN=savedToken;
+    // Reessayer jusqu'a 4 fois en cas de conflit d'ecriture (deux demandes rapprochees)
+    for(let attempt=0; attempt<4 && !ok; attempt++){
+      // Recharger la version la plus recente juste avant d'ecrire
+      let existing = {demandes:[], processed_ids:[]};
+      try {
+        const r = await fetch("https://raw.githubusercontent.com/"+GH_USER+"/"+GH_REPO+"/main/"+GH_DEMANDES+"?t="+Date.now());
+        if(r.ok) existing = await r.json();
+      } catch(e) {}
+      if(!existing.demandes) existing.demandes = [];
+      if(!existing.processed_ids) existing.processed_ids = [];
+      // Eviter les doublons si une tentative precedente a partiellement reussi
+      if(!existing.demandes.some(x=>x.id===demande.id)){
+        existing.demandes.push(demande);
+        existing.processed_ids.push(demande.id);
+      }
+      existing.updated_at = new Date().toISOString();
+      ok = await ghPushFile(GH_DEMANDES, JSON.stringify(existing,null,2), "Demande de "+nom+" ("+motif+")");
+      if(!ok) await new Promise(res=>setTimeout(res, 600)); // attendre avant de reessayer
+    }
+    GH_TOKEN=tmp;
+  }
+  if(ok){
+    document.getElementById("agent-form").style.display="none";
+    document.getElementById("agent-success").style.display="block";
+  } else {
+    alert("La demande n'a pas pu être envoyée (problème de connexion). Merci de réessayer dans quelques instants.");
+  }
   btn.textContent="📤 Envoyer ma demande"; btn.disabled=false;
 }
 function resetAgentForm() {
