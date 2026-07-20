@@ -3249,10 +3249,13 @@
       "start": "17:00",
       "end": "01:00",
       "label": "Perso"
+    },
+    "1_2026_9_21": {
+      "code": "M"
     }
   },
   "year": 2026,
-  "month": 6,
+  "month": 9,
   "workShifts": [
     {
       "code": "M",
@@ -3405,5 +3408,5 @@
     ],
     "9": []
   },
-  "lastModified": 1784572938339
+  "lastModified": 1784572952535
 }
