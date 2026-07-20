@@ -3249,10 +3249,16 @@
       "start": "17:00",
       "end": "01:00",
       "label": "Perso"
+    },
+    "8_2026_8_12": {
+      "code": "indispo"
+    },
+    "8_2026_8_13": {
+      "code": "indispo"
     }
   },
   "year": 2026,
-  "month": 9,
+  "month": 8,
   "workShifts": [
     {
       "code": "M",
@@ -3405,5 +3411,5 @@
     ],
     "9": []
   },
-  "lastModified": 1784572971275
+  "lastModified": 1784573997698
 }
