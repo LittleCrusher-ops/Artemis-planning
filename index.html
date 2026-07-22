@@ -1328,7 +1328,7 @@ function triggerAutosave(){
       txt.textContent=_n.getHours()+":"+String(_n.getMinutes()).padStart(2,"0")+(_ok?" ☁":" 💾");
       setTimeout(()=>{badge.className="save-badge";txt.textContent=_ok?"Synchronisé":"Local only";},3500);
     }catch(e){txt.textContent="Erreur";}
-  },600);
+  },1500);
 }
 async function loadFromStorage(forceRemote){
   const badge=document.getElementById("save-badge"),txt=document.getElementById("save-txt");
@@ -1577,16 +1577,22 @@ async function ghGetSha(file) {
   } catch(e) { return null; }
 }
 async function ghPushFile(file, content, message) {
-  const sha = await ghGetSha(file);
   const b64 = btoa(unescape(encodeURIComponent(content)));
-  const body = { message, content: b64, branch: "main" };
-  if (sha) body.sha = sha;
-  const r = await fetch("https://api.github.com/repos/"+GH_USER+"/"+GH_REPO+"/contents/"+file, {
-    method: "PUT",
-    headers: { Authorization: "token "+GH_TOKEN, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
-    body: JSON.stringify(body)
-  });
-  return r.ok;
+  // Reessayer en cas de conflit 409 (SHA perime : deux ecritures rapprochees)
+  for(let attempt=0; attempt<5; attempt++){
+    const sha = await ghGetSha(file);
+    const body = { message, content: b64, branch: "main" };
+    if (sha) body.sha = sha;
+    const r = await fetch("https://api.github.com/repos/"+GH_USER+"/"+GH_REPO+"/contents/"+file, {
+      method: "PUT",
+      headers: { Authorization: "token "+GH_TOKEN, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+    if(r.ok) return true;
+    if(r.status === 409){ await new Promise(res=>setTimeout(res, 500)); continue; } // conflit : on recharge le SHA et on reessaie
+    return false; // autre erreur (401, etc.) : inutile de reessayer
+  }
+  return false;
 }
 async function ghPush(content, message) { return ghPushFile(GH_FILE, content, message); }
 async function ghLoadFile(file) {
