@@ -3957,8 +3957,13 @@
       "apres": "N",
       "force": 300,
       "pas": "S1"
+    },
+    {
+      "type": "we_complet",
+      "role": "tous",
+      "force": 300
     }
   ],
   "schoolHolidays": [],
-  "lastModified": 1785787428829
+  "lastModified": 1785787461062
 }
