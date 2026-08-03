@@ -3482,7 +3482,8 @@
       "codes": [
         "S1",
         "R",
-        "JM"
+        "JM",
+        "SD"
       ],
       "exclusif": false,
       "maxSemaine": null
@@ -3540,5 +3541,5 @@
     }
   ],
   "schoolHolidays": [],
-  "lastModified": 1785787073236
+  "lastModified": 1785787098183
 }
