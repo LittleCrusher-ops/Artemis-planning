@@ -3481,7 +3481,8 @@
     "6": {
       "codes": [
         "S1",
-        "R"
+        "R",
+        "JM"
       ],
       "exclusif": false,
       "maxSemaine": null
@@ -3539,5 +3540,5 @@
     }
   ],
   "schoolHolidays": [],
-  "lastModified": 1785787059240
+  "lastModified": 1785787073236
 }
