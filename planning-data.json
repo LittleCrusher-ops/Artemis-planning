@@ -3659,6 +3659,22 @@
     },
     "5_2026_9_9": {
       "code": "NVS"
+    },
+    "5_2026_8_8": {
+      "code": "custom",
+      "start": "08:30",
+      "end": "12:00",
+      "segments": [
+        {
+          "start": "08:30",
+          "end": "12:00"
+        },
+        {
+          "start": "13:00",
+          "end": "16:30"
+        }
+      ],
+      "label": "Mac SST"
     }
   },
   "year": 2026,
@@ -3983,5 +3999,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1785794949313
+  "lastModified": 1785795040795
 }
