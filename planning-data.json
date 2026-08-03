@@ -3424,7 +3424,8 @@
   "genPrefs": {
     "0": {
       "codes": [
-        "M"
+        "M",
+        "MS"
       ],
       "exclusif": false,
       "maxSemaine": null
@@ -3489,5 +3490,5 @@
     }
   ],
   "schoolHolidays": [],
-  "lastModified": 1785786925196
+  "lastModified": 1785786928634
 }
