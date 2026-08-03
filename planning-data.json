@@ -3439,7 +3439,8 @@
     },
     "2": {
       "codes": [
-        "M"
+        "M",
+        "MS"
       ],
       "exclusif": false,
       "maxSemaine": null
@@ -3497,5 +3498,5 @@
     }
   ],
   "schoolHolidays": [],
-  "lastModified": 1785786931840
+  "lastModified": 1785786934707
 }
