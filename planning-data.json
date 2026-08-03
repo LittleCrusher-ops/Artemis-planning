@@ -3573,8 +3573,14 @@
       "force": 300,
       "dow": 6,
       "alors": "SD"
+    },
+    {
+      "type": "eviter",
+      "apres": "N",
+      "force": 300,
+      "pas": "S1"
     }
   ],
   "schoolHolidays": [],
-  "lastModified": 1785787298314
+  "lastModified": 1785787414833
 }
