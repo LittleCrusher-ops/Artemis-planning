@@ -3468,7 +3468,8 @@
         "JM",
         "JS",
         "JD",
-        "NVS"
+        "NVS",
+        "ND"
       ],
       "exclusif": false,
       "maxSemaine": null
@@ -3526,5 +3527,5 @@
     }
   ],
   "schoolHolidays": [],
-  "lastModified": 1785787020045
+  "lastModified": 1785787024946
 }
