@@ -3421,7 +3421,15 @@
     ],
     "9": []
   },
-  "genPrefs": {},
+  "genPrefs": {
+    "0": {
+      "codes": [
+        "M"
+      ],
+      "exclusif": false,
+      "maxSemaine": null
+    }
+  },
   "genConstraints": {
     "reposMin": 11,
     "joursConsecutifs": 6,
@@ -3474,5 +3482,5 @@
     }
   ],
   "schoolHolidays": [],
-  "lastModified": 1785786913369
+  "lastModified": 1785786921151
 }
