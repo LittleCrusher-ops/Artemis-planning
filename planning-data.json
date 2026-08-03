@@ -3494,7 +3494,8 @@
       "codes": [
         "JM",
         "JS",
-        "JD"
+        "JD",
+        "S1"
       ],
       "exclusif": false,
       "maxSemaine": null
@@ -3552,5 +3553,5 @@
     }
   ],
   "schoolHolidays": [],
-  "lastModified": 1785787145694
+  "lastModified": 1785787155067
 }
