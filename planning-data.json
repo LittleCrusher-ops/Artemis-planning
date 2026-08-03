@@ -3505,7 +3505,8 @@
     },
     "8": {
       "codes": [
-        "JM"
+        "JM",
+        "NVS"
       ],
       "exclusif": false,
       "maxSemaine": null
@@ -3563,5 +3564,5 @@
     }
   ],
   "schoolHolidays": [],
-  "lastModified": 1785787174508
+  "lastModified": 1785787178837
 }
