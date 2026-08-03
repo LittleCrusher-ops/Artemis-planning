@@ -3483,7 +3483,8 @@
         "S1",
         "R",
         "JM",
-        "SD"
+        "SD",
+        "JD"
       ],
       "exclusif": false,
       "maxSemaine": null
@@ -3541,5 +3542,5 @@
     }
   ],
   "schoolHolidays": [],
-  "lastModified": 1785787098183
+  "lastModified": 1785787106789
 }
