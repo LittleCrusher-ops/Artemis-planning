@@ -3964,6 +3964,12 @@
       "force": 300
     }
   ],
-  "schoolHolidays": [],
-  "lastModified": 1785787514978
+  "schoolHolidays": [
+    {
+      "start": "2026-10-17",
+      "end": "2026-11-01",
+      "label": "Toussaint"
+    }
+  ],
+  "lastModified": 1785787577145
 }
