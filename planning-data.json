@@ -3436,6 +3436,13 @@
       ],
       "exclusif": false,
       "maxSemaine": null
+    },
+    "2": {
+      "codes": [
+        "M"
+      ],
+      "exclusif": false,
+      "maxSemaine": null
     }
   },
   "genConstraints": {
@@ -3490,5 +3497,5 @@
     }
   ],
   "schoolHolidays": [],
-  "lastModified": 1785786928634
+  "lastModified": 1785786931840
 }
