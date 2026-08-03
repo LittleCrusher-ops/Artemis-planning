@@ -32,6 +32,13 @@
 .sc-maladie{background:#fdf2f1;border-color:#f5b5af;color:#c0392b;}
 .sc-indispo{background:#fdf8ec;border-color:#f0d98a;color:#9a6f00;}
 .sc-deleg{background:#f2f0fb;border-color:#c4b8f0;color:#5b3fa6;}
+.sc-conge_exc{background:#e6f7f7;border-color:#9fdcdc;color:#0d6e6e;}
+.th-day.vac{background:#e0f7fa;}
+.th-day.vac.we{background:#c9ecf0;}
+.th-day.vac .dow,.th-day.vac .dnum{color:#00838f;}
+.td-day.vac{background:#f0fbfd;}
+.td-day.vac.we{background:#e0f7fa;}
+.vac-strip{height:3px;background:#00acc1;border-radius:2px;margin-top:1px;}
 
 body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;font-size:13px;}
 ::-webkit-scrollbar{width:5px;height:5px;}
@@ -330,6 +337,7 @@ body.dark-mode .sc-conge{background:#16281f;border-color:#1f4a34;color:#3ecf8e;}
 body.dark-mode .sc-maladie{background:#2c1a18;border-color:#5c2a24;color:#f76a5c;}
 body.dark-mode .sc-indispo{background:#2b2513;border-color:#57491c;color:#f5c842;}
 body.dark-mode .sc-deleg{background:#211c33;border-color:#413566;color:#a68bfa;}
+.sc-conge_exc{background:#0f2b2b;border-color:#1e5555;color:#4dd4d4;}
 body.dark-mode .sc-custom{background:#241a2e;border-color:#7b1fa2;color:#d69ae8;}
 body.dark-mode .agent-card,body.dark-mode .pwd-card{background:var(--card);color:var(--text);}
 body.dark-mode .form-ctrl,body.dark-mode .pwd-input{background:var(--bg2);color:var(--text);border-color:var(--border2);}
@@ -447,6 +455,8 @@ body.dark-mode .modal{background:var(--card);}
     <button class="tb-btn" onclick="exitPlanning()" style="background:var(--pu-lt);border-color:var(--pu-bd);color:var(--pu);">← Agents</button>
     <button class="tb-btn" onclick="openShiftsMgr()">⚙ Créneaux</button>
     <button class="tb-btn" onclick="openThemePanel()" style="background:linear-gradient(135deg,#f2f0fb,#fff3ec);border-color:var(--pu-bd);">🎨 Thème</button>
+    <button class="tb-btn" style="background:linear-gradient(135deg,var(--or-lt),var(--gr-lt));border-color:var(--or-bd);color:var(--or);font-weight:700;" onclick="openGenerateur()">🤖 Générer</button>
+    <button class="tb-btn" style="background:#e0f7fa;border-color:#80deea;color:#00838f;font-weight:700;" onclick="openVacancesModal()">🏖 Vacances scol.</button>
     <button class="tb-btn" style="background:var(--pu-lt);border-color:var(--pu-bd);color:var(--pu);font-weight:700;" onclick="openAbsModal()">📋 Absences</button>
     
     
@@ -468,7 +478,10 @@ body.dark-mode .modal{background:var(--card);}
       <span class="chip">⏱ 11h repos min</span>
       <span class="chip">📅 1-2 WE repos/mois</span>
       <span class="chip">📆 Max 6j physiques</span>
-      <span class="chip">⚖️ Max 48h/semaine</span>
+      <span class="chip">⚖️ Max 48h / 7 jours glissants</span>
+      <span class="chip">😴 35h repos consécutif/7j</span>
+      <span class="chip">🕛 Max 12h/jour civil</span>
+      <span class="chip">🛌 WE repos = zéro présence physique (débords minuit inclus)</span>
       <span class="chip">🌙 Overnight = J+1 physique</span>
     </div>
     <p class="footer" id="footer-txt"></p>
@@ -555,6 +568,7 @@ const STATUS_SHIFTS=[
   {code:"maladie",label:"Maladie",     col:"#c0392b",bg:"#fdf2f1",bd:"#f5b5af"},
   {code:"indispo",label:"Indisponible",col:"#9a6f00",bg:"#fdf8ec",bd:"#f0d98a"},
   {code:"deleg",  label:"Délégation",  col:"#5b3fa6",bg:"#f2f0fb",bd:"#c4b8f0"},
+  {code:"conge_exc",label:"Congé exceptionnel",col:"#0d6e6e",bg:"#e6f7f7",bd:"#9fdcdc"},
 ];
 
 // Postes requis par jour avec rôle
@@ -625,14 +639,14 @@ const shiftEnd=s=>s.code==="custom"?s.end:findWS(s.code)?.end||"";
 const isOverflow=(st,en)=>{const e=toMin(en);return e>0&&e<toMin(st);};
 const isOvernight=s=>{if(!s)return false;const ws=findWS(s.code);return ws?isOverflow(ws.start,ws.end):false;};
 const calcDur=(st,en)=>{let d=toMin(en)-toMin(st);if(d<=0)d+=1440;return d/60;};
-const getDur=s=>{if(!s)return 0;if(s.code==="custom")return s.start&&s.end?calcDur(s.start,s.end):0;if(!isWorkCode(s.code))return 0;const ws=findWS(s.code);if(!ws)return 0;return calcDur(ws.start,ws.end);};
+const getDur=s=>{if(!s)return 0;if(s.code==="custom"){const segs=s.segments&&s.segments.length?s.segments:(s.start&&s.end?[{start:s.start,end:s.end}]:[]);return segs.reduce((sum,sg)=>sum+(sg.start&&sg.end?calcDur(sg.start,sg.end):0),0);}if(!isWorkCode(s.code))return 0;const ws=findWS(s.code);if(!ws)return 0;return calcDur(ws.start,ws.end);};
 const shiftType=code=>SHIFT_TYPES[code]||"custom";
 
 const CONGE_H=35/6;
 const getEffectiveDur=(s,d)=>{
   if(!s)return 0;
   if(isWorkCode(s.code))return getDur(s);
-  if(s.code==="conge"){if(getDow(d)===0||isHoliday(d))return 0;return CONGE_H;}
+  if(s.code==="conge"||s.code==="conge_exc"){if(getDow(d)===0||isHoliday(d))return 0;return CONGE_H;}
   if(s.code==="deleg"&&s.start&&s.end)return calcDur(s.start,s.end);
   return 0;
 };
@@ -650,6 +664,9 @@ const isHoliday=d=>!!holidays[`${month}-${d}`];
 const restMinutesBetween=(ps,ns)=>{
   if(!ps||!ns)return Infinity;
   let peMin=toMin(shiftEnd(ps));
+  // Fin a "00:00" = minuit du MEME jour (1440), pas 0h de la veille !
+  // Sans ca, un S1 (18h->00h) suivi d'un M (06h) donnait 30h de repos au lieu de 6h.
+  if(peMin===0 && toMin(shiftStart(ps))>0) peMin=1440;
   if(isOvernight(ps))peMin+=1440;
   return toMin(shiftStart(ns))+1440-peMin;
 };
@@ -719,6 +736,39 @@ const codeCouvreSlot=(code,poste)=>code===poste.code||(poste.alt&&poste.alt.incl
 const codesSlot=(poste)=>[poste.code,...(poste.alt||[])];
 
 // ════════════════════════════════════════════════════════
+// REPOS HEBDOMADAIRE — plus grande plage de repos consecutif
+// dans une fenetre de 7 jours [s, s+6], en tenant compte
+// des horaires reels des postes (overnights inclus)
+// ════════════════════════════════════════════════════════
+function reposMaxFenetre(ei, s, d, cand){
+  const D = dim();
+  const LEN = 7*1440; // fenetre en minutes
+  const intervals = [];
+  // s-1 inclus pour capter l'overnight de la veille qui deborde dans la fenetre
+  for(let x = s-1; x <= s+6; x++){
+    if(x<1 || x>D) continue;
+    let sh = getS(ei,x);
+    if(x===d && (!sh || !isWorkS(sh))) sh = cand; // le poste envisage
+    if(!sh || !isWorkS(sh)) continue;
+    const st = shiftStart(sh), en = shiftEnd(sh);
+    if(!st || !en) continue;
+    const a = (x - s)*1440 + toMin(st);
+    const b = a + calcDur(st,en)*60;
+    intervals.push([Math.max(a,0), Math.min(b,LEN)]);
+  }
+  const clipped = intervals.filter(([a,b])=>b>a).sort((p,q)=>p[0]-q[0]);
+  const merged = [];
+  for(const iv of clipped){
+    if(merged.length && iv[0]<=merged[merged.length-1][1]) merged[merged.length-1][1]=Math.max(merged[merged.length-1][1],iv[1]);
+    else merged.push([iv[0],iv[1]]);
+  }
+  let maxGap = 0, cur = 0;
+  for(const [a,b] of merged){ maxGap = Math.max(maxGap, a-cur); cur = Math.max(cur,b); }
+  maxGap = Math.max(maxGap, LEN - cur);
+  return maxGap/60; // heures
+}
+
+// ════════════════════════════════════════════════════════
 // VÉRIFICATION CONTRAINTES (pour l'assistant)
 // Retourne {ok:bool, raison:string}
 // ════════════════════════════════════════════════════════
@@ -741,14 +791,14 @@ function verifContraintes(ei,d,code){
   const prev=getS(ei,d-1);
   if(isWorkS(prev)){
     const r=restMinutesBetween(prev,cand);
-    if(r<660)return{ok:false,raison:"Seulement "+Math.round(r/60*10)/10+"h de repos avec le poste de J-1 (min 11h)"};
+    if(r<GEN_CONSTRAINTS.reposMin*60)return{ok:false,raison:"Seulement "+Math.round(r/60*10)/10+"h de repos avec le poste de J-1 (min "+GEN_CONSTRAINTS.reposMin+"h)"};
   }
 
   // Repos 11h avec J+1
   const next=getS(ei,d+1);
   if(isWorkS(next)){
     const r=restMinutesBetween(cand,next);
-    if(r<660)return{ok:false,raison:"Seulement "+Math.round(r/60*10)/10+"h de repos avec le poste de J+1 (min 11h)"};
+    if(r<GEN_CONSTRAINTS.reposMin*60)return{ok:false,raison:"Seulement "+Math.round(r/60*10)/10+"h de repos avec le poste de J+1 (min "+GEN_CONSTRAINTS.reposMin+"h)"};
   }
 
   // Max 6 jours physiques
@@ -756,22 +806,48 @@ function verifContraintes(ei,d,code){
   const bonusON=isOvernight(cand)?1:0;
   let apres=bonusON;
   for(let x=d+1+bonusON;x<=D;x++){if(physPresent(ei,x))apres++;else break;}
-  if(avant+1+apres>6)return{ok:false,raison:`${avant+1+apres} jours consécutifs physiques (max 6)`};
+  if(avant+1+apres>GEN_CONSTRAINTS.joursConsecutifs)return{ok:false,raison:`${avant+1+apres} jours consécutifs physiques (max ${GEN_CONSTRAINTS.joursConsecutifs})`};
 
-  // Max 48h semaine
-  const lundi=wkMon(year,month,d),dimS=new Date(lundi);dimS.setDate(dimS.getDate()+6);
-  let wkH=getDur(cand);
-  for(let x=1;x<=D;x++){
-    if(x===d)continue;
-    const dt=new Date(year,month,x);
-    if(dt>=lundi&&dt<=dimS&&isWorkS(getS(ei,x)))wkH+=getDur(getS(ei,x));
+  // Max 48h sur TOUTE fenêtre glissante de 7 jours consécutifs
+  // (peu importe où la période commence — pas seulement la semaine civile)
+  {
+    // Semaine civile lundi -> dimanche (plus simple que la fenêtre glissante)
+    const dow0 = getDow(d);
+    const monday = d - ((dow0+6)%7);
+    const sunday = monday + 6;
+    let wH = 0;
+    for(let x=monday; x<=sunday; x++){
+      if(x<1||x>D) continue;
+      if(x===d) wH += getDur(cand);
+      else { const sx=getS(ei,x); if(isWorkS(sx)) wH += getDur(sx); }
+    }
+    if(wH>GEN_CONSTRAINTS.maxHeuresSemaine)
+      return{ok:false,raison:`${wH.toFixed(1)}h sur la semaine du ${Math.max(monday,1)} au ${Math.min(sunday,D)} (max ${GEN_CONSTRAINTS.maxHeuresSemaine}h)`};
   }
-  if(wkH>48)return{ok:false,raison:`${wkH.toFixed(1)}h cette semaine (max 48h)`};
+
+  // Repos hebdomadaire : au moins 35h consecutives dans toute fenetre de 7 jours
+  for(let s2=d-6; s2<=d; s2++){
+    const repos = reposMaxFenetre(ei, s2, d, cand);
+    if(repos < GEN_CONSTRAINTS.reposHebdo)
+      return{ok:false,raison:`Repos hebdo insuffisant : ${repos.toFixed(0)}h consecutives max sur 7j (min ${GEN_CONSTRAINTS.reposHebdo}h)`};
+  }
+
+  // WE de repos garantis (contrainte dure optionnelle)
+  // Un WE n'est "de repos" que si AUCUNE presence physique sam+dim (debords minuit inclus)
+  if(GEN_CONSTRAINTS.weMinDur && isWE(d)){
+    const key0=skey(ei,d); const saved0=shifts[key0];
+    shifts[key0]={code}; // simuler le poste
+    const weOffApres=countWEOff(ei);
+    if(saved0===undefined) delete shifts[key0]; else shifts[key0]=saved0;
+    // Verifier aussi le debord : un poste overnight le samedi entame le dimanche
+    if(weOffApres < GEN_CONSTRAINTS.weMin)
+      return{ok:false,raison:`Ne laisserait que ${weOffApres} WE de repos complet (min ${GEN_CONSTRAINTS.weMin}) — débords après minuit comptés`};
+  }
 
   // Heures réelles jour
   let hJ=isOvernight(cand)?(1440-toMin(ws.start))/60:getDur(cand);
   if(isWorkS(prev)&&isOvernight(prev))hJ+=toMin(shiftEnd(prev))/60;
-  if(hJ>13)return{ok:false,raison:`${hJ.toFixed(1)}h physiques ce jour (passage minuit J-1, max 13h)`};
+  if(hJ>GEN_CONSTRAINTS.maxHeuresJour)return{ok:false,raison:`${hJ.toFixed(1)}h physiques ce jour (max ${GEN_CONSTRAINTS.maxHeuresJour}h)`};
 
   return{ok:true,raison:""};
 }
@@ -839,7 +915,7 @@ function openShiftModal(ei, d){
           <div style="font-size:11px;font-weight:600;">${ws?getDur(exShift).toFixed(0)+"h":ss?ss.label:""}</div>
           ${isOvernight(exShift)?'<div style="font-size:9px;color:var(--or);">🌙 Passage minuit → lendemain physique</div>':""}
         </div>
-        <button onclick="document.getElementById('sm-modal').remove();pushHistory();delete shifts[skey(${ei},${d})];triggerAutosave();render();" style="padding:5px 10px;border-radius:6px;background:var(--re-lt);color:var(--re);border:1px solid var(--re-bd);font-size:11px;font-weight:600;cursor:pointer;">🗑 Supprimer</button>
+        <button onclick="supprimerPoste(${ei},${d})" style="padding:5px 10px;border-radius:6px;background:var(--re-lt);color:var(--re);border:1px solid var(--re-bd);font-size:11px;font-weight:600;cursor:pointer;">🗑 Supprimer</button>
       </div>
     </div>`;
   }
@@ -907,24 +983,27 @@ function openShiftModal(ei, d){
   html += `</div>`;
 
   // Créneau personnalisé
-  html += `<div style="font-size:9px;color:var(--text3);font-family:var(--mono);margin-bottom:5px;">CRÉNEAU PERSONNALISÉ</div>`;
-  html += `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:12px;">
-    <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:flex-end;">
-      <div>
-        <div style="font-size:9px;color:var(--text3);font-family:var(--mono);margin-bottom:3px;">DÉBUT</div>
-        <input type="time" id="custom-start-${ei}-${d}" value="08:00" style="width:100%;padding:6px 8px;border:1px solid var(--border2);border-radius:6px;font-family:var(--mono);font-size:12px;background:var(--card);outline:none;color:var(--text);"/>
+  {
+    // Pre-remplir si un custom existe deja ce jour (edition)
+    const exCustom = exShift && exShift.code==="custom" ? exShift : null;
+    const segsInit = exCustom ? (exCustom.segments || [{start:exCustom.start||"08:00", end:exCustom.end||"16:00"}]) : [{start:"08:00",end:"12:30"}];
+    window.__customSegs = window.__customSegs || {};
+    window.__customSegs[ei+"_"+d] = JSON.parse(JSON.stringify(segsInit));
+    const labelInit = exCustom ? (exCustom.label||"") : "";
+    html += `<div style="font-size:9px;color:var(--text3);font-family:var(--mono);margin-bottom:5px;">CRÉNEAU PERSONNALISÉ <span style="color:var(--text3);font-weight:400;">— avec coupures possibles (ex: formation)</span></div>`;
+    html += `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:12px;">
+      <div id="custom-segs-${ei}-${d}"></div>
+      <div style="display:flex;gap:6px;margin-top:6px;">
+        <button onclick="addCustomSeg(${ei},${d})" style="flex:1;padding:6px;border-radius:6px;border:1px dashed var(--border2);background:var(--card);color:var(--text3);font-size:10px;font-weight:600;cursor:pointer;">+ Ajouter une coupure</button>
       </div>
-      <div>
-        <div style="font-size:9px;color:var(--text3);font-family:var(--mono);margin-bottom:3px;">FIN</div>
-        <input type="time" id="custom-end-${ei}-${d}" value="16:00" style="width:100%;padding:6px 8px;border:1px solid var(--border2);border-radius:6px;font-family:var(--mono);font-size:12px;background:var(--card);outline:none;color:var(--text);"/>
-      </div>
-      <div>
+      <div style="margin-top:8px;">
         <div style="font-size:9px;color:var(--text3);font-family:var(--mono);margin-bottom:3px;">LABEL</div>
-        <input type="text" id="custom-label-${ei}-${d}" value="" placeholder="Ex: Formation" style="width:100%;padding:6px 8px;border:1px solid var(--border2);border-radius:6px;font-family:var(--mono);font-size:12px;background:var(--card);outline:none;color:var(--text);"/>
+        <input type="text" id="custom-label-${ei}-${d}" value="${labelInit}" placeholder="Ex: Formation" style="width:100%;padding:6px 8px;border:1px solid var(--border2);border-radius:6px;font-family:var(--mono);font-size:12px;background:var(--card);outline:none;color:var(--text);"/>
       </div>
-    </div>
-    <button onclick="saisirPersonnalise(${ei},${d})" style="width:100%;margin-top:8px;padding:8px;border-radius:7px;background:var(--or);color:#fff;border:none;font-weight:700;font-size:12px;cursor:pointer;">✓ Appliquer ce créneau</button>
-  </div>`;
+      <div id="custom-total-${ei}-${d}" style="font-size:10px;font-family:var(--mono);color:var(--or);margin-top:6px;font-weight:700;"></div>
+      <button onclick="saisirPersonnalise(${ei},${d})" style="width:100%;margin-top:8px;padding:8px;border-radius:7px;background:var(--or);color:#fff;border:none;font-weight:700;font-size:12px;cursor:pointer;">✓ Appliquer ce créneau</button>
+    </div>`;
+  }
 
   // Créer le modal
   const existing = document.getElementById("sm-modal");
@@ -951,24 +1030,80 @@ function openShiftModal(ei, d){
   box.innerHTML = head + html;
   overlay.appendChild(box);
   document.body.appendChild(overlay);
+  if(document.getElementById("custom-segs-"+ei+"-"+d)) renderCustomSegs(ei, d);
 }
 
 function saisirPoste(ei, d, code){
   document.getElementById("sm-modal")?.remove();
   pushHistory();
+  const ancien = getS(ei,d);
+  if(ancien && isWorkS(ancien) && ancien.code !== code) enregistrerFeedback(ei, d, ancien.code, code);
   shifts[skey(ei,d)] = {code};
   triggerAutosave();
   render();
 }
 
-function saisirPersonnalise(ei, d){
-  const start = document.getElementById("custom-start-"+ei+"-"+d)?.value || "08:00";
-  const end   = document.getElementById("custom-end-"+ei+"-"+d)?.value || "16:00";
-  const label = document.getElementById("custom-label-"+ei+"-"+d)?.value.trim() || "Perso";
-  if(!start || !end){ alert("Veuillez saisir les heures de début et de fin"); return; }
+function supprimerPoste(ei, d){
   document.getElementById("sm-modal")?.remove();
   pushHistory();
-  shifts[skey(ei,d)] = {code:"custom", start, end, label};
+  const ancien = getS(ei,d);
+  if(ancien && isWorkS(ancien)) enregistrerFeedback(ei, d, ancien.code, null);
+  delete shifts[skey(ei,d)];
+  triggerAutosave();
+  render();
+}
+
+function renderCustomSegs(ei, d){
+  const el = document.getElementById("custom-segs-"+ei+"-"+d);
+  if(!el) return;
+  const segs = (window.__customSegs && window.__customSegs[ei+"_"+d]) || [{start:"08:00",end:"16:00"}];
+  el.innerHTML = segs.map((seg,i) => `
+    <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:flex-end;margin-bottom:6px;">
+      <div>
+        <div style="font-size:8px;color:var(--text3);font-family:var(--mono);margin-bottom:2px;">${i===0?"DÉBUT":"REPRISE"}</div>
+        <input type="time" value="${seg.start}" onchange="updateCustomSeg(${ei},${d},${i},'start',this.value)" style="width:100%;padding:6px 8px;border:1px solid var(--border2);border-radius:6px;font-family:var(--mono);font-size:12px;background:var(--card);outline:none;color:var(--text);"/>
+      </div>
+      <div>
+        <div style="font-size:8px;color:var(--text3);font-family:var(--mono);margin-bottom:2px;">${i===0&&segs.length===1?"FIN":i===0?"COUPURE":"FIN"}</div>
+        <input type="time" value="${seg.end}" onchange="updateCustomSeg(${ei},${d},${i},'end',this.value)" style="width:100%;padding:6px 8px;border:1px solid var(--border2);border-radius:6px;font-family:var(--mono);font-size:12px;background:var(--card);outline:none;color:var(--text);"/>
+      </div>
+      ${segs.length>1 ? `<button onclick="removeCustomSeg(${ei},${d},${i})" style="width:30px;height:30px;border-radius:6px;border:1px solid var(--re-bd);background:var(--re-lt);color:var(--re);cursor:pointer;font-size:13px;">×</button>` : '<div style="width:30px;"></div>'}
+    </div>`).join("");
+  const total = segs.reduce((sum,seg) => sum + (seg.start&&seg.end ? calcDur(seg.start,seg.end) : 0), 0);
+  const totalEl = document.getElementById("custom-total-"+ei+"-"+d);
+  if(totalEl) totalEl.textContent = "Total : "+total.toFixed(2).replace(".00","")+"h";
+}
+function addCustomSeg(ei, d){
+  window.__customSegs = window.__customSegs || {};
+  const key = ei+"_"+d;
+  const segs = window.__customSegs[key] || [{start:"08:00",end:"12:30"}];
+  const last = segs[segs.length-1];
+  segs.push({start: last.end || "13:30", end: "16:00"});
+  window.__customSegs[key] = segs;
+  renderCustomSegs(ei, d);
+}
+function removeCustomSeg(ei, d, i){
+  const key = ei+"_"+d;
+  window.__customSegs[key].splice(i,1);
+  renderCustomSegs(ei, d);
+}
+function updateCustomSeg(ei, d, i, field, val){
+  const key = ei+"_"+d;
+  window.__customSegs[key][i][field] = val;
+  renderCustomSegs(ei, d);
+}
+
+function saisirPersonnalise(ei, d){
+  const key = ei+"_"+d;
+  const segs = (window.__customSegs && window.__customSegs[key]) || [{start:"08:00",end:"16:00"}];
+  const valid = segs.filter(s => s.start && s.end);
+  if(!valid.length){ alert("Veuillez saisir au moins un horaire"); return; }
+  const label = document.getElementById("custom-label-"+ei+"-"+d)?.value.trim() || "Perso";
+  document.getElementById("sm-modal")?.remove();
+  pushHistory();
+  const ancien = getS(ei,d);
+  if(ancien && isWorkS(ancien) && ancien.code !== "custom") enregistrerFeedback(ei, d, ancien.code, null);
+  shifts[skey(ei,d)] = {code:"custom", start:valid[0].start, end:valid[0].end, segments:valid, label};
   triggerAutosave();
   render();
 }
@@ -1007,13 +1142,17 @@ function ouvrirAbsenceModal(ei, d, code){
 
   form.innerHTML = `<div style="background:var(--card);border-radius:10px;padding:16px;width:280px;border:1px solid ${ss.bd};">
     <div style="font-size:13px;font-weight:700;color:${ss.col};margin-bottom:10px;">${ss.label}</div>
-    <div style="font-size:9px;color:${ss.col};font-family:var(--mono);margin-bottom:10px;">${code==="conge"?"5h50/jour ouvré":"0h comptabilisée"}</div>
+    <div style="font-size:9px;color:${ss.col};font-family:var(--mono);margin-bottom:10px;">${(code==="conge"||code==="conge_exc")?"5h50/jour ouvré (hors dim. et fériés) — comme un congé payé":"0h comptabilisée"}</div>
     <div style="display:flex;gap:8px;margin-bottom:10px;">
       <div style="flex:1;"><div style="font-size:9px;letter-spacing:.1em;color:var(--text3);font-family:var(--mono);margin-bottom:3px;">DU JOUR</div>
         <input type="number" id="abs-s" value="${d}" min="1" max="${D}" class="form-input"/></div>
       <div style="flex:1;"><div style="font-size:9px;letter-spacing:.1em;color:var(--text3);font-family:var(--mono);margin-bottom:3px;">AU JOUR</div>
         <input type="number" id="abs-e" value="${d}" min="1" max="${D}" class="form-input"/></div>
     </div>
+    ${code==="conge_exc" ? `<div style="margin-bottom:10px;">
+      <div style="font-size:9px;letter-spacing:.1em;color:var(--text3);font-family:var(--mono);margin-bottom:3px;">MOTIF (optionnel — ex: Congé paternité, Décès...)</div>
+      <input type="text" id="abs-motif" placeholder="Non précisé" class="form-input"/>
+    </div>` : ""}
     <div style="display:flex;gap:6px;">
       <button onclick="this.closest('[style*=absolute]').remove()" class="btn-sec" style="flex:1;padding:7px;font-size:11px;">Annuler</button>
       <button onclick="appliquerAbsM(${ei},'${code}')" style="flex:2;padding:7px;border-radius:7px;background:${ss.col};color:#fff;border:none;font-weight:700;font-size:11px;cursor:pointer;">Appliquer</button>
@@ -1044,7 +1183,8 @@ function appliquerAbsM(ei, code){
   const D = dim();
   const s = Math.max(1,Math.min(D,+document.getElementById("abs-s").value||1));
   const e = Math.max(s,Math.min(D,+document.getElementById("abs-e").value||1));
-  for(let d=s;d<=e;d++) shifts[skey(ei,d)] = {code};
+  const motif = document.getElementById("abs-motif")?.value.trim() || "";
+  for(let d=s;d<=e;d++) shifts[skey(ei,d)] = motif ? {code, label:motif} : {code};
   document.getElementById("sm-modal")?.remove();
   triggerAutosave(); render();
 }
@@ -1091,15 +1231,20 @@ function cellHTML(s){
   if(!s)return"";
   // Creneau personnalise
   if(s.code==="custom"){
-    const dur=s.start&&s.end?calcDur(s.start,s.end):0;
-    const ov=s.start&&s.end?isOverflow(s.start,s.end):false;
-    return`<div class="shift-box sc-custom"><div class="shift-code" style="font-size:9px;">${s.label||"Perso"}</div><div class="shift-times">${s.start?fmtH(s.start)+"→"+fmtH(s.end):""} ${ov?'<span style="font-size:7px;">+1</span>':""}</div></div>`;
+    const segs = s.segments && s.segments.length ? s.segments : [{start:s.start,end:s.end}];
+    const timesTxt = segs.map(sg=>fmtH(sg.start)+"→"+fmtH(sg.end)).join(" · ");
+    return`<div class="shift-box sc-custom"><div class="shift-code" style="font-size:9px;">${s.label||"Perso"}</div><div class="shift-times" style="font-size:7px;">${timesTxt}</div></div>`;
   }
   const ss=findSS(s.code);
   if(ss){
     // Delegation avec horaires
     if(s.code==="deleg"&&s.start&&s.end){
       return`<div class="shift-box sc-deleg"><div class="shift-code" style="font-size:9px;">Déleg</div><div class="shift-times">${fmtH(s.start)}→${fmtH(s.end)}</div></div>`;
+    }
+    // Congé exceptionnel : afficher le motif saisi plutot que le libelle generique (evite la confusion avec un congé payé classique)
+    if(s.code==="conge_exc"){
+      const txt = s.label ? s.label : "C. except.";
+      return`<div class="status-box sc-conge_exc" title="Congé exceptionnel${s.label?" — "+s.label:""}"><div class="status-lbl" style="font-size:8px;">${txt.length>13?txt.slice(0,12)+"…":txt}</div></div>`;
     }
     return`<div class="status-box sc-${s.code}"><div class="status-lbl">${ss.label.split(" ")[0]}</div></div>`;
   }
@@ -1116,17 +1261,20 @@ function renderGrid(D){
   let h="<thead><tr><th class='th-agent'>AGENT</th>";
   for(let d=1;d<=D;d++){
     const isH=isHoliday(d);
+    const vac=isVacances(d);
     const isT=today.getDate()===d&&today.getMonth()===month&&today.getFullYear()===year;
-    const cls=isT?"today":isH?"hol":isWE(d)?"we":"normal";
+    let cls=isT?"today":isH?"hol":isWE(d)?"we":"normal";
+    if(vac) cls+=" vac";
     const postes=postesJour(d);
     const dots=postes.map(p=>{
       const cov=emps.some((_,ei)=>{const s=getS(ei,d);return s&&codeCouvreSlot(s.code,p);});
       return`<div class="sdot" style="background:${cov?"#1a7a3c":"#c0392b"};" title="${cov?"✓":"✗"} ${p.code}"></div>`;
     }).join("");
-    h+=`<th class="th-day ${cls}" data-day="${d}" title="${isH?holidays[month+"-"+d]:""}">
+    h+=`<th class="th-day ${cls}" data-day="${d}" title="${isH?holidays[month+"-"+d]:""}${vac?(isH?" — ":"")+"🏖 "+vac.label:""}">
       <div class="dow">${DAY_SHORT[getDow(d)]}</div>
       <div class="dnum">${d}</div>
       ${isH?'<div style="font-size:7px;color:var(--yl);">★</div>':""}
+      ${vac?'<div style="font-size:7px;color:#00838f;">🏖</div>':""}
       <div class="slot-dots">${dots}</div>
     </th>`;
   }
@@ -1144,8 +1292,10 @@ function renderGrid(D){
     </td>`;
     for(let d=1;d<=D;d++){
       const isH=isHoliday(d);
+      const vac=isVacances(d);
       const isT=today.getDate()===d&&today.getMonth()===month&&today.getFullYear()===year;
-      const bgcls=isT?"today":isH?"hol":isWE(d)?"we":"";
+      let bgcls=isT?"today":isH?"hol":isWE(d)?"we":"";
+      if(vac) bgcls+=" vac";
       const isActive=activeCell&&activeCell.ei===ei&&activeCell.day===d;
       const vio=getCellVio(ei,d);
       h+=`<td class="td-day ${bgcls}${isActive?" active-col":""}" data-day="${d}" onclick="openShiftModal(${ei},${d})">
@@ -1164,9 +1314,18 @@ function getCellVio(ei,d){
   if(isWorkS(prev)&&restMinutesBetween(prev,s)<660)return"error";
   const D=dim();let str=streakAvant(ei,d);
   if(str>6)return"error";
-  const mon=wkMon(year,month,d),sat=new Date(mon);sat.setDate(sat.getDate()+6);
-  let wkH=0;for(let x=1;x<=D;x++){const dt=new Date(year,month,x);if(dt>=mon&&dt<=sat&&isWorkS(getS(ei,x)))wkH+=getDur(getS(ei,x));}
-  if(wkH>48)return"warn";
+  // Semaine civile lundi -> dimanche pour l'alerte visuelle
+  {
+    const dow0=getDow(d);
+    const monday=d-((dow0+6)%7);
+    const sunday=monday+6;
+    let wH=0;
+    for(let x=monday;x<=sunday;x++){
+      if(x<1||x>D)continue;
+      const sx=getS(ei,x);if(isWorkS(sx))wH+=getDur(sx);
+    }
+    if(wH>GEN_CONSTRAINTS.maxHeuresSemaine)return"warn";
+  }
   return null;
 }
 
@@ -1319,7 +1478,7 @@ function triggerAutosave(){
   autosaveTimer=setTimeout(async ()=>{
     try{
       const ts=Date.now();
-      const _data=JSON.stringify({version:5,emps,shifts,year,month,workShifts:WORK_SHIFTS,agentProfiles,lastModified:ts},null,2);
+      const _data=JSON.stringify({version:5,emps,shifts,year,month,workShifts:WORK_SHIFTS,agentProfiles,genPrefs,genConstraints:GEN_CONSTRAINTS,genOpts:GEN_OPTS,genLearn,genSeqRules:GEN_SEQ_RULES,schoolHolidays,lastModified:ts},null,2);
       localStorage.setItem('artemis_last_modified',ts);
       localStorage.setItem(STORAGE_KEY,_data);
       const _n=new Date();
@@ -1346,6 +1505,12 @@ async function loadFromStorage(forceRemote){
     if(d.year!=null)year=d.year;if(d.month!=null)month=d.month;
     if(d.workShifts?.length)WORK_SHIFTS=d.workShifts;
     if(d.agentProfiles)agentProfiles=d.agentProfiles;
+    if(d.genPrefs)genPrefs=d.genPrefs;
+    if(d.genConstraints)GEN_CONSTRAINTS={...GEN_CONSTRAINTS,...d.genConstraints};
+    if(d.genOpts)GEN_OPTS={...GEN_OPTS,...d.genOpts};
+    if(d.genLearn)genLearn=d.genLearn;
+    if(d.genSeqRules)GEN_SEQ_RULES=d.genSeqRules;
+    if(d.schoolHolidays)schoolHolidays=d.schoolHolidays;
     if(badge)badge.className="save-badge saved";
     if(txt)txt.textContent=d===remote?"Sync ☁":"Local 💾";
     setTimeout(()=>{if(badge)badge.className="save-badge";if(txt)txt.textContent="Sauvegardé";},2500);
@@ -1385,8 +1550,8 @@ function exportPDF(){
   const fmtD=d=>`${d.getDate()}/${d.getMonth()+1}`;
   const weeks=getMonthWeeks();
   const DS=["D","L","M","M","J","V","S"];
-  const cellTxt=(ei,d)=>{const s=getS(ei,d);if(!s)return"";if(s.code==="deleg"&&s.start&&s.end)return "Déleg "+fmtH(s.start)+"–"+fmtH(s.end);if(s.code==="custom"&&s.start&&s.end)return fmtH(s.start)+"–"+fmtH(s.end);if(isWorkCode(s.code)){const ws=findWS(s.code);const ov=ws?isOverflow(ws.start,ws.end):false;return ws?fmtH(ws.start)+"–"+fmtH(ws.end):"";}const ss=findSS(s.code);return ss?ss.label.split(" ")[0]:"";};
-  const cellBg=(ei,d)=>{const s=getS(ei,d);if(!s)return isHoliday(d)?"#fffbeb":isWE(d)?"#ede9fe":"#fff";if(s.code==="conge")return"#edfaf3";if(s.code==="maladie")return"#fdf2f1";if(s.code==="indispo")return"#fdf8ec";const t=SHIFT_TYPES[s.code];return t==="matin"?"#fffef5":t==="jour"?"#f5fdf5":t==="soir"?"#fff8fb":t==="nuit"?"#f0f0ff":"#fff";};
+  const cellTxt=(ei,d)=>{const s=getS(ei,d);if(!s)return"";if(s.code==="deleg"&&s.start&&s.end)return "Déleg "+fmtH(s.start)+"–"+fmtH(s.end);if(s.code==="custom"){const segs=s.segments&&s.segments.length?s.segments:(s.start&&s.end?[{start:s.start,end:s.end}]:[]);return segs.map(sg=>fmtH(sg.start)+"–"+fmtH(sg.end)).join(" / ");}if(s.code==="conge_exc")return s.label?s.label:"Congé except.";if(isWorkCode(s.code)){const ws=findWS(s.code);const ov=ws?isOverflow(ws.start,ws.end):false;return ws?fmtH(ws.start)+"–"+fmtH(ws.end):"";}const ss=findSS(s.code);return ss?ss.label.split(" ")[0]:"";};
+  const cellBg=(ei,d)=>{const s=getS(ei,d);if(!s)return isHoliday(d)?"#fffbeb":isWE(d)?"#ede9fe":"#fff";if(s.code==="conge")return"#edfaf3";if(s.code==="conge_exc")return"#e6f7f7";if(s.code==="maladie")return"#fdf2f1";if(s.code==="indispo")return"#fdf8ec";const t=SHIFT_TYPES[s.code];return t==="matin"?"#fffef5":t==="jour"?"#f5fdf5":t==="soir"?"#fff8fb":t==="nuit"?"#f0f0ff":"#fff";};
   const wkHRows=emps.map((_,ei)=>{const data=computeWeeklyH(ei),map={};data.forEach(w=>{map[wkKey(w.monday)]=w.hours;});return weeks.map(w=>map[w.key]||0);});
   const head=Array.from({length:D},(_,i)=>i+1).map(d=>{const isH=isHoliday(d),iswk=isWE(d);const bg=isH?"#f59e0b":iswk?"#7c3aed":"#374151";const postes=postesJour(d);const dots=postes.map(p=>{const cov=emps.some((_,ei)=>{const s=getS(ei,d);return s&&codeCouvreSlot(s.code,p);});return`<span style="display:inline-block;width:4px;height:4px;border-radius:50%;background:${cov?"#16a34a":"#dc2626"};margin:0 1px;"></span>`;}).join("");return`<th style="background:${bg};color:#fff;font-weight:700;padding:3px 1px;font-size:8px;border:1px solid #ddd;min-width:22px;text-align:center;">${DS[getDow(d)]}<br>${d}${isH?"★":""}<br>${dots}</th>`;}).join("");
   const wkHead=weeks.map((w,i)=>{const sun=new Date(w.monday);sun.setDate(sun.getDate()+6);return`<th style="background:#fff7ed;color:#9a3412;font-size:8px;border:1px solid #ddd;padding:2px;white-space:nowrap;">S${i+1}<br>${fmtD(w.monday)}›${fmtD(sun)}</th>`;}).join("");
@@ -1420,6 +1585,10 @@ function exportPDF(){
     <!-- Ajouter une absence -->
     <div style="margin-top:10px;padding:10px;background:var(--bg2);border-radius:8px;border:1px solid var(--border);">
       <div class="section-lbl" style="margin-top:0;">NOUVELLE ABSENCE</div>
+      <div id="abs-motif-row" style="display:none;margin-bottom:6px;">
+        <div class="form-label">MOTIF (optionnel — ex: Congé paternité, Décès...)</div>
+        <input type="text" id="abs-motif-bulk" class="form-input" placeholder="Non précisé"/>
+      </div>
       <div style="display:grid;grid-template-columns:1fr 70px 70px auto;gap:6px;align-items:flex-end;">
         <div>
           <div class="form-label">AGENT</div>
@@ -1494,6 +1663,8 @@ function selectAbsType(code){
     btn.style.boxShadow = sel ? "0 0 0 2px "+ss.col : "none";
     btn.style.transform = sel ? "scale(1.03)" : "scale(1)";
   });
+  const motifRow = document.getElementById("abs-motif-row");
+  if(motifRow) motifRow.style.display = code === "conge_exc" ? "block" : "none";
 }
 
 function ajouterAbsence(){
@@ -1501,7 +1672,9 @@ function ajouterAbsence(){
   const ei = parseInt(document.getElementById("abs-agent").value);
   const from = Math.max(1, Math.min(D, parseInt(document.getElementById("abs-from").value)||1));
   const to = Math.max(from, Math.min(D, parseInt(document.getElementById("abs-to").value)||from));
-  absBuffer.push({ei, from, to, code: absTypeSelected});
+  const motif = absTypeSelected === "conge_exc" ? (document.getElementById("abs-motif-bulk")?.value.trim()||"") : "";
+  absBuffer.push({ei, from, to, code: absTypeSelected, label: motif || undefined});
+  document.getElementById("abs-motif-bulk") && (document.getElementById("abs-motif-bulk").value = "");
   renderAbsList();
 }
 
@@ -1528,7 +1701,7 @@ function renderAbsList(){
     return `<div style="display:grid;grid-template-columns:1fr 80px 80px 28px;gap:5px;align-items:center;padding:6px 8px;border:1px solid ${ss?.bd||"var(--border)"};border-radius:7px;background:${ss?.bg||"var(--bg2)"};">
       <div>
         <span style="font-size:10px;font-weight:600;color:${bCol};">${emp?.name||"—"}</span>
-        <span style="font-size:9px;font-family:var(--mono);color:${ss?.col||"var(--text3)"};margin-left:6px;">${ss?.label||ab.code}</span>
+        <span style="font-size:9px;font-family:var(--mono);color:${ss?.col||"var(--text3)"};margin-left:6px;">${ss?.label||ab.code}${ab.label?" — "+ab.label:""}</span>
       </div>
       <div style="font-size:11px;font-family:var(--mono);text-align:center;">Jour ${ab.from}</div>
       <div style="font-size:11px;font-family:var(--mono);text-align:center;">Jour ${ab.to} <span style="font-size:9px;color:var(--text3);">(${nbJours}j)</span></div>
@@ -1543,7 +1716,7 @@ function appliquerToutesAbsences(){
   const D = dim();
   absBuffer.forEach(ab => {
     for(let d = ab.from; d <= ab.to; d++){
-      if(d >= 1 && d <= D) shifts[skey(ab.ei, d)] = {code: ab.code};
+      if(d >= 1 && d <= D) shifts[skey(ab.ei, d)] = ab.label ? {code: ab.code, label: ab.label} : {code: ab.code};
     }
   });
   absBuffer = [];
@@ -1899,6 +2072,621 @@ function resetTheme(){
 }
 applyTheme();
 
+
+// ════════════════════════════════════════════════════════
+// GÉNÉRATEUR INTELLIGENT DE PLANNING
+// ════════════════════════════════════════════════════════
+let GEN_CONSTRAINTS = {reposMin:11, joursConsecutifs:6, maxHeuresSemaine:48, maxHeuresJour:12, reposHebdo:35, weMin:1, weMinDur:true, maxWETravaillesConsec:3, heuresContrat:151, ecartMaxHeures:25};
+let GEN_OPTS = {blocs:true, blocsForce:35, keepExisting:true, iterations:40};
+let genPrefs = {}; // {ei: {codes:[], exclusif:false, maxSemaine:null}}
+let genLearn = {}; // apprentissage : {"ei|code": poids, "ei|code|dow": poids}
+// Règles d'enchaînement métier (modifiables dans le générateur)
+let GEN_SEQ_RULES = [
+  {type:"suite",  apres:"SD", dow:6,    alors:"S2", force:120}, // SD le samedi -> S2 le dimanche
+  {type:"eviter", apres:"N",  pas:"JS", force:100},             // apres une nuit, eviter le soir court
+  {type:"eviter", apres:"NVS",pas:"JS", force:100},
+  {type:"eviter", apres:"ND", pas:"JS", force:100},
+  {type:"we_complet", role:"CE", force:150},                    // CE : dimanche travaille => samedi aussi
+];
+let lastGenSnapshot = JSON.parse(localStorage.getItem("artemis_lastgen")||"{}"); // cases posees par la derniere generation
+
+function getLearnedWeight(ei, code, d){
+  const dow = getDow(d);
+  let w = (genLearn[ei+"|"+code]||0) + (genLearn[ei+"|"+code+"|"+dow]||0);
+  return Math.max(-60, Math.min(60, w));
+}
+
+function enregistrerFeedback(ei, d, ancienCode, nouveauCode){
+  // On n'apprend que si la case avait ete posee par le generateur
+  const key = skey(ei, d);
+  if(lastGenSnapshot[key] !== ancienCode) return;
+  const dow = getDow(d);
+  // Malus : le responsable a retire ce poste pour cet agent
+  genLearn[ei+"|"+ancienCode] = (genLearn[ei+"|"+ancienCode]||0) - 8;
+  genLearn[ei+"|"+ancienCode+"|"+dow] = (genLearn[ei+"|"+ancienCode+"|"+dow]||0) - 4;
+  // Bonus : ce qu'il a mis a la place
+  if(nouveauCode && findWS(nouveauCode)){
+    genLearn[ei+"|"+nouveauCode] = (genLearn[ei+"|"+nouveauCode]||0) + 8;
+    genLearn[ei+"|"+nouveauCode+"|"+dow] = (genLearn[ei+"|"+nouveauCode+"|"+dow]||0) + 4;
+  }
+  delete lastGenSnapshot[key]; // feedback pris en compte une seule fois
+  localStorage.setItem("artemis_lastgen", JSON.stringify(lastGenSnapshot));
+  saveGenLocal();
+  showToastNotif("🧠 Correction mémorisée pour les prochaines générations","info");
+}
+
+function resetLearn(){
+  if(!confirm("Effacer tout l'apprentissage du générateur ?")) return;
+  genLearn = {}; lastGenSnapshot = {};
+  localStorage.setItem("artemis_lastgen","{}");
+  saveGenLocal();
+  refreshGenModal();
+}
+
+function scoreCandidat(ei, d, code){
+  let s = 0;
+  const p = genPrefs[ei] || {};
+  // Préférences de créneaux
+  if(p.codes && p.codes.length){
+    if(p.codes.includes(code)) s += 60;
+    else if(p.exclusif) return -Infinity;   // exclusif : uniquement ses créneaux préférés
+    else s -= 15;
+  }
+  // Regroupement en blocs : bonus si l'agent travaillait déjà la veille
+  if(GEN_OPTS.blocs && physPresent(ei, d-1)) s += GEN_OPTS.blocsForce;
+  // Équilibrage vers l'objectif contractuel (151h par défaut)
+  // Sous la cible = prioritaire ; au-dessus = de moins en moins choisi
+  const hAct = hMois(ei);
+  const cible = GEN_CONSTRAINTS.heuresContrat || 151;
+  s += (cible - hAct) * 2.2;
+  // Garde-fou anti-écart : interdit de creuser plus de X heures d'écart
+  // avec l'agent le moins chargé (évite le scénario 180h / 90h)
+  let minH = Infinity;
+  for(let k=0; k<emps.length; k++){ const hk = hMois(k); if(hk < minH) minH = hk; }
+  const dur = getDur({code}) || (findWS(code) ? calcDur(findWS(code).start, findWS(code).end) : 0);
+  if((hAct + dur) - minH > (GEN_CONSTRAINTS.ecartMaxHeures || 25)) s -= 500;
+  // Protection des week-ends de repos
+  if(isWE(d)){
+    const weOff = countWEOff(ei);
+    if(weOff <= GEN_CONSTRAINTS.weMin) s -= 250;
+  }
+  // Limite hebdomadaire personnelle
+  if(p.maxSemaine){
+    const mon = wkMon(year, month, d);
+    const sun = new Date(mon); sun.setDate(sun.getDate()+6);
+    let cnt = 0; const D = dim();
+    for(let x=1; x<=D; x++){
+      const dt = new Date(year, month, x);
+      if(dt>=mon && dt<=sun && isWorkS(getS(ei,x))) cnt++;
+    }
+    if(cnt >= p.maxSemaine) return -Infinity;
+  }
+  // Règles d'enchaînement métier
+  for(const r of GEN_SEQ_RULES){
+    if(r.type==="suite" && d-1>=1){
+      const veille = getS(ei, d-1);
+      if(veille && veille.code===r.apres && (r.dow==null || getDow(d-1)===r.dow)){
+        if(code===r.alors) s += r.force;      // enchainement souhaite
+        else s -= r.force*0.4;                // autre poste apres : penalise
+      }
+    }
+    if(r.type==="eviter" && d-1>=1){
+      const veille = getS(ei, d-1);
+      if(veille && veille.code===r.apres && code===r.pas) s -= r.force;
+    }
+    if(r.type==="we_complet" && isWE(d)){
+      const roleOk = r.role==="tous" || (r.role==="CE"&&estCE(ei)) || (r.role==="AG"&&estAG(ei));
+      if(roleOk){
+        // "WE entamé" = présence PHYSIQUE (débords de minuit inclus via physPresent)
+        // Un S2 samedi qui finit à 1h du matin entame le dimanche !
+        let weEntame = false;
+        if(isSun(d)){
+          // Dimanche : samedi travaillé ? OU débord du samedi qui entame ce dimanche ?
+          weEntame = physPresent(ei, d) || (d-1>=1 && isWorkS(getS(ei,d-1)));
+        } else {
+          // Samedi : débord du vendredi qui entame ce samedi ? OU dimanche déjà posé ?
+          weEntame = physPresent(ei, d) || isWorkS(getS(ei, d+1));
+        }
+        if(weEntame) s += r.force*0.6;  // son WE est déjà utilisé : concentrer le travail sur lui
+        else s -= r.force;              // WE encore intact : le préserver pour un vrai repos
+        // Cas critique de fin de WE : poste overnight le samedi = dimanche entamé
+        // → si on envisage un poste débordant le samedi, malus supplémentaire si son WE était intact
+        if(isSat(d) && !weEntame){
+          const ws = findWS(code);
+          if(ws && isOverflow(ws.start, ws.end)) s -= r.force*0.5; // déborde sur dimanche : gâche 2 jours d'un coup
+        }
+      }
+    }
+  }
+  // Apprentissage : corrections passees du responsable
+  s += getLearnedWeight(ei, code, d);
+  s += Math.random()*12; // aléa pour explorer plusieurs solutions
+  return s;
+}
+
+function runOneTrial(base){
+  shifts = JSON.parse(JSON.stringify(base));
+  const D = dim();
+  let filled = 0, prefScore = 0;
+  for(let d=1; d<=D; d++){
+    for(const poste of postesJour(d)){
+      if(emps.some((_,ei)=>{const s=getS(ei,d);return s&&codeCouvreSlot(s.code,poste);})){filled++;continue;}
+      let best = null;
+      emps.forEach((emp,ei)=>{
+        if(getS(ei,d)) return; // déjà occupé (poste, absence, congé...)
+        const roleOk = (poste.role==="CE"&&(estCE(ei)||estPoly(ei)))||(poste.role==="AG"&&(estAG(ei)||estPoly(ei)));
+        if(!roleOk) return;
+        for(const code of codesSlot(poste)){
+          const v = verifContraintes(ei,d,code);
+          if(!v.ok) continue;
+          const sc = scoreCandidat(ei,d,code);
+          if(sc===-Infinity) continue;
+          if(!best || sc>best.sc) best = {ei, code, sc};
+        }
+      });
+      if(best){ shifts[skey(best.ei,d)]={code:best.code}; filled++; prefScore+=best.sc; }
+    }
+  }
+  return {filled, prefScore, result: shifts};
+}
+
+function lancerGeneration(){
+  pushHistory();
+  const original = JSON.parse(JSON.stringify(shifts));
+  let base = JSON.parse(JSON.stringify(shifts));
+  if(!GEN_OPTS.keepExisting){
+    const D = dim();
+    emps.forEach((_,ei)=>{
+      for(let d=1; d<=D; d++){
+        const k = skey(ei,d); const s = base[k];
+        if(s && findWS(s.code)) delete base[k]; // efface uniquement les postes standard, garde absences/custom/deleg
+      }
+    });
+  }
+  let best = null;
+  let totalSlots = 0;
+  const D = dim();
+  for(let d=1; d<=D; d++) totalSlots += postesJour(d).length;
+  const btn = document.getElementById("gen-launch-btn");
+  if(btn){ btn.textContent = "⏳ Génération en cours..."; btn.disabled = true; }
+  setTimeout(()=>{
+    for(let i=0; i<GEN_OPTS.iterations; i++){
+      const t = runOneTrial(base);
+      if(!best || t.filled>best.filled || (t.filled===best.filled && t.prefScore>best.prefScore)){
+        best = {filled:t.filled, prefScore:t.prefScore, snapshot: JSON.parse(JSON.stringify(t.result))};
+      }
+    }
+    shifts = best ? best.snapshot : original;
+    // Mémoriser les cases posées par cette génération (pour l'apprentissage)
+    lastGenSnapshot = {};
+    Object.keys(shifts).forEach(k => {
+      const s = shifts[k];
+      if(s && findWS(s.code) && (!base[k] || base[k].code !== s.code)) lastGenSnapshot[k] = s.code;
+    });
+    localStorage.setItem("artemis_lastgen", JSON.stringify(lastGenSnapshot));
+    triggerAutosave(); render();
+    document.getElementById("gen-modal")?.remove();
+    const pct = Math.round(best.filled/totalSlots*100);
+    // Rapport d'audit indépendant automatique
+    showAuditReport("génération : "+best.filled+"/"+totalSlots+" postes ("+pct+"%)");
+  }, 50);
+}
+
+function toggleGenPref(ei, code){
+  if(!genPrefs[ei]) genPrefs[ei] = {codes:[], exclusif:false, maxSemaine:null};
+  const arr = genPrefs[ei].codes;
+  const idx = arr.indexOf(code);
+  if(idx>=0) arr.splice(idx,1); else arr.push(code);
+  saveGenLocal();
+  refreshGenModal();
+}
+function setGenExcl(ei, val){
+  if(!genPrefs[ei]) genPrefs[ei] = {codes:[], exclusif:false, maxSemaine:null};
+  genPrefs[ei].exclusif = val;
+  saveGenLocal();
+}
+function setGenMax(ei, val){
+  if(!genPrefs[ei]) genPrefs[ei] = {codes:[], exclusif:false, maxSemaine:null};
+  genPrefs[ei].maxSemaine = val ? parseInt(val) : null;
+  saveGenLocal();
+}
+function setGenConstraint(key, val){
+  GEN_CONSTRAINTS[key] = parseFloat(val) || GEN_CONSTRAINTS[key];
+  saveGenLocal();
+}
+function setGenOpt(key, val){
+  GEN_OPTS[key] = val;
+  saveGenLocal();
+}
+function saveGenLocal(){
+  localStorage.setItem("artemis_gen", JSON.stringify({genPrefs, GEN_CONSTRAINTS, GEN_OPTS, genLearn, GEN_SEQ_RULES}));
+  triggerAutosave(); // synchroniser vers GitHub pour le collègue
+}
+function loadGenLocal(){
+  try{
+    const d = JSON.parse(localStorage.getItem("artemis_gen")||"{}");
+    if(d.genPrefs) genPrefs = d.genPrefs;
+    if(d.GEN_CONSTRAINTS) GEN_CONSTRAINTS = {...GEN_CONSTRAINTS, ...d.GEN_CONSTRAINTS};
+    if(GEN_CONSTRAINTS.maxHeuresJour===13) GEN_CONSTRAINTS.maxHeuresJour=12; // migration ancien defaut
+    if(!GEN_CONSTRAINTS.reposHebdo) GEN_CONSTRAINTS.reposHebdo=35;
+    if(d.GEN_OPTS) GEN_OPTS = {...GEN_OPTS, ...d.GEN_OPTS};
+    if(d.genLearn) genLearn = d.genLearn;
+    if(d.GEN_SEQ_RULES) GEN_SEQ_RULES = d.GEN_SEQ_RULES;
+  }catch(e){}
+}
+loadGenLocal();
+
+
+function labelSeqRule(r){
+  const JOURS = ["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"];
+  const jour = r.dow!=null ? " (le "+JOURS[r.dow]+")" : "";
+  if(r.type==="suite")  return "Après <b>"+r.apres+"</b>"+jour+" → mettre <b>"+r.alors+"</b> le lendemain";
+  if(r.type==="eviter") return "Après <b>"+r.apres+"</b>"+jour+" → éviter <b>"+r.pas+"</b> le lendemain";
+  if(r.type==="we_complet") return "<b>"+(r.role==="tous"?"Tous":r.role)+"</b> : WE complet ou WE de repos — jamais à moitié (débords après minuit comptés : un S2 samedi entame le dimanche)";
+  return "";
+}
+function delSeqRule(i){
+  GEN_SEQ_RULES.splice(i,1);
+  saveGenLocal();
+  refreshGenModal();
+}
+function addSeqRule(){
+  const type = document.getElementById("seq-type").value;
+  const force = parseInt(document.getElementById("seq-force").value)||100;
+  if(type==="we_complet"){
+    GEN_SEQ_RULES.push({type, role: document.getElementById("seq-role").value, force});
+  } else {
+    const apres = document.getElementById("seq-apres").value;
+    const dowV = document.getElementById("seq-dow").value;
+    const cible = document.getElementById("seq-cible").value;
+    const rule = {type, apres, force};
+    if(dowV!=="") rule.dow = parseInt(dowV);
+    if(type==="suite") rule.alors = cible; else rule.pas = cible;
+    GEN_SEQ_RULES.push(rule);
+  }
+  saveGenLocal();
+  refreshGenModal();
+}
+function seqTypeChanged(){
+  const t = document.getElementById("seq-type").value;
+  document.getElementById("seq-fields-codes").style.display = t==="we_complet" ? "none" : "flex";
+  document.getElementById("seq-fields-role").style.display  = t==="we_complet" ? "flex" : "none";
+  const lbl = document.getElementById("seq-cible-lbl");
+  if(lbl) lbl.textContent = t==="suite" ? "ALORS METTRE" : "ÉVITER";
+}
+
+function refreshGenModal(){
+  const m = document.getElementById("gen-modal");
+  if(m){ m.remove(); openGenerateur(); }
+}
+
+function openGenerateur(){
+  const existing = document.getElementById("gen-modal");
+  if(existing){ existing.remove(); return; }
+  const overlay = document.createElement("div");
+  overlay.id = "gen-modal";
+  overlay.className = "overlay";
+  overlay.onclick = e => { if(e.target===overlay) overlay.remove(); };
+  const box = document.createElement("div");
+  box.className = "modal modal-lg";
+  box.style.maxHeight = "92vh";
+  box.onclick = e => e.stopPropagation();
+
+  const agentsRows = emps.map((emp,ei)=>{
+    const p = genPrefs[ei] || {codes:[], exclusif:false, maxSemaine:null};
+    const bCol = BADGE_COL[emp.badge]||"#6b7280";
+    const chips = WORK_SHIFTS.map(ws=>{
+      const on = p.codes.includes(ws.code);
+      return `<span onclick="toggleGenPref(${ei},'${ws.code}')" style="display:inline-block;margin:2px;padding:3px 8px;border-radius:4px;font-size:9px;font-family:var(--mono);font-weight:700;cursor:pointer;border:1.5px solid ${on?"var(--or)":"var(--border2)"};background:${on?"var(--or-lt)":"var(--bg2)"};color:${on?"var(--or)":"var(--text3)"};">${ws.code}</span>`;
+    }).join("");
+    return `<div style="border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:8px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;">
+        <span style="font-size:12px;font-weight:600;color:${bCol};">${emp.name||"Agent"}</span>
+        <span style="margin-left:auto;display:flex;align-items:center;gap:10px;">
+          <label style="font-size:10px;display:flex;align-items:center;gap:4px;cursor:pointer;"><input type="checkbox" ${p.exclusif?"checked":""} onchange="setGenExcl(${ei},this.checked)"/> Exclusif</label>
+          <label style="font-size:10px;display:flex;align-items:center;gap:4px;">Max/sem <input type="number" min="1" max="7" value="${p.maxSemaine||""}" onchange="setGenMax(${ei},this.value)" style="width:44px;padding:2px 4px;border:1px solid var(--border2);border-radius:4px;font-size:10px;background:var(--card);color:var(--text);"/></label>
+        </span>
+      </div>
+      <div>${chips}</div>
+    </div>`;
+  }).join("");
+
+  box.innerHTML = `
+    <div class="modal-head">
+      <div><div class="modal-title">🤖 Générateur de planning</div>
+      <div class="modal-sub">Remplit automatiquement le mois en respectant les contraintes légales et les préférences des agents. Modifiable à tout moment.</div></div>
+      <button class="modal-close" onclick="document.getElementById('gen-modal').remove()">×</button>
+    </div>
+
+    <div class="section-lbl">CONTRAINTES LÉGALES (modifiables)</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px;">
+      ${[["reposMin","Repos min (h)"],["joursConsecutifs","Jours consec. max"],["maxHeuresSemaine","Max h/semaine (lun-dim)"],["maxHeuresJour","Max h/jour"],["reposHebdo","Repos hebdo (h)"],["weMin","WE repos min"],["heuresContrat","Objectif h/mois"],["ecartMaxHeures","Écart max (h)"]].map(([k,lbl])=>`
+        <div><div style="font-size:8px;color:var(--text3);font-family:var(--mono);margin-bottom:3px;">${lbl.toUpperCase()}</div>
+        <input type="number" value="${GEN_CONSTRAINTS[k]}" onchange="setGenConstraint('${k}',this.value)" style="width:100%;padding:6px;border:1px solid var(--border2);border-radius:6px;font-family:var(--mono);font-size:12px;background:var(--card);color:var(--text);text-align:center;"/></div>`).join("")}
+    </div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;margin-bottom:12px;display:flex;flex-direction:column;gap:6px;">
+      <label style="font-size:11px;display:flex;align-items:center;gap:8px;cursor:pointer;">
+        <input type="checkbox" ${GEN_CONSTRAINTS.weMinDur?"checked":""} onchange="GEN_CONSTRAINTS.weMinDur=this.checked;saveGenLocal();"/>
+        <span><b>WE de repos garantis (contrainte dure)</b> — refuse tout poste qui empêcherait d'avoir ${GEN_CONSTRAINTS.weMin} WE totalement libre(s). Les débords après minuit comptent : un S2 le samedi qui finit à 1h entame le dimanche.</span>
+      </label>
+      <div style="font-size:9px;color:var(--text3);padding-left:22px;">Décoché : les WE restent une préférence forte (règle "WE complet") mais pas un blocage absolu.</div>
+    </div>
+
+    <div class="section-lbl">OPTIONS DE GÉNÉRATION</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;background:var(--bg2);border-radius:8px;padding:10px;border:1px solid var(--border);">
+      <label style="font-size:12px;display:flex;align-items:center;gap:8px;cursor:pointer;">
+        <input type="checkbox" ${GEN_OPTS.blocs?"checked":""} onchange="setGenOpt('blocs',this.checked)"/>
+        <b>Regrouper en blocs</b> — rassemble les jours de travail (blocs travail / blocs repos)
+      </label>
+      <div style="display:flex;align-items:center;gap:10px;font-size:11px;">
+        Force du regroupement : <input type="range" min="10" max="80" value="${GEN_OPTS.blocsForce}" onchange="setGenOpt('blocsForce',parseInt(this.value))" style="flex:1;"/>
+      </div>
+      <label style="font-size:12px;display:flex;align-items:center;gap:8px;cursor:pointer;">
+        <input type="checkbox" ${GEN_OPTS.keepExisting?"checked":""} onchange="setGenOpt('keepExisting',this.checked)"/>
+        <b>Conserver les postes déjà saisis</b> — décoché : régénère tout (garde absences et congés)
+      </label>
+    </div>
+
+    <div class="section-lbl">RÈGLES D'ENCHAÎNEMENT <span style="color:var(--text3);font-weight:400;">— cohérence des suites de postes, modifiables</span></div>
+    <div style="margin-bottom:8px;">
+      ${GEN_SEQ_RULES.map((r,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--border);border-radius:7px;margin-bottom:4px;background:var(--bg2);font-size:11px;">
+        <span style="flex:1;">${labelSeqRule(r)}</span>
+        <span style="font-size:9px;color:var(--text3);font-family:var(--mono);">force ${r.force}</span>
+        <button onclick="delSeqRule(${i})" style="width:20px;height:20px;border-radius:4px;border:1px solid var(--re-bd);background:var(--re-lt);color:var(--re);cursor:pointer;font-size:11px;line-height:1;">×</button>
+      </div>`).join("")}
+    </div>
+    <div style="background:var(--bg2);border:1px dashed var(--border2);border-radius:8px;padding:8px 10px;margin-bottom:14px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;font-size:10px;">
+      <div><div style="font-size:8px;color:var(--text3);font-family:var(--mono);margin-bottom:2px;">TYPE</div>
+        <select id="seq-type" onchange="seqTypeChanged()" style="padding:4px;border:1px solid var(--border2);border-radius:5px;background:var(--card);color:var(--text);font-size:10px;">
+          <option value="suite">Enchaîner</option><option value="eviter">Éviter après</option><option value="we_complet">WE complet</option>
+        </select></div>
+      <div id="seq-fields-codes" style="display:flex;gap:8px;align-items:flex-end;">
+        <div><div style="font-size:8px;color:var(--text3);font-family:var(--mono);margin-bottom:2px;">APRÈS</div>
+          <select id="seq-apres" style="padding:4px;border:1px solid var(--border2);border-radius:5px;background:var(--card);color:var(--text);font-size:10px;">
+            ${WORK_SHIFTS.map(w=>`<option value="${w.code}">${w.code}</option>`).join("")}
+          </select></div>
+        <div><div style="font-size:8px;color:var(--text3);font-family:var(--mono);margin-bottom:2px;">JOUR (optionnel)</div>
+          <select id="seq-dow" style="padding:4px;border:1px solid var(--border2);border-radius:5px;background:var(--card);color:var(--text);font-size:10px;">
+            <option value="">Tous</option><option value="1">Lundi</option><option value="2">Mardi</option><option value="3">Mercredi</option><option value="4">Jeudi</option><option value="5">Vendredi</option><option value="6">Samedi</option><option value="0">Dimanche</option>
+          </select></div>
+        <div><div style="font-size:8px;color:var(--text3);font-family:var(--mono);margin-bottom:2px;" id="seq-cible-lbl">ALORS METTRE</div>
+          <select id="seq-cible" style="padding:4px;border:1px solid var(--border2);border-radius:5px;background:var(--card);color:var(--text);font-size:10px;">
+            ${WORK_SHIFTS.map(w=>`<option value="${w.code}">${w.code}</option>`).join("")}
+          </select></div>
+      </div>
+      <div id="seq-fields-role" style="display:none;gap:8px;align-items:flex-end;">
+        <div><div style="font-size:8px;color:var(--text3);font-family:var(--mono);margin-bottom:2px;">RÔLE</div>
+          <select id="seq-role" style="padding:4px;border:1px solid var(--border2);border-radius:5px;background:var(--card);color:var(--text);font-size:10px;">
+            <option value="CE">Chefs d'équipe</option><option value="AG">Agents</option><option value="tous">Tous</option>
+          </select></div>
+      </div>
+      <div><div style="font-size:8px;color:var(--text3);font-family:var(--mono);margin-bottom:2px;">FORCE</div>
+        <input type="number" id="seq-force" value="100" min="20" max="300" step="10" style="width:56px;padding:4px;border:1px solid var(--border2);border-radius:5px;background:var(--card);color:var(--text);font-size:10px;text-align:center;"/></div>
+      <button onclick="addSeqRule()" style="padding:5px 12px;border-radius:6px;border:none;background:var(--or);color:#fff;font-weight:700;font-size:10px;cursor:pointer;">+ Ajouter la règle</button>
+    </div>
+
+    <div class="section-lbl">PRÉFÉRENCES PAR AGENT <span style="color:var(--text3);font-weight:400;">— clique sur les créneaux préférés</span></div>
+    <div style="max-height:260px;overflow-y:auto;margin-bottom:12px;">${agentsRows}</div>
+
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:11px;">
+      <label style="display:flex;align-items:center;gap:5px;">Nombre d'essais <input type="number" min="10" max="300" value="${GEN_OPTS.iterations}" onchange="setGenOpt('iterations',parseInt(this.value)||40)" style="width:60px;padding:4px;border:1px solid var(--border2);border-radius:5px;font-family:var(--mono);background:var(--card);color:var(--text);text-align:center;"/></label>
+      <span style="color:var(--text3);font-size:10px;">plus d'essais = meilleur résultat, un peu plus long</span>
+      ${Object.keys(genLearn).filter(k=>Math.abs(genLearn[k])>=8).length>0 ? '<button onclick="resetLearn()" style="margin-left:auto;font-size:10px;padding:4px 10px;border-radius:5px;border:1px solid var(--re-bd);background:var(--re-lt);color:var(--re);cursor:pointer;">🧠 Effacer l\'apprentissage</button>' : ''}
+    </div>
+    <div class="btn-row">
+      <button class="btn-sec" onclick="document.getElementById('gen-modal').remove()">Fermer</button>
+      <button class="btn-sec" onclick="document.getElementById('gen-modal').remove();showAuditReport()">🔍 Auditer le planning actuel</button>
+      <button class="btn-pri" id="gen-launch-btn" onclick="lancerGeneration()">🚀 Générer le planning</button>
+    </div>`;
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+}
+
+
+// ════════════════════════════════════════════════════════
+// AUDIT INDÉPENDANT — re-vérifie chaque règle sur tout le mois
+// Ne fait pas confiance au générateur : chaque poste posé est
+// retiré puis re-testé contre TOUTES les contraintes.
+// ════════════════════════════════════════════════════════
+function auditPlanning(){
+  const D = dim();
+  const violations = [];
+  const nonPourvus = [];
+
+  // 1. Chaque poste de travail posé doit passer verifContraintes
+  emps.forEach((emp,ei)=>{
+    for(let d=1; d<=D; d++){
+      const s = getS(ei,d);
+      if(!s || !isWorkS(s) || s.code==="custom") continue;
+      const key = skey(ei,d);
+      const saved = shifts[key];
+      delete shifts[key];                 // on retire le poste...
+      const v = verifContraintes(ei,d,s.code); // ...et on re-teste comme s'il fallait le placer
+      shifts[key] = saved;                // on remet
+      if(!v.ok){
+        violations.push({agent: emp.name, jour: d, code: s.code, raison: v.raison});
+      }
+    }
+  });
+
+  // 2. Postes requis non couverts + raison
+  for(let d=1; d<=D; d++){
+    for(const poste of postesJour(d)){
+      const couvert = emps.some((_,ei)=>{const s=getS(ei,d);return s&&codeCouvreSlot(s.code,poste);});
+      if(couvert) continue;
+      // Pourquoi ? Tester chaque agent
+      let raison = "aucun agent disponible sans violer une contrainte";
+      let dispoSansContrainte = false;
+      emps.forEach((emp,ei)=>{
+        if(getS(ei,d)) return;
+        const roleOk = (poste.role==="CE"&&(estCE(ei)||estPoly(ei)))||(poste.role==="AG"&&(estAG(ei)||estPoly(ei)));
+        if(!roleOk) return;
+        for(const code of codesSlot(poste)){
+          if(verifContraintes(ei,d,code).ok) dispoSansContrainte = true;
+        }
+      });
+      if(dispoSansContrainte) raison = "un agent est disponible — relance une génération ou saisis manuellement";
+      nonPourvus.push({jour: d, code: poste.code, role: poste.role, raison});
+    }
+  }
+
+  return {violations, nonPourvus};
+}
+
+function showAuditReport(genInfo){
+  const audit = auditPlanning();
+  const existing = document.getElementById("audit-modal");
+  if(existing) existing.remove();
+  const overlay = document.createElement("div");
+  overlay.id = "audit-modal";
+  overlay.className = "overlay";
+  overlay.onclick = e => { if(e.target===overlay) overlay.remove(); };
+  const box = document.createElement("div");
+  box.className = "modal modal-lg";
+  box.style.maxHeight = "88vh";
+  box.onclick = e => e.stopPropagation();
+
+  const okBadge = audit.violations.length === 0
+    ? '<div style="background:var(--gr-lt);border:1.5px solid var(--gr-bd);color:var(--gr);border-radius:10px;padding:14px;text-align:center;font-weight:700;font-size:14px;margin-bottom:12px;">✅ AUDIT VALIDÉ — 0 violation des contraintes légales</div>'
+    : '<div style="background:var(--re-lt);border:1.5px solid var(--re-bd);color:var(--re);border-radius:10px;padding:14px;text-align:center;font-weight:700;font-size:14px;margin-bottom:12px;">🚨 '+audit.violations.length+' VIOLATION(S) DÉTECTÉE(S)</div>';
+
+  const vioList = audit.violations.length ? audit.violations.map(v =>
+    '<div style="padding:8px 10px;border-radius:7px;background:var(--re-lt);border:1px solid var(--re-bd);margin-bottom:5px;font-size:11px;"><b>'+v.agent+'</b> — jour '+v.jour+' ('+v.code+') : '+v.raison+'</div>'
+  ).join("") : "";
+
+  const npList = audit.nonPourvus.length ? audit.nonPourvus.map(n =>
+    '<div style="padding:7px 10px;border-radius:7px;background:var(--yl-lt);border:1px solid var(--yl-bd);margin-bottom:5px;font-size:11px;"><b>Jour '+n.jour+'</b> — poste '+n.code+' ('+(n.role==="CE"?"Chef":"Agent")+') : '+n.raison+'</div>'
+  ).join("") : '<div style="font-size:12px;color:var(--gr);padding:8px;">✓ Tous les postes requis sont pourvus</div>';
+
+  // Compteurs d'heures par agent vs objectif contractuel
+  const cible = GEN_CONSTRAINTS.heuresContrat || 151;
+  const heures = emps.map((emp,ei)=>({nom:emp.name, h:hMois(ei)}));
+  const minH = Math.min(...heures.map(x=>x.h));
+  const maxH = Math.max(...heures.map(x=>x.h));
+  const ecart = maxH - minH;
+  const hRows = heures.map(x=>{
+    const diff = x.h - cible;
+    const col = Math.abs(diff)<=10 ? "var(--gr)" : Math.abs(diff)<=20 ? "var(--yl)" : "var(--re)";
+    const bg  = Math.abs(diff)<=10 ? "var(--gr-lt)" : Math.abs(diff)<=20 ? "var(--yl-lt)" : "var(--re-lt)";
+    return '<div style="display:flex;align-items:center;gap:8px;padding:4px 10px;border-radius:6px;background:'+bg+';margin-bottom:3px;font-size:11px;">'
+      + '<span style="flex:1;">'+x.nom+'</span>'
+      + '<span style="font-family:var(--mono);font-weight:700;color:'+col+';">'+x.h.toFixed(0)+'h</span>'
+      + '<span style="font-family:var(--mono);font-size:9px;color:var(--text3);width:44px;text-align:right;">'+(diff>=0?"+":"")+diff.toFixed(0)+'h</span>'
+      + '</div>';
+  }).join("");
+  const ecartOk = ecart <= (GEN_CONSTRAINTS.ecartMaxHeures||25);
+  const hSection = '<div class="section-lbl">COMPTEURS D\'HEURES — objectif '+cible+'h/mois</div>'
+    + '<div style="font-size:10px;font-family:var(--mono);color:'+(ecartOk?"var(--gr)":"var(--re)")+';margin-bottom:6px;">Écart max entre agents : '+ecart.toFixed(0)+'h '+(ecartOk?"✓":"⚠ dépasse la limite de "+(GEN_CONSTRAINTS.ecartMaxHeures||25)+"h")+'</div>'
+    + '<div style="max-height:170px;overflow-y:auto;margin-bottom:10px;">'+hRows+'</div>';
+
+  const learnCount = Object.keys(genLearn).filter(k=>Math.abs(genLearn[k])>=8&&k.split("|").length===2).length;
+
+  box.innerHTML = '<div class="modal-head">'
+    + '<div><div class="modal-title">🔍 Rapport d\'audit du planning</div>'
+    + '<div class="modal-sub">Vérification indépendante de chaque règle, poste par poste'+(genInfo?(' — '+genInfo):'')+'</div></div>'
+    + '<button class="modal-close" onclick="document.getElementById(\'audit-modal\').remove()">×</button></div>'
+    + okBadge
+    + (audit.violations.length ? '<div class="section-lbl">VIOLATIONS</div><div style="max-height:180px;overflow-y:auto;margin-bottom:10px;">'+vioList+'</div>' : '')
+    + '<div class="section-lbl">POSTES NON POURVUS ('+audit.nonPourvus.length+')</div>'
+        + '<div style="max-height:200px;overflow-y:auto;margin-bottom:10px;">'+npList+'</div>'
+    + hSection
+    + (learnCount>0 ? '<div style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-bottom:10px;">🧠 '+learnCount+' préférence(s) apprise(s) de tes corrections sont actives</div>' : '')
+    + '<div class="btn-row"><button class="btn-pri" onclick="document.getElementById(\'audit-modal\').remove()">✓ Compris</button></div>';
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+}
+
+
+// ════════════════════════════════════════════════════════
+// VACANCES SCOLAIRES — repère visuel (n'influence pas le générateur)
+// Stockées en dates ISO pour couvrir toutes les années
+// ════════════════════════════════════════════════════════
+let schoolHolidays = JSON.parse(localStorage.getItem("artemis_vacances")||"[]"); // [{start:"2026-08-08", end:"2026-08-24", label:"Vacances d'été"}]
+
+function isoDate(y,m,d){ return y+"-"+String(m+1).padStart(2,"0")+"-"+String(d).padStart(2,"0"); }
+function isVacances(d){
+  const iso = isoDate(year, month, d);
+  return schoolHolidays.find(v => iso >= v.start && iso <= v.end) || null;
+}
+
+function saveVacancesLocal(){
+  localStorage.setItem("artemis_vacances", JSON.stringify(schoolHolidays));
+  triggerAutosave(); // sync GitHub pour le collègue
+}
+
+function openVacancesModal(){
+  const existing = document.getElementById("vac-modal");
+  if(existing){ existing.remove(); return; }
+  const overlay = document.createElement("div");
+  overlay.id = "vac-modal";
+  overlay.className = "overlay";
+  overlay.onclick = e => { if(e.target===overlay) overlay.remove(); };
+  const box = document.createElement("div");
+  box.className = "modal modal-sm";
+  box.onclick = e => e.stopPropagation();
+  renderVacancesBox(box);
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+}
+
+function renderVacancesBox(box){
+  const list = schoolHolidays.slice().sort((a,b)=>a.start.localeCompare(b.start));
+  box.innerHTML = `
+    <div class="modal-head">
+      <div><div class="modal-title">🏖 Vacances scolaires</div>
+      <div class="modal-sub">Repère visuel sur le calendrier — aide-mémoire pour privilégier les R</div></div>
+      <button class="modal-close" onclick="document.getElementById('vac-modal').remove()">×</button>
+    </div>
+    <div class="section-lbl">PÉRIODES ENREGISTRÉES</div>
+    <div style="max-height:180px;overflow-y:auto;margin-bottom:12px;">
+      ${list.length ? list.map((v,i)=>{
+        const realIdx = schoolHolidays.indexOf(v);
+        return `<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:7px;background:#e0f7fa;border:1px solid #80deea;margin-bottom:5px;font-size:11px;">
+          <div style="width:10px;height:10px;border-radius:3px;background:#00acc1;flex-shrink:0;"></div>
+          <div style="flex:1;"><b>${v.label||"Vacances"}</b><br><span style="font-family:var(--mono);font-size:9px;color:#00838f;">${formatDateFR(v.start)} → ${formatDateFR(v.end)}</span></div>
+          <button onclick="delVacances(${realIdx})" style="width:22px;height:22px;border-radius:4px;border:1px solid var(--re-bd);background:var(--re-lt);color:var(--re);cursor:pointer;font-size:11px;">×</button>
+        </div>`;
+      }).join("") : '<div style="text-align:center;color:var(--text3);font-size:11px;padding:16px;">Aucune période enregistrée</div>'}
+    </div>
+    <div class="section-lbl">AJOUTER UNE PÉRIODE</div>
+    <div style="background:var(--bg2);border:1px dashed var(--border2);border-radius:8px;padding:10px;">
+      <input type="text" id="vac-label" placeholder="Ex: Vacances de la Toussaint" class="form-input" style="margin-bottom:8px;"/>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+        <div><div style="font-size:8px;color:var(--text3);font-family:var(--mono);margin-bottom:3px;">DU</div>
+          <input type="date" id="vac-start" class="form-input"/></div>
+        <div><div style="font-size:8px;color:var(--text3);font-family:var(--mono);margin-bottom:3px;">AU</div>
+          <input type="date" id="vac-end" class="form-input"/></div>
+      </div>
+      <button onclick="addVacances()" style="width:100%;padding:8px;border-radius:7px;background:#00acc1;color:#fff;border:none;font-weight:700;font-size:12px;cursor:pointer;">+ Ajouter</button>
+    </div>`;
+}
+
+function formatDateFR(iso){
+  const [y,m,d] = iso.split("-");
+  return d+"/"+m+"/"+y;
+}
+
+function addVacances(){
+  const label = document.getElementById("vac-label")?.value.trim() || "Vacances";
+  const start = document.getElementById("vac-start")?.value;
+  const end = document.getElementById("vac-end")?.value;
+  if(!start || !end){ alert("Merci de renseigner les deux dates"); return; }
+  if(end < start){ alert("La date de fin doit être après la date de début"); return; }
+  schoolHolidays.push({start, end, label});
+  saveVacancesLocal();
+  render();
+  const box = document.querySelector("#vac-modal .modal");
+  if(box) renderVacancesBox(box);
+}
+
+function delVacances(i){
+  schoolHolidays.splice(i,1);
+  saveVacancesLocal();
+  render();
+  const box = document.querySelector("#vac-modal .modal");
+  if(box) renderVacancesBox(box);
+}
+
 // ════════════════════════════════════════════════════════
 // SYSTEME UNDO / REDO
 // ════════════════════════════════════════════════════════
@@ -2010,6 +2798,10 @@ setInterval(async()=>{
     <!-- Ajouter une absence -->
     <div style="margin-top:10px;padding:10px;background:var(--bg2);border-radius:8px;border:1px solid var(--border);">
       <div class="section-lbl" style="margin-top:0;">NOUVELLE ABSENCE</div>
+      <div id="abs-motif-row" style="display:none;margin-bottom:6px;">
+        <div class="form-label">MOTIF (optionnel — ex: Congé paternité, Décès...)</div>
+        <input type="text" id="abs-motif-bulk" class="form-input" placeholder="Non précisé"/>
+      </div>
       <div style="display:grid;grid-template-columns:1fr 70px 70px auto;gap:6px;align-items:flex-end;">
         <div>
           <div class="form-label">AGENT</div>
