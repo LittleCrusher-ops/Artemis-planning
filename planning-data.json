@@ -3268,7 +3268,7 @@
     }
   },
   "year": 2026,
-  "month": 9,
+  "month": 10,
   "workShifts": [
     {
       "code": "M",
@@ -3421,5 +3421,58 @@
     ],
     "9": []
   },
-  "lastModified": 1785784638149
+  "genPrefs": {},
+  "genConstraints": {
+    "reposMin": 11,
+    "joursConsecutifs": 6,
+    "maxHeuresSemaine": 48,
+    "maxHeuresJour": 12,
+    "reposHebdo": 35,
+    "weMin": 1,
+    "weMinDur": true,
+    "maxWETravaillesConsec": 3,
+    "heuresContrat": 151,
+    "ecartMaxHeures": 25
+  },
+  "genOpts": {
+    "blocs": true,
+    "blocsForce": 80,
+    "keepExisting": true,
+    "iterations": 40
+  },
+  "genLearn": {},
+  "genSeqRules": [
+    {
+      "type": "suite",
+      "apres": "SD",
+      "dow": 6,
+      "alors": "S2",
+      "force": 120
+    },
+    {
+      "type": "eviter",
+      "apres": "N",
+      "pas": "JS",
+      "force": 100
+    },
+    {
+      "type": "eviter",
+      "apres": "NVS",
+      "pas": "JS",
+      "force": 100
+    },
+    {
+      "type": "eviter",
+      "apres": "ND",
+      "pas": "JS",
+      "force": 100
+    },
+    {
+      "type": "we_complet",
+      "role": "CE",
+      "force": 150
+    }
+  ],
+  "schoolHolidays": [],
+  "lastModified": 1785786913369
 }
