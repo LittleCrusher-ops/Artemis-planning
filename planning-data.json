@@ -3477,6 +3477,13 @@
       ],
       "exclusif": false,
       "maxSemaine": null
+    },
+    "6": {
+      "codes": [
+        "S1"
+      ],
+      "exclusif": false,
+      "maxSemaine": null
     }
   },
   "genConstraints": {
@@ -3531,5 +3538,5 @@
     }
   ],
   "schoolHolidays": [],
-  "lastModified": 1785787050274
+  "lastModified": 1785787055442
 }
