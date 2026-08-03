@@ -3472,7 +3472,8 @@
         "ND",
         "S1",
         "SD",
-        "N"
+        "N",
+        "R"
       ],
       "exclusif": false,
       "maxSemaine": null
@@ -3530,5 +3531,5 @@
     }
   ],
   "schoolHolidays": [],
-  "lastModified": 1785787042003
+  "lastModified": 1785787050274
 }
