@@ -3470,7 +3470,8 @@
         "JD",
         "NVS",
         "ND",
-        "S1"
+        "S1",
+        "SD"
       ],
       "exclusif": false,
       "maxSemaine": null
@@ -3528,5 +3529,5 @@
     }
   ],
   "schoolHolidays": [],
-  "lastModified": 1785787031094
+  "lastModified": 1785787036118
 }
