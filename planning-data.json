@@ -3566,8 +3566,15 @@
       "type": "we_complet",
       "role": "CE",
       "force": 150
+    },
+    {
+      "type": "suite",
+      "apres": "JS",
+      "force": 300,
+      "dow": 6,
+      "alors": "SD"
     }
   ],
   "schoolHolidays": [],
-  "lastModified": 1785787200250
+  "lastModified": 1785787298314
 }
