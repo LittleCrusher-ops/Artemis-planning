@@ -3456,7 +3456,8 @@
     },
     "4": {
       "codes": [
-        "ND"
+        "ND",
+        "NVS"
       ],
       "exclusif": false,
       "maxSemaine": null
@@ -3514,5 +3515,5 @@
     }
   ],
   "schoolHolidays": [],
-  "lastModified": 1785786975302
+  "lastModified": 1785786979329
 }
