@@ -3911,7 +3911,7 @@
     "blocs": true,
     "blocsForce": 80,
     "keepExisting": true,
-    "iterations": 40
+    "iterations": 100
   },
   "genLearn": {},
   "genSeqRules": [
@@ -3971,5 +3971,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1785787598095
+  "lastModified": 1785787610769
 }
