@@ -1878,9 +1878,6 @@
     "1_2026_7_25": {
       "code": "indispo"
     },
-    "5_2026_8_6": {
-      "code": "conge"
-    },
     "2_2026_8_1": {
       "code": "indispo"
     },
@@ -3999,5 +3996,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1785848728087
+  "lastModified": 1785848730820
 }
