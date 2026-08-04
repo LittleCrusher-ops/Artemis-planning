@@ -3678,10 +3678,13 @@
     },
     "5_2026_8_6": {
       "code": "indispo"
+    },
+    "5_2027_2_27": {
+      "code": "NVS"
     }
   },
-  "year": 2026,
-  "month": 8,
+  "year": 2027,
+  "month": 2,
   "workShifts": [
     {
       "code": "M",
@@ -4002,5 +4005,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1785848741638
+  "lastModified": 1785870433648
 }
