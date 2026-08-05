@@ -2008,7 +2008,7 @@
     },
     "7_2026_9_15": {
       "code": "conge_exc",
-      "label": "Pternité"
+      "label": "Paternité"
     },
     "4_2026_9_13": {
       "code": "conge"
@@ -2785,40 +2785,31 @@
       "code": "JS"
     },
     "7_2026_9_17": {
-      "code": "conge_exc",
-      "label": "Pternité"
+      "code": "JS"
     },
     "7_2026_9_18": {
-      "code": "conge_exc",
-      "label": "Pternité"
+      "code": "SD"
     },
     "7_2026_9_19": {
-      "code": "conge_exc",
-      "label": "Pternité"
+      "code": "S2"
     },
     "7_2026_9_22": {
-      "code": "conge_exc",
-      "label": "Pternité"
+      "code": "R"
     },
     "7_2026_9_23": {
-      "code": "conge_exc",
-      "label": "Pternité"
+      "code": "R"
     },
     "7_2026_9_25": {
-      "code": "conge_exc",
-      "label": "Pternité"
+      "code": "JD"
     },
     "7_2026_9_26": {
-      "code": "conge_exc",
-      "label": "Pternité"
+      "code": "R"
     },
     "7_2026_9_28": {
-      "code": "conge_exc",
-      "label": "Pternité"
+      "code": "JM"
     },
     "7_2026_9_29": {
-      "code": "conge_exc",
-      "label": "Pternité"
+      "code": "R"
     },
     "8_2026_9_2": {
       "code": "NVS"
@@ -3696,34 +3687,6 @@
     },
     "5_2027_2_26": {
       "code": "NVS"
-    },
-    "7_2026_9_16": {
-      "code": "conge_exc",
-      "label": "Pternité"
-    },
-    "7_2026_9_20": {
-      "code": "conge_exc",
-      "label": "Pternité"
-    },
-    "7_2026_9_21": {
-      "code": "conge_exc",
-      "label": "Pternité"
-    },
-    "7_2026_9_24": {
-      "code": "conge_exc",
-      "label": "Pternité"
-    },
-    "7_2026_9_27": {
-      "code": "conge_exc",
-      "label": "Pternité"
-    },
-    "7_2026_9_30": {
-      "code": "conge_exc",
-      "label": "Pternité"
-    },
-    "7_2026_9_31": {
-      "code": "conge_exc",
-      "label": "Pternité"
     }
   },
   "year": 2026,
@@ -4048,5 +4011,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1785957206042
+  "lastModified": 1785957232592
 }
