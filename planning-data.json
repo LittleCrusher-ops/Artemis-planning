@@ -3718,6 +3718,9 @@
     "7_2026_8_30": {
       "code": "conge_exc",
       "label": "Paternité"
+    },
+    "8_2026_8_14": {
+      "code": "S2"
     }
   },
   "year": 2026,
@@ -4042,5 +4045,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1785957372898
+  "lastModified": 1785957382082
 }
