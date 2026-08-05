@@ -176,9 +176,9 @@
       "date_debut": "2026-12-11",
       "date_fin": "2026-12-11",
       "message": "",
-      "statut": "en_attente",
+      "statut": "refusee",
       "recu_le": "04/08/2026 à 18:01",
-      "traite_le": null
+      "traite_le": "05/08/2026 à 20:01"
     }
   ],
   "processed_ids": [
@@ -198,5 +198,5 @@
     "d_1785252679729",
     "d_1785859319336"
   ],
-  "updated_at": "2026-08-04T16:01:59.362Z"
+  "updated_at": "2026-08-05T18:01:24.171Z"
 }
