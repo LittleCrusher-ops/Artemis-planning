@@ -3727,6 +3727,18 @@
     },
     "4_2026_8_14": {
       "code": "N"
+    },
+    "6_2026_8_25": {
+      "code": "custom",
+      "start": "18:00",
+      "end": "01:00",
+      "segments": [
+        {
+          "start": "18:00",
+          "end": "01:00"
+        }
+      ],
+      "label": "Perso"
     }
   },
   "year": 2026,
@@ -4051,5 +4063,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1785957725107
+  "lastModified": 1785957751554
 }
