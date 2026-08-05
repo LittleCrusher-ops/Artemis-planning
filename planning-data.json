@@ -3720,7 +3720,10 @@
       "label": "Paternité"
     },
     "8_2026_8_14": {
-      "code": "S1"
+      "code": "S2"
+    },
+    "8_2026_8_15": {
+      "code": "S2"
     }
   },
   "year": 2026,
@@ -4045,5 +4048,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1785957376569
+  "lastModified": 1785957384586
 }
