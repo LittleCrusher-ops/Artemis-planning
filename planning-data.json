@@ -3529,34 +3529,44 @@
       "code": "S1"
     },
     "7_2026_8_15": {
-      "code": "S2"
+      "code": "conge_exc",
+      "label": "Paternité"
     },
     "7_2026_8_16": {
-      "code": "S2"
+      "code": "conge_exc",
+      "label": "Paternité"
     },
     "7_2026_8_17": {
-      "code": "S2"
+      "code": "conge_exc",
+      "label": "Paternité"
     },
     "7_2026_8_21": {
-      "code": "S2"
+      "code": "conge_exc",
+      "label": "Paternité"
     },
     "7_2026_8_22": {
-      "code": "S1"
+      "code": "conge_exc",
+      "label": "Paternité"
     },
     "7_2026_8_23": {
-      "code": "JM"
+      "code": "conge_exc",
+      "label": "Paternité"
     },
     "7_2026_8_24": {
-      "code": "S1"
+      "code": "conge_exc",
+      "label": "Paternité"
     },
     "7_2026_8_27": {
-      "code": "JD"
+      "code": "conge_exc",
+      "label": "Paternité"
     },
     "7_2026_8_28": {
-      "code": "S1"
+      "code": "conge_exc",
+      "label": "Paternité"
     },
     "7_2026_8_29": {
-      "code": "S1"
+      "code": "conge_exc",
+      "label": "Paternité"
     },
     "8_2026_8_1": {
       "code": "S1"
@@ -3687,10 +3697,34 @@
     },
     "5_2027_2_26": {
       "code": "NVS"
+    },
+    "7_2026_8_18": {
+      "code": "conge_exc",
+      "label": "Paternité"
+    },
+    "7_2026_8_19": {
+      "code": "conge_exc",
+      "label": "Paternité"
+    },
+    "7_2026_8_20": {
+      "code": "conge_exc",
+      "label": "Paternité"
+    },
+    "7_2026_8_25": {
+      "code": "conge_exc",
+      "label": "Paternité"
+    },
+    "7_2026_8_26": {
+      "code": "conge_exc",
+      "label": "Paternité"
+    },
+    "7_2026_8_30": {
+      "code": "conge_exc",
+      "label": "Paternité"
     }
   },
   "year": 2026,
-  "month": 9,
+  "month": 8,
   "workShifts": [
     {
       "code": "M",
@@ -4011,5 +4045,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1785957232592
+  "lastModified": 1785957278882
 }
