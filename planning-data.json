@@ -4485,11 +4485,6 @@
     },
     {
       "type": "we_complet",
-      "role": "tous",
-      "force": 300
-    },
-    {
-      "type": "we_complet",
       "role": "CE",
       "force": 300
     },
@@ -4508,5 +4503,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1786193094449
+  "lastModified": 1786193194925
 }
