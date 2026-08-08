@@ -4102,13 +4102,6 @@
       "type": "we_complet",
       "role": "tous",
       "force": 300
-    },
-    {
-      "type": "suite",
-      "apres": "NVS",
-      "force": 100,
-      "dow": 0,
-      "alors": "ND"
     }
   ],
   "schoolHolidays": [
@@ -4118,5 +4111,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1786189602138
+  "lastModified": 1786189611888
 }
