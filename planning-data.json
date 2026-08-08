@@ -4113,11 +4113,6 @@
     },
     {
       "type": "we_complet",
-      "role": "AG",
-      "force": 500
-    },
-    {
-      "type": "we_complet",
       "role": "tous",
       "force": 500
     }
@@ -4129,5 +4124,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1786193302731
+  "lastModified": 1786193308397
 }
