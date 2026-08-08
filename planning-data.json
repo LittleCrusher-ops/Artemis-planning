@@ -4365,7 +4365,6 @@
         "NVS",
         "N",
         "SD",
-        "JD",
         "S1"
       ],
       "exclusif": false,
@@ -4539,5 +4538,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1786197030602
+  "lastModified": 1786197034953
 }
