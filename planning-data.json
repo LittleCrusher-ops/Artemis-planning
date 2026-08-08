@@ -4512,13 +4512,6 @@
     },
     {
       "type": "suite",
-      "apres": "M",
-      "force": 1000,
-      "dow": 5,
-      "alors": "M"
-    },
-    {
-      "type": "suite",
       "apres": "S2",
       "force": 1000,
       "dow": 5,
@@ -4532,5 +4525,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1786194185774
+  "lastModified": 1786194321068
 }
