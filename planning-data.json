@@ -3939,9 +3939,7 @@
   },
   "genPrefs": {
     "0": {
-      "codes": [
-        "MS"
-      ],
+      "codes": [],
       "exclusif": false,
       "maxSemaine": null
     },
@@ -4107,5 +4105,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1786188394631
+  "lastModified": 1786188398469
 }
