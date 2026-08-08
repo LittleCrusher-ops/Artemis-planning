@@ -4499,6 +4499,13 @@
       "type": "we_complet",
       "role": "tous",
       "force": 500
+    },
+    {
+      "type": "eviter",
+      "apres": "ND",
+      "force": 500,
+      "dow": 6,
+      "pas": "NVS"
     }
   ],
   "schoolHolidays": [
@@ -4508,5 +4515,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1786193481026
+  "lastModified": 1786193516455
 }
