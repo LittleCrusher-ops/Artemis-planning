@@ -4390,7 +4390,6 @@
         "JD",
         "JS",
         "N",
-        "NVS",
         "ND"
       ],
       "exclusif": false,
@@ -4536,5 +4535,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1786197067100
+  "lastModified": 1786197120725
 }
