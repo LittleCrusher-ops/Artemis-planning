@@ -4363,8 +4363,7 @@
       "codes": [
         "ND",
         "NVS",
-        "N",
-        "SD"
+        "N"
       ],
       "exclusif": false,
       "maxSemaine": null
@@ -4537,5 +4536,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1786197054811
+  "lastModified": 1786197067100
 }
