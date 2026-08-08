@@ -3914,9 +3914,6 @@
     "3_2026_11_10": {
       "code": "S2"
     },
-    "3_2026_11_16": {
-      "code": "S2"
-    },
     "3_2026_11_17": {
       "code": "S2"
     },
@@ -4431,7 +4428,10 @@
     "keepExisting": true,
     "iterations": 50
   },
-  "genLearn": {},
+  "genLearn": {
+    "3|S2": -8,
+    "3|S2|3": -4
+  },
   "genSeqRules": [
     {
       "type": "suite",
@@ -4489,5 +4489,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1786187545108
+  "lastModified": 1786187639719
 }
