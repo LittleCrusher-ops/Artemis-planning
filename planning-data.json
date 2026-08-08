@@ -4122,6 +4122,13 @@
       "force": 500,
       "dow": 6,
       "pas": "NVS"
+    },
+    {
+      "type": "suite",
+      "apres": "MS",
+      "force": 500,
+      "dow": 6,
+      "alors": "M"
     }
   ],
   "schoolHolidays": [
@@ -4131,5 +4138,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1786193622799
+  "lastModified": 1786193697302
 }
