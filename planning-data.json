@@ -3963,7 +3963,6 @@
     },
     "3": {
       "codes": [
-        "M",
         "S2"
       ],
       "exclusif": false,
@@ -4150,5 +4149,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1786196585404
+  "lastModified": 1786196593218
 }
