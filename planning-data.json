@@ -4035,7 +4035,8 @@
         "JD",
         "ND",
         "N",
-        "SD"
+        "SD",
+        "JS"
       ],
       "exclusif": false,
       "maxSemaine": null
@@ -4155,5 +4156,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1786196750692
+  "lastModified": 1786196791454
 }
