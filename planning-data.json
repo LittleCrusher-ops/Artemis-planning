@@ -4498,13 +4498,6 @@
       "force": 500
     },
     {
-      "type": "eviter",
-      "apres": "ND",
-      "force": 500,
-      "dow": 6,
-      "pas": "NVS"
-    },
-    {
       "type": "suite",
       "apres": "S2",
       "force": 1000,
@@ -4526,5 +4519,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1786266212950
+  "lastModified": 1786266363529
 }
