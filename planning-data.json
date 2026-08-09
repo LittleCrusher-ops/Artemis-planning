@@ -4136,6 +4136,11 @@
       "force": 1000,
       "dow": 6,
       "alors": "MS"
+    },
+    {
+      "type": "we_complet",
+      "role": "AG",
+      "force": 500
     }
   ],
   "schoolHolidays": [
@@ -4145,5 +4150,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1786264616295
+  "lastModified": 1786264683726
 }
