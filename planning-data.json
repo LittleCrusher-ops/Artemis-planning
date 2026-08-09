@@ -3941,7 +3941,8 @@
     "0": {
       "codes": [
         "M",
-        "MS"
+        "MS",
+        "JD"
       ],
       "exclusif": false,
       "maxSemaine": null
@@ -4143,5 +4144,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1786265182268
+  "lastModified": 1786265188801
 }
