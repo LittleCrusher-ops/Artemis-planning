@@ -179,6 +179,18 @@
       "statut": "refusee",
       "recu_le": "04/08/2026 à 18:01",
       "traite_le": "05/08/2026 à 20:01"
+    },
+    {
+      "id": "d_1786273759101",
+      "demandeur": "Devalckenaere Bastien",
+      "motif": "indisponibilite",
+      "dates_texte": "du 16 Septembre 2026 au 17 Septembre 2026",
+      "date_debut": "2026-09-16",
+      "date_fin": "2026-09-17",
+      "message": "",
+      "statut": "en_attente",
+      "recu_le": "09/08/2026 à 13:09",
+      "traite_le": null
     }
   ],
   "processed_ids": [
@@ -196,7 +208,8 @@
     "d_1784577173166",
     "d_1784577598206",
     "d_1785252679729",
-    "d_1785859319336"
+    "d_1785859319336",
+    "d_1786273759101"
   ],
-  "updated_at": "2026-08-05T18:01:24.171Z"
+  "updated_at": "2026-08-09T11:09:24.921Z"
 }
