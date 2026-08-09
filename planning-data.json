@@ -4098,13 +4098,6 @@
       "type": "we_complet",
       "role": "CE",
       "force": 300
-    },
-    {
-      "type": "suite",
-      "apres": "MS",
-      "force": 1000,
-      "dow": 6,
-      "alors": "MS"
     }
   ],
   "schoolHolidays": [
@@ -4114,5 +4107,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1786266893201
+  "lastModified": 1786266895595
 }
