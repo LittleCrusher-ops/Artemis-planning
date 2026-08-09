@@ -4098,6 +4098,11 @@
       "type": "we_complet",
       "role": "CE",
       "force": 300
+    },
+    {
+      "type": "we_complet",
+      "role": "AG",
+      "force": 1000
     }
   ],
   "schoolHolidays": [
@@ -4107,5 +4112,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1786266960072
+  "lastModified": 1786266994051
 }
