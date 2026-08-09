@@ -4003,7 +4003,6 @@
         "S1",
         "JM",
         "SD",
-        "JD",
         "JS"
       ],
       "exclusif": false,
@@ -4147,5 +4146,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1786264423214
+  "lastModified": 1786264428627
 }
