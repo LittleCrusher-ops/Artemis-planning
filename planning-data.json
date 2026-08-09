@@ -3999,7 +3999,8 @@
         "JM",
         "JS",
         "NVS",
-        "ND"
+        "ND",
+        "S1"
       ],
       "exclusif": false,
       "maxSemaine": null
@@ -4114,5 +4115,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1786267797459
+  "lastModified": 1786267801119
 }
