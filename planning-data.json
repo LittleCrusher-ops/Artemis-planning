@@ -4043,7 +4043,7 @@
     "ecartMaxHeures": 25
   },
   "genOpts": {
-    "blocs": false,
+    "blocs": true,
     "blocsForce": 80,
     "keepExisting": true,
     "iterations": 50
@@ -4144,5 +4144,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1786264190112
+  "lastModified": 1786264193527
 }
