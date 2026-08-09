@@ -3967,7 +3967,6 @@
     "3": {
       "codes": [
         "S2",
-        "MS",
         "JD"
       ],
       "exclusif": false,
@@ -4127,5 +4126,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1786266696028
+  "lastModified": 1786266700379
 }
