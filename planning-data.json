@@ -4100,13 +4100,6 @@
       "force": 300
     },
     {
-      "type": "suite",
-      "apres": "NVS",
-      "force": 500,
-      "dow": 0,
-      "alors": "ND"
-    },
-    {
       "type": "we_complet",
       "role": "tous",
       "force": 500
@@ -4126,5 +4119,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1786266844489
+  "lastModified": 1786266889892
 }
