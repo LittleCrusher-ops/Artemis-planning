@@ -4135,6 +4135,13 @@
       "force": 1000,
       "dow": 6,
       "alors": "MS"
+    },
+    {
+      "type": "suite",
+      "apres": "M",
+      "force": 500,
+      "dow": 5,
+      "alors": "JD"
     }
   ],
   "schoolHolidays": [
@@ -4144,5 +4151,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1786264870628
+  "lastModified": 1786264961251
 }
