@@ -3997,7 +3997,8 @@
     "6": {
       "codes": [
         "JM",
-        "JS"
+        "JS",
+        "NVS"
       ],
       "exclusif": false,
       "maxSemaine": null
@@ -4112,5 +4113,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1786267787769
+  "lastModified": 1786267793165
 }
