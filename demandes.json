@@ -191,6 +191,18 @@
       "statut": "refusee",
       "recu_le": "09/08/2026 à 13:09",
       "traite_le": "09/08/2026 à 13:19"
+    },
+    {
+      "id": "d_1786390465981",
+      "demandeur": "Lefebvre Pierre",
+      "motif": "conge",
+      "dates_texte": "du 18 Janvier 2027 au 5 Février 2027",
+      "date_debut": "2027-01-18",
+      "date_fin": "2027-02-05",
+      "message": "",
+      "statut": "en_attente",
+      "recu_le": "10/08/2026 à 21:34",
+      "traite_le": null
     }
   ],
   "processed_ids": [
@@ -209,7 +221,8 @@
     "d_1784577598206",
     "d_1785252679729",
     "d_1785859319336",
-    "d_1786273759101"
+    "d_1786273759101",
+    "d_1786390465981"
   ],
-  "updated_at": "2026-08-09T11:19:00.723Z"
+  "updated_at": "2026-08-10T19:34:26.215Z"
 }
