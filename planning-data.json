@@ -3835,10 +3835,25 @@
     },
     "7_2027_0_31": {
       "code": "conge"
+    },
+    "7_2027_1_1": {
+      "code": "conge"
+    },
+    "7_2027_1_2": {
+      "code": "conge"
+    },
+    "7_2027_1_3": {
+      "code": "conge"
+    },
+    "7_2027_1_4": {
+      "code": "conge"
+    },
+    "7_2027_1_5": {
+      "code": "conge"
     }
   },
   "year": 2027,
-  "month": 0,
+  "month": 1,
   "workShifts": [
     {
       "code": "M",
@@ -4170,5 +4185,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1786683162478
+  "lastModified": 1786683177505
 }
