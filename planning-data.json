@@ -3850,10 +3850,13 @@
     },
     "7_2027_1_5": {
       "code": "conge"
+    },
+    "7_2027_0_16": {
+      "code": "indispo"
     }
   },
   "year": 2027,
-  "month": 1,
+  "month": 0,
   "workShifts": [
     {
       "code": "M",
@@ -4185,5 +4188,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1786683177505
+  "lastModified": 1786683187737
 }
