@@ -203,6 +203,18 @@
       "statut": "acceptee",
       "recu_le": "10/08/2026 à 21:34",
       "traite_le": "14/08/2026 à 06:53"
+    },
+    {
+      "id": "d_1787252378175",
+      "demandeur": "Delhaye Eddy",
+      "motif": "indisponibilite",
+      "dates_texte": "du 18 Novembre 2026 au 18 Novembre 2026",
+      "date_debut": "2026-11-18",
+      "date_fin": "2026-11-18",
+      "message": "Rendez vous médical",
+      "statut": "en_attente",
+      "recu_le": "20/08/2026 à 20:59",
+      "traite_le": null
     }
   ],
   "processed_ids": [
@@ -222,7 +234,8 @@
     "d_1785252679729",
     "d_1785859319336",
     "d_1786273759101",
-    "d_1786390465981"
+    "d_1786390465981",
+    "d_1787252378175"
   ],
-  "updated_at": "2026-08-14T04:53:40.158Z"
+  "updated_at": "2026-08-20T18:59:38.226Z"
 }
