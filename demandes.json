@@ -212,9 +212,9 @@
       "date_debut": "2026-11-18",
       "date_fin": "2026-11-18",
       "message": "Rendez vous médical",
-      "statut": "en_attente",
+      "statut": "acceptee",
       "recu_le": "20/08/2026 à 20:59",
-      "traite_le": null
+      "traite_le": "22/08/2026 à 06:30"
     }
   ],
   "processed_ids": [
@@ -237,5 +237,5 @@
     "d_1786390465981",
     "d_1787252378175"
   ],
-  "updated_at": "2026-08-20T18:59:38.226Z"
+  "updated_at": "2026-08-22T04:30:48.249Z"
 }
