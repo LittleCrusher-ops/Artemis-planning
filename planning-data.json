@@ -3690,10 +3690,28 @@
     },
     "5_2026_10_30": {
       "code": "conge"
+    },
+    "5_2026_11_1": {
+      "code": "conge"
+    },
+    "5_2026_11_2": {
+      "code": "conge"
+    },
+    "5_2026_11_3": {
+      "code": "conge"
+    },
+    "5_2026_11_4": {
+      "code": "conge"
+    },
+    "5_2026_11_5": {
+      "code": "conge"
+    },
+    "5_2026_11_6": {
+      "code": "conge"
     }
   },
   "year": 2026,
-  "month": 10,
+  "month": 11,
   "workShifts": [
     {
       "code": "M",
@@ -4014,5 +4032,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1787671175407
+  "lastModified": 1787671201168
 }
