@@ -3878,7 +3878,7 @@
         "S2"
       ],
       "exclusif": false,
-      "maxSemaine": null
+      "maxSemaine": 40
     },
     "2": {
       "codes": [
@@ -4032,5 +4032,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1787909729531
+  "lastModified": 1787909737706
 }
