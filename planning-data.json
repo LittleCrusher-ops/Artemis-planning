@@ -3054,9 +3054,6 @@
     "6_2026_10_1": {
       "code": "SD"
     },
-    "6_2026_10_2": {
-      "code": "R"
-    },
     "6_2026_10_7": {
       "code": "NVS"
     },
@@ -3710,8 +3707,8 @@
       "code": "conge"
     }
   },
-  "year": 2027,
-  "month": 0,
+  "year": 2026,
+  "month": 10,
   "workShifts": [
     {
       "code": "M",
@@ -4032,5 +4029,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1787916043960
+  "lastModified": 1788252304045
 }
