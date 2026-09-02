@@ -2043,11 +2043,6 @@
     "8_2026_8_30": {
       "code": "conge"
     },
-    "0_2026_8_30": {
-      "code": "deleg",
-      "start": "08:00",
-      "end": "16:00"
-    },
     "7_2026_6_22": {
       "code": "custom",
       "start": "17:00",
@@ -3682,7 +3677,7 @@
     }
   },
   "year": 2026,
-  "month": 9,
+  "month": 8,
   "workShifts": [
     {
       "code": "M",
@@ -4009,5 +4004,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1788338922153
+  "lastModified": 1788340360641
 }
