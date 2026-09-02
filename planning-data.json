@@ -3665,11 +3665,6 @@
       ],
       "label": "Perso"
     },
-    "0_2026_9_2": {
-      "code": "deleg",
-      "start": "10:00",
-      "end": "18:00"
-    },
     "0_2026_9_7": {
       "code": "deleg",
       "start": "10:00",
@@ -3682,7 +3677,7 @@
     }
   },
   "year": 2026,
-  "month": 8,
+  "month": 9,
   "workShifts": [
     {
       "code": "M",
@@ -4009,5 +4004,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1788340732946
+  "lastModified": 1788341146648
 }
