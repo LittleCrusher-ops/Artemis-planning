@@ -3670,9 +3670,6 @@
       "code": "deleg",
       "start": "08:00",
       "end": "16:00"
-    },
-    "6_2026_8_23": {
-      "code": "JM"
     }
   },
   "year": 2026,
@@ -4003,5 +4000,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1788335831563
+  "lastModified": 1788335833827
 }
