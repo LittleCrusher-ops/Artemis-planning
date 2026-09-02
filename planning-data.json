@@ -3674,6 +3674,11 @@
       "code": "deleg",
       "start": "08:00",
       "end": "16:00"
+    },
+    "0_2026_9_2": {
+      "code": "deleg",
+      "start": "12:00",
+      "end": "18:00"
     }
   },
   "year": 2026,
@@ -4004,5 +4009,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1788341146648
+  "lastModified": 1788341156910
 }
