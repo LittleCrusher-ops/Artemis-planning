@@ -2102,11 +2102,6 @@
     "2_2026_8_27": {
       "code": "indispo"
     },
-    "0_2026_8_2": {
-      "code": "deleg",
-      "start": "10:00",
-      "end": "18:00"
-    },
     "7_2026_8_8": {
       "code": "custom",
       "start": "08:30",
@@ -3717,7 +3712,7 @@
     }
   },
   "year": 2026,
-  "month": 10,
+  "month": 8,
   "workShifts": [
     {
       "code": "M",
@@ -4044,5 +4039,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1788252996993
+  "lastModified": 1788323885212
 }
