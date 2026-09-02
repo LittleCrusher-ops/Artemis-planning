@@ -3667,6 +3667,18 @@
       "code": "deleg",
       "start": "08:00",
       "end": "16:00"
+    },
+    "5_2026_8_4": {
+      "code": "custom",
+      "start": "14:00",
+      "end": "00:00",
+      "segments": [
+        {
+          "start": "14:00",
+          "end": "00:00"
+        }
+      ],
+      "label": "Perso"
     }
   },
   "year": 2026,
@@ -3997,5 +4009,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1788337583018
+  "lastModified": 1788337612562
 }
