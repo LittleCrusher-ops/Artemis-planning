@@ -3670,10 +3670,13 @@
       "code": "deleg",
       "start": "08:00",
       "end": "16:00"
+    },
+    "6_2026_8_23": {
+      "code": "JM"
     }
   },
   "year": 2026,
-  "month": 9,
+  "month": 8,
   "workShifts": [
     {
       "code": "M",
@@ -4000,5 +4003,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1788333412997
+  "lastModified": 1788335805792
 }
