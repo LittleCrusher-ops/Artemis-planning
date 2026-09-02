@@ -3665,10 +3665,13 @@
     },
     "1_2026_8_9": {
       "code": "S2"
+    },
+    "6_2026_9_19": {
+      "code": "R"
     }
   },
   "year": 2026,
-  "month": 8,
+  "month": 9,
   "workShifts": [
     {
       "code": "M",
@@ -3995,5 +3998,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1788330756431
+  "lastModified": 1788332625977
 }
