@@ -2102,22 +2102,6 @@
     "2_2026_8_27": {
       "code": "indispo"
     },
-    "7_2026_8_8": {
-      "code": "custom",
-      "start": "08:30",
-      "end": "12:00",
-      "segments": [
-        {
-          "start": "08:30",
-          "end": "12:00"
-        },
-        {
-          "start": "13:00",
-          "end": "16:30"
-        }
-      ],
-      "label": "Mac SST"
-    },
     "0_2026_9_21": {
       "code": "deleg",
       "start": "08:00",
@@ -4033,5 +4017,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1788323923237
+  "lastModified": 1788323926021
 }
