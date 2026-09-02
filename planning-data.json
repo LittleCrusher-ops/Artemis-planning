@@ -2102,11 +2102,6 @@
     "2_2026_8_27": {
       "code": "indispo"
     },
-    "0_2026_8_2": {
-      "code": "deleg",
-      "start": "10:00",
-      "end": "18:00"
-    },
     "7_2026_8_8": {
       "code": "custom",
       "start": "08:30",
@@ -4044,5 +4039,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1788323958727
+  "lastModified": 1788324104529
 }
