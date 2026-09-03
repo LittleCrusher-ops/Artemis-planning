@@ -1929,14 +1929,6 @@
     "8_2026_8_23": {
       "code": "conge"
     },
-    "7_2026_9_11": {
-      "code": "conge_exc",
-      "label": "Paternité"
-    },
-    "7_2026_9_12": {
-      "code": "conge_exc",
-      "label": "Paternité"
-    },
     "7_2026_9_13": {
       "code": "conge_exc",
       "label": "Paternité"
@@ -3977,5 +3969,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1788434020804
+  "lastModified": 1788434025305
 }
