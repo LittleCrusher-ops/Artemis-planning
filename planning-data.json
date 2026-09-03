@@ -3624,6 +3624,18 @@
     },
     "7_2026_9_19": {
       "code": "R"
+    },
+    "7_2026_9_21": {
+      "code": "custom",
+      "start": "08:00",
+      "end": "16:00",
+      "segments": [
+        {
+          "start": "08:00",
+          "end": "16:00"
+        }
+      ],
+      "label": "SST"
     }
   },
   "year": 2026,
@@ -3954,5 +3966,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1788437237294
+  "lastModified": 1788437263557
 }
