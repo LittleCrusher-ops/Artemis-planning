@@ -3636,9 +3636,6 @@
         }
       ],
       "label": "SST"
-    },
-    "3_2026_9_8": {
-      "code": "S2"
     }
   },
   "year": 2026,
@@ -3969,5 +3966,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1788600732972
+  "lastModified": 1788600739555
 }
