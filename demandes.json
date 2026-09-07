@@ -227,6 +227,18 @@
       "statut": "acceptee",
       "recu_le": "24/08/2026 à 19:52",
       "traite_le": "25/08/2026 à 16:41"
+    },
+    {
+      "id": "d_1788817640512",
+      "demandeur": "Devalckenaere Bastien",
+      "motif": "indisponibilite",
+      "dates_texte": "le 3 Octobre 2026",
+      "date_debut": "2026-10-03",
+      "date_fin": "2026-10-03",
+      "message": "",
+      "statut": "en_attente",
+      "recu_le": "07/09/2026 à 23:47",
+      "traite_le": null
     }
   ],
   "processed_ids": [
@@ -248,7 +260,8 @@
     "d_1786273759101",
     "d_1786390465981",
     "d_1787252378175",
-    "d_1787593955961"
+    "d_1787593955961",
+    "d_1788817640512"
   ],
-  "updated_at": "2026-08-25T14:41:25.062Z"
+  "updated_at": "2026-09-07T21:47:20.531Z"
 }
