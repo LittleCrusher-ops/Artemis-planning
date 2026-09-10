@@ -3636,10 +3636,13 @@
         }
       ],
       "label": "SST"
+    },
+    "2_2027_7_2": {
+      "code": "indispo"
     }
   },
-  "year": 2026,
-  "month": 9,
+  "year": 2027,
+  "month": 7,
   "workShifts": [
     {
       "code": "M",
@@ -3966,5 +3969,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1788602377975
+  "lastModified": 1789012976628
 }
