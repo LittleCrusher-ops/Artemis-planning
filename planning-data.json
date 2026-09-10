@@ -3639,10 +3639,13 @@
     },
     "2_2027_7_2": {
       "code": "indispo"
+    },
+    "2_2027_8_14": {
+      "code": "indispo"
     }
   },
   "year": 2027,
-  "month": 7,
+  "month": 8,
   "workShifts": [
     {
       "code": "M",
@@ -3969,5 +3972,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1789012976628
+  "lastModified": 1789012997128
 }
