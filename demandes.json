@@ -251,6 +251,18 @@
       "statut": "refusee",
       "recu_le": "08/09/2026 à 19:30",
       "traite_le": "09/09/2026 à 06:30"
+    },
+    {
+      "id": "d_1789741524758",
+      "demandeur": "Delhaye Eddy",
+      "motif": "indisponibilite",
+      "dates_texte": "du 19 Novembre 2026 au 19 Novembre 2026",
+      "date_debut": "2026-11-19",
+      "date_fin": "2026-11-19",
+      "message": "",
+      "statut": "en_attente",
+      "recu_le": "18/09/2026 à 16:25",
+      "traite_le": null
     }
   ],
   "processed_ids": [
@@ -274,7 +286,8 @@
     "d_1787252378175",
     "d_1787593955961",
     "d_1788817640512",
-    "d_1788888600655"
+    "d_1788888600655",
+    "d_1789741524758"
   ],
-  "updated_at": "2026-09-09T04:30:36.880Z"
+  "updated_at": "2026-09-18T14:25:24.781Z"
 }
