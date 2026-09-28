@@ -3761,6 +3761,9 @@
       "code": "deleg",
       "start": "08:00",
       "end": "16:00"
+    },
+    "0_2026_10_1": {
+      "code": "conge"
     }
   },
   "year": 2026,
@@ -4085,5 +4088,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1790588162580
+  "lastModified": 1790588166550
 }
