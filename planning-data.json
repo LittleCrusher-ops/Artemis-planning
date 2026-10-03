@@ -3564,9 +3564,6 @@
     "4_2026_10_9": {
       "code": "N"
     },
-    "4_2026_10_10": {
-      "code": "N"
-    },
     "4_2026_10_16": {
       "code": "N"
     },
@@ -4051,7 +4048,10 @@
     "keepExisting": true,
     "iterations": 1000
   },
-  "genLearn": {},
+  "genLearn": {
+    "4|N": -8,
+    "4|N|2": -4
+  },
   "genSeqRules": [
     {
       "type": "suite",
@@ -4109,5 +4109,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1791033071288
+  "lastModified": 1791033096973
 }
