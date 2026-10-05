@@ -287,6 +287,18 @@
       "statut": "en_attente",
       "recu_le": "04/10/2026 à 16:16",
       "traite_le": null
+    },
+    {
+      "id": "d_1791236471485",
+      "demandeur": "David Jefferson",
+      "motif": "indisponibilite",
+      "dates_texte": "le 14 Novembre 2026",
+      "date_debut": "2026-11-14",
+      "date_fin": "2026-11-14",
+      "message": "passage du psc1",
+      "statut": "en_attente",
+      "recu_le": "05/10/2026 à 23:41",
+      "traite_le": null
     }
   ],
   "processed_ids": [
@@ -313,7 +325,8 @@
     "d_1788888600655",
     "d_1789741524758",
     "d_1790800962485",
-    "d_1791123393756"
+    "d_1791123393756",
+    "d_1791236471485"
   ],
-  "updated_at": "2026-10-04T14:16:33.788Z"
+  "updated_at": "2026-10-05T21:41:11.507Z"
 }
