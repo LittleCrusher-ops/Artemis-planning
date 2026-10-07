@@ -3525,9 +3525,6 @@
     "4_2026_10_27": {
       "code": "NVS"
     },
-    "4_2026_10_28": {
-      "code": "NVS"
-    },
     "4_2026_10_29": {
       "code": "conge"
     },
@@ -3836,7 +3833,7 @@
     }
   },
   "year": 2026,
-  "month": 11,
+  "month": 10,
   "workShifts": [
     {
       "code": "M",
@@ -4183,5 +4180,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1791375643167
+  "lastModified": 1791375913433
 }
