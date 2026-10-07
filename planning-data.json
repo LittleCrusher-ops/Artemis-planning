@@ -3842,6 +3842,9 @@
     },
     "0_2026_11_25": {
       "code": "indispo"
+    },
+    "1_2026_11_31": {
+      "code": "indispo"
     }
   },
   "year": 2026,
@@ -4192,5 +4195,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1791378055194
+  "lastModified": 1791378187925
 }
