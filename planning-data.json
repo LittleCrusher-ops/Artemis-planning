@@ -3404,9 +3404,16 @@
       "end": "16:00"
     },
     "0_2026_10_17": {
-      "code": "deleg",
-      "start": "08:00",
-      "end": "16:00"
+      "code": "custom",
+      "start": "10:00",
+      "end": "16:00",
+      "segments": [
+        {
+          "start": "10:00",
+          "end": "16:00"
+        }
+      ],
+      "label": "Perso"
     },
     "1_2026_10_20": {
       "code": "indispo"
@@ -4268,7 +4275,7 @@
     }
   },
   "year": 2026,
-  "month": 11,
+  "month": 10,
   "workShifts": [
     {
       "code": "M",
@@ -4621,5 +4628,5 @@
       "label": "NOEL"
     }
   ],
-  "lastModified": 1791386577411
+  "lastModified": 1791386630542
 }
