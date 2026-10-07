@@ -4183,7 +4183,16 @@
       "code": "JD"
     },
     "4_2026_11_25": {
-      "code": "ND"
+      "code": "custom",
+      "start": "21:00",
+      "end": "06:00",
+      "segments": [
+        {
+          "start": "21:00",
+          "end": "06:00"
+        }
+      ],
+      "label": "N"
     },
     "8_2026_11_26": {
       "code": "NVS"
@@ -4551,5 +4560,5 @@
       "label": "NOEL"
     }
   ],
-  "lastModified": 1791381606675
+  "lastModified": 1791381689089
 }
