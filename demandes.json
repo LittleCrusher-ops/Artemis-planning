@@ -308,9 +308,9 @@
       "date_debut": "2026-11-29",
       "date_fin": "2026-12-12",
       "message": "Formation",
-      "statut": "en_attente",
+      "statut": "acceptee",
       "recu_le": "06/10/2026 à 00:24",
-      "traite_le": null
+      "traite_le": "07/10/2026 à 14:03"
     }
   ],
   "processed_ids": [
@@ -341,5 +341,5 @@
     "d_1791236471485",
     "d_1791239062052"
   ],
-  "updated_at": "2026-10-07T09:28:23.683Z"
+  "updated_at": "2026-10-07T12:03:34.249Z"
 }
