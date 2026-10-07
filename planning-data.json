@@ -3875,10 +3875,13 @@
     },
     "7_2026_11_6": {
       "code": "JD"
+    },
+    "0_2026_11_6": {
+      "code": "M"
     }
   },
   "year": 2026,
-  "month": 10,
+  "month": 11,
   "workShifts": [
     {
       "code": "M",
@@ -4236,5 +4239,5 @@
       "label": "NOEL"
     }
   ],
-  "lastModified": 1791379694697
+  "lastModified": 1791379743198
 }
