@@ -4265,10 +4265,13 @@
     },
     "0_2026_11_21": {
       "code": "M"
+    },
+    "8_2026_10_7": {
+      "code": "indispo"
     }
   },
   "year": 2026,
-  "month": 11,
+  "month": 10,
   "workShifts": [
     {
       "code": "M",
@@ -4620,5 +4623,5 @@
       "label": "Vacances"
     }
   ],
-  "lastModified": 1791475022166
+  "lastModified": 1791486799589
 }
