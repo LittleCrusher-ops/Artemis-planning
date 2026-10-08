@@ -4613,7 +4613,12 @@
       "start": "2026-10-17",
       "end": "2026-11-01",
       "label": "Toussaint"
+    },
+    {
+      "start": "2026-12-19",
+      "end": "2027-01-03",
+      "label": "Vacances"
     }
   ],
-  "lastModified": 1791474946560
+  "lastModified": 1791475022166
 }
