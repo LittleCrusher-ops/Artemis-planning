@@ -4262,9 +4262,6 @@
       "code": "deleg",
       "start": "10:00",
       "end": "16:00"
-    },
-    "0_2026_11_12": {
-      "code": "MS"
     }
   },
   "year": 2026,
@@ -4615,5 +4612,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1791541332175
+  "lastModified": 1791541334152
 }
