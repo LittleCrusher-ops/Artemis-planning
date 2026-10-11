@@ -4265,10 +4265,13 @@
     },
     "0_2026_11_14": {
       "code": "M"
+    },
+    "7_2027_1_9": {
+      "code": "indispo"
     }
   },
-  "year": 2026,
-  "month": 11,
+  "year": 2027,
+  "month": 1,
   "workShifts": [
     {
       "code": "M",
@@ -4615,5 +4618,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1791541388821
+  "lastModified": 1791706039336
 }
