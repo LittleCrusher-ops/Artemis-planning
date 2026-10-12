@@ -311,6 +311,18 @@
       "statut": "acceptee",
       "recu_le": "06/10/2026 à 00:24",
       "traite_le": "07/10/2026 à 14:03"
+    },
+    {
+      "id": "d_1791780767045",
+      "demandeur": "VANHAEZEBROUCK Emmanuel",
+      "motif": "conge",
+      "dates_texte": "du 8 Février 2026 au 12 Février 2026",
+      "date_debut": "2026-02-08",
+      "date_fin": "2026-02-12",
+      "message": "",
+      "statut": "en_attente",
+      "recu_le": "12/10/2026 à 06:52",
+      "traite_le": null
     }
   ],
   "processed_ids": [
@@ -339,7 +351,8 @@
     "d_1790800962485",
     "d_1791123393756",
     "d_1791236471485",
-    "d_1791239062052"
+    "d_1791239062052",
+    "d_1791780767045"
   ],
-  "updated_at": "2026-10-07T12:03:35.863Z"
+  "updated_at": "2026-10-12T04:52:47.063Z"
 }
