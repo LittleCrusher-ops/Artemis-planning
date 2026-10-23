@@ -332,9 +332,9 @@
       "date_debut": "2027-02-19",
       "date_fin": "2027-02-26",
       "message": "",
-      "statut": "en_attente",
+      "statut": "acceptee",
       "recu_le": "12/10/2026 à 19:16",
-      "traite_le": null
+      "traite_le": "23/10/2026 à 15:19"
     }
   ],
   "processed_ids": [
@@ -367,5 +367,5 @@
     "d_1791780899109",
     "d_1791825379595"
   ],
-  "updated_at": "2026-10-22T08:22:50.173Z"
+  "updated_at": "2026-10-23T13:19:34.496Z"
 }
