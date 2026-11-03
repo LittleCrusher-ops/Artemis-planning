@@ -335,6 +335,18 @@
       "statut": "acceptee",
       "recu_le": "12/10/2026 à 19:16",
       "traite_le": "23/10/2026 à 15:19"
+    },
+    {
+      "id": "d_1793686683500",
+      "demandeur": "Jomen Mickaël",
+      "motif": "indisponibilite",
+      "dates_texte": "du 5 Décembre 2026 au 6 Décembre 2026",
+      "date_debut": "2026-12-05",
+      "date_fin": "2026-12-06",
+      "message": "Demande de week-end non travaillé.",
+      "statut": "en_attente",
+      "recu_le": "03/11/2026 à 07:18",
+      "traite_le": null
     }
   ],
   "processed_ids": [
@@ -365,7 +377,8 @@
     "d_1791236471485",
     "d_1791239062052",
     "d_1791780899109",
-    "d_1791825379595"
+    "d_1791825379595",
+    "d_1793686683500"
   ],
-  "updated_at": "2026-10-23T13:19:34.496Z"
+  "updated_at": "2026-11-03T06:18:03.520Z"
 }
