@@ -347,6 +347,18 @@
       "statut": "en_attente",
       "recu_le": "03/11/2026 à 07:18",
       "traite_le": null
+    },
+    {
+      "id": "d_1793826411366",
+      "demandeur": "David Jefferson",
+      "motif": "indisponibilite",
+      "dates_texte": "du 4 Décembre 2026 au 6 Décembre 2026",
+      "date_debut": "2026-12-04",
+      "date_fin": "2026-12-06",
+      "message": "",
+      "statut": "en_attente",
+      "recu_le": "04/11/2026 à 22:06",
+      "traite_le": null
     }
   ],
   "processed_ids": [
@@ -378,7 +390,8 @@
     "d_1791239062052",
     "d_1791780899109",
     "d_1791825379595",
-    "d_1793686683500"
+    "d_1793686683500",
+    "d_1793826411366"
   ],
-  "updated_at": "2026-11-03T06:18:03.520Z"
+  "updated_at": "2026-11-04T21:06:51.401Z"
 }
