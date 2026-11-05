@@ -344,9 +344,9 @@
       "date_debut": "2026-12-05",
       "date_fin": "2026-12-06",
       "message": "Demande de week-end non travaillé.",
-      "statut": "en_attente",
+      "statut": "acceptee",
       "recu_le": "03/11/2026 à 07:18",
-      "traite_le": null
+      "traite_le": "05/11/2026 à 19:56"
     },
     {
       "id": "d_1793826411366",
@@ -406,5 +406,5 @@
     "d_1793826411366",
     "d_1793862293548"
   ],
-  "updated_at": "2026-11-05T18:56:53.851Z"
+  "updated_at": "2026-11-05T18:56:59.067Z"
 }
