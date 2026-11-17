@@ -4365,10 +4365,15 @@
       "code": "deleg",
       "start": "10:00",
       "end": "18:00"
+    },
+    "0_2027_1_3": {
+      "code": "deleg",
+      "start": "10:00",
+      "end": "18:00"
     }
   },
   "year": 2027,
-  "month": 0,
+  "month": 1,
   "workShifts": [
     {
       "code": "M",
@@ -4715,5 +4720,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1794908254113
+  "lastModified": 1794921049489
 }
