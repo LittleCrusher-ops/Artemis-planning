@@ -4384,10 +4384,13 @@
     },
     "0_2027_0_2": {
       "code": "MS"
+    },
+    "0_2027_0_3": {
+      "code": "M"
     }
   },
-  "year": 2027,
-  "month": 0,
+  "year": 2026,
+  "month": 11,
   "workShifts": [
     {
       "code": "M",
@@ -4734,5 +4737,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1795014527066
+  "lastModified": 1795014528651
 }
