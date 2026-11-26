@@ -4813,6 +4813,12 @@
     },
     "3_2027_1_21": {
       "code": "conge"
+    },
+    "2_2027_1_6": {
+      "code": "indispo"
+    },
+    "2_2027_1_7": {
+      "code": "indispo"
     }
   },
   "year": 2027,
@@ -5163,5 +5169,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1795673634105
+  "lastModified": 1795673635873
 }
