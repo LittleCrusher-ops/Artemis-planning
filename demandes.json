@@ -380,9 +380,9 @@
       "date_debut": "2027-02-06",
       "date_fin": "2027-02-07",
       "message": "Demande de week-end non travaillé.",
-      "statut": "en_attente",
+      "statut": "acceptee",
       "recu_le": "22/11/2026 à 22:46",
-      "traite_le": null
+      "traite_le": "26/11/2026 à 07:13"
     },
     {
       "id": "d_1795643670964",
@@ -392,9 +392,9 @@
       "date_debut": "2027-02-15",
       "date_fin": "2027-02-21",
       "message": "",
-      "statut": "acceptee",
+      "statut": "en_attente",
       "recu_le": "25/11/2026 à 22:54",
-      "traite_le": "26/11/2026 à 07:13"
+      "traite_le": null
     }
   ],
   "processed_ids": [
@@ -432,5 +432,5 @@
     "d_1795383976928",
     "d_1795643670964"
   ],
-  "updated_at": "2026-11-26T06:13:52.584Z"
+  "updated_at": "2026-11-26T06:13:54.365Z"
 }
