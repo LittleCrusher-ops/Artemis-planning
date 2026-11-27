@@ -4870,10 +4870,13 @@
     },
     "1_2027_2_21": {
       "code": "S2"
+    },
+    "1_2027_1_13": {
+      "code": "S2"
     }
   },
   "year": 2027,
-  "month": 2,
+  "month": 1,
   "workShifts": [
     {
       "code": "M",
@@ -5220,5 +5223,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1795758168508
+  "lastModified": 1795758239770
 }
