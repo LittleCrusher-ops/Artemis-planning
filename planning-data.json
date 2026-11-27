@@ -4831,10 +4831,31 @@
     },
     "2_2027_1_14": {
       "code": "M"
+    },
+    "3_2027_2_22": {
+      "code": "conge"
+    },
+    "3_2027_2_23": {
+      "code": "conge"
+    },
+    "3_2027_2_24": {
+      "code": "conge"
+    },
+    "3_2027_2_25": {
+      "code": "conge"
+    },
+    "3_2027_2_26": {
+      "code": "conge"
+    },
+    "3_2027_2_27": {
+      "code": "conge"
+    },
+    "3_2027_2_28": {
+      "code": "conge"
     }
   },
   "year": 2027,
-  "month": 1,
+  "month": 2,
   "workShifts": [
     {
       "code": "M",
@@ -5181,5 +5202,5 @@
       "label": "Toussaint"
     }
   ],
-  "lastModified": 1795758079906
+  "lastModified": 1795758099138
 }
