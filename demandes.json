@@ -404,9 +404,9 @@
       "date_debut": "2027-03-22",
       "date_fin": "2027-03-28",
       "message": "",
-      "statut": "en_attente",
+      "statut": "acceptee",
       "recu_le": "26/11/2026 à 16:49",
-      "traite_le": null
+      "traite_le": "27/11/2026 à 06:41"
     }
   ],
   "processed_ids": [
@@ -445,5 +445,5 @@
     "d_1795643670964",
     "d_1795708141988"
   ],
-  "updated_at": "2026-11-27T05:41:18.392Z"
+  "updated_at": "2026-11-27T05:41:37.621Z"
 }
